@@ -2,7 +2,7 @@
 
 ## Develop
 
-Clone the project locally.
+Clone the project locally: `git clone git@github.com:avivace/Physarum.git`
 
 ### Unity
 
