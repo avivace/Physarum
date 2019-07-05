@@ -1,5 +1,9 @@
 # Physarum
 
+By [Matteo Coppola](https://github.com/matteocoppola), [Luca Palazzi](https://github.com/lucapalazzi), [Antonio Vivace](https://github.com/avivace).
+
+Complex Systems exam final project.
+
 ## Develop
 
 Clone the project locally: `git clone git@github.com:avivace/Physarum.git`
