@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: FreeTile
+  m_Name: OLDBlockedTile
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: 566c22678283a3d44b55e985e4bf8dce, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.016897917, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_Transform:
     e00: 1
     e01: 0

@@ -64,7 +64,6 @@ public class SimulationManager : MonoBehaviour
     }
 
     /** Equazioni di diffusione. */
-    //TODO I bounding fuoriescono dalle dimensioni dell'array!
     void Diffusion()
     {
         //Calcolo PM
@@ -74,29 +73,35 @@ public class SimulationManager : MonoBehaviour
             {
                 float[] PA = new float[8];
                 float[] values = new float[]{
-                    mapCells[i - 1, j - 1].CHA, mapCells[i - 1, j].CHA, mapCells[i - 1, j + 1].CHA,
-                    mapCells[i, j - 1].CHA, mapCells[i, j].CHA, mapCells[i, j + 1].CHA,
-                    mapCells[i + 1, j - 1].CHA, mapCells[i + 1, j].CHA, mapCells[i + 1, j + 1].CHA };
+                    GetCHA(i - 1, j - 1),
+                    GetCHA(i - 1, j),
+                    GetCHA(i - 1, j + 1),
+                    GetCHA(i, j - 1),
+                    GetCHA(i, j),
+                    GetCHA(i, j + 1),
+                    GetCHA(i + 1, j - 1),
+                    GetCHA(i + 1, j),
+                    GetCHA(i + 1, j + 1) };
 
-                PA[0] = (CalculatePA(mapCells[i - 1, j].CHA, mapCells[i + 1, j].CHA, values));
-                PA[1] = (CalculatePA(mapCells[i, j - 1].CHA, mapCells[i, j + 1].CHA, values));
-                PA[2] = (CalculatePA(mapCells[i + 1, j].CHA, mapCells[i - 1, j].CHA, values));
-                PA[3] = (CalculatePA(mapCells[i, j + 1].CHA, mapCells[i, j - 1].CHA, values));
-                PA[4] = (CalculatePA(mapCells[i - 1, j - 1].CHA, mapCells[i + 1, j + 1].CHA, values));
-                PA[5] = (CalculatePA(mapCells[i + 1, j - 1].CHA, mapCells[i - 1, j + 1].CHA, values));
-                PA[6] = (CalculatePA(mapCells[i - 1, j + 1].CHA, mapCells[i + 1, j - 1].CHA, values));
-                PA[7] = (CalculatePA(mapCells[i + 1, j + 1].CHA, mapCells[i - 1, j - 1].CHA, values));
+                PA[0] = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values));
+                PA[1] = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values));
+                PA[2] = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values));
+                PA[3] = (CalculatePA(GetCHA(i, j + 1), GetCHA(i, j - 1), values));
+                PA[4] = (CalculatePA(GetCHA(i - 1, j - 1), GetCHA(i + 1, j + 1), values));
+                PA[5] = (CalculatePA(GetCHA(i + 1, j - 1), GetCHA(i - 1, j + 1), values));
+                PA[6] = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values));
+                PA[7] = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values));
 
-                float PMvNN = ((1 + PA[0]) * mapCells[i - 1, j].PM - (mapCells[i - 1, j].AA ? 1 : 0) * mapCells[i, j].PM) + (
-                     (1 + PA[1]) * mapCells[i, j - 1].PM - (mapCells[i, j - 1].AA ? 1 : 0) * mapCells[i, j].PM) + (
-                     (1 + PA[2]) * mapCells[i + 1, j].PM - (mapCells[i + 1, j].AA ? 1 : 0) * mapCells[i, j].PM) + (
-                     (1 + PA[3]) * mapCells[i, j + 1].PM - (mapCells[i, j + 1].AA ? 1 : 0) * mapCells[i, j].PM);
-                float PMeMN = ((1 + PA[4]) * mapCells[i - 1, j - 1].PM - (mapCells[i - 1, j - 1].AA ? 1 : 0) * mapCells[i, j].PM) + (
-                     (1 + PA[5]) * mapCells[i + 1, j - 1].PM - (mapCells[i + 1, j - 1].AA ? 1 : 0) * mapCells[i, j].PM) + (
-                     (1 + PA[6]) * mapCells[i - 1, j + 1].PM - (mapCells[i - 1, j + 1].AA ? 1 : 0) * mapCells[i, j].PM) + (
-                     (1 + PA[7]) * mapCells[i - 1, j + 1].PM - (mapCells[i - 1, j + 1].AA ? 1 : 0) * mapCells[i, j].PM);
+                float PMvNN = ((1 + PA[0]) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) + (
+                     (1 + PA[1]) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) + (
+                     (1 + PA[2]) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) + (
+                     (1 + PA[3]) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j));
+                float PMeMN = ((1 + PA[4]) * GetPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j)) + (
+                     (1 + PA[5]) * GetPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j)) + (
+                     (1 + PA[6]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j)) + (
+                     (1 + PA[7]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
-                mapCells[i, j].PM = mapCells[i, j].PM + PMP1 * (PMvNN + PMP2 * PMeMN);
+                mapCells[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
             }
         }
 
@@ -105,17 +110,41 @@ public class SimulationManager : MonoBehaviour
         {
             for (int j = 0; j < mapSizeY; j++)
             {
-                float CHAvNN = ((mapCells[i - 1, j].CHA) - (mapCells[i - 1, j].AA ? 1 : 0) * mapCells[i, j].CHA) + (
-                      (mapCells[i, j - 1].CHA) - (mapCells[i, j - 1].AA ? 1 : 0) * mapCells[i, j].CHA) + (
-                      (mapCells[i + 1, j].CHA) - (mapCells[i + 1, j].AA ? 1 : 0) * mapCells[i, j].CHA) + (
-                      (mapCells[i, j + 1].CHA) - (mapCells[i, j + 1].AA ? 1 : 0) * mapCells[i, j].CHA);
-                float CHAeMN = ((mapCells[i - 1, j - 1].CHA) - (mapCells[i - 1, j - 1].AA ? 1 : 0) * mapCells[i, j].CHA) + (
-                          (mapCells[i + 1, j - 1].CHA) - (mapCells[i + 1, j - 1].AA ? 1 : 0) * mapCells[i, j].CHA) + (
-                          (mapCells[i - 1, j + 1].CHA) - (mapCells[i - 1, j + 1].AA ? 1 : 0) * mapCells[i, j].CHA) + (
-                          (mapCells[i + 1, j + 1].CHA) - (mapCells[i + 1, j + 1].AA ? 1 : 0) * mapCells[i, j].CHA);
-                mapCells[i, j].CHA = CON * (mapCells[i, j].CHA + CAP1 * (CHAvNN + CAP2 * CHAeMN));
+                float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j)) + (
+                      (GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
+                      (GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j)) + (
+                      (GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
+                float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
+                          (GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
+                          (GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j)) + (
+                          (GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
+                mapCells[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
             }
         }
+    }
+
+    float GetCHA(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+            return 0;
+        else
+            return mapCells[i, j].CHA;
+    }
+
+    float GetPM(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+            return 0;
+        else
+            return mapCells[i, j].PM;
+    }
+
+    bool GetAA(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+            return false;
+        else
+            return mapCells[i, j].AA;
     }
 
     float CalculatePA(float coord_n, float coord_o, float[] values) {
@@ -149,7 +178,7 @@ public class SimulationManager : MonoBehaviour
 
         for (int i = 0; i < mapSizeX; i++)
         {
-            for (int j = 0; j < mapSizeX; j++)
+            for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
 
@@ -179,7 +208,7 @@ public class SimulationManager : MonoBehaviour
         Tilemap tilemap = this.GetComponent<Tilemap>();
         for (int i = 0; i < mapSizeX; i++)
         {
-            for (int j = 0; j < mapSizeX; j++)
+            for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
 

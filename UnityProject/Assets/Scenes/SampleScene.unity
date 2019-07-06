@@ -331,9 +331,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1527672249}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e4de46ef61a8e14b9ef8af3a4fd59a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b161787691ed904f98a27dc689c108b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mapSizeX: 10
   mapSizeY: 10
-  tile: {fileID: 11400000, guid: 24f6b93d06a6f564598acd297055b752, type: 2}
+  tile: {fileID: 11400000, guid: 8dd9f982876ecb341bf31f92d257f0c4, type: 2}
