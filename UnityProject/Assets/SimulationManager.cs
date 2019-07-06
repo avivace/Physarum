@@ -21,6 +21,7 @@ public class SimulationManager : MonoBehaviour
     float CAP1 = 0.05f;
     float CAP2 = 0.025f;
     float CAP3 = 1;
+    float ThPM = 0.2f;
 
     // Start is called before the first frame update
     void Start()
@@ -45,22 +46,65 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 if (i == 0 && j == 0) {
-                    mapCells[i, j] = new Cell(CellType.S);
+                    mapCells[i, j] = new Cell(aA = true, pM = 100, cHA = 0, tE = false, CellType.S);
                 }
                 else if (UnityEngine.Random.value > 0.7f)
                 {
-                    mapCells[i, j] = new Cell(CellType.U);
+                    mapCells[i, j] = new Cell(aA = false, pM = 0, cHA = 0, tE = false, CellType.U);
                 }
                 else if(UnityEngine.Random.value > 0.9f)
                 {
-                    mapCells[i, j] = new Cell(CellType.N);
+                    mapCells[i, j] = new Cell(aA = true, pM = 0, cHA = 100, tE = false, CellType.N);
                 }
                 else
                 {
-                    mapCells[i, j] = new Cell(CellType.A);
+                    mapCells[i, j] = new Cell(aA = true, pM = 100, cHA = 0, tE = false, CellType.A);
                 }
             }
         }
+    }
+
+    void Simulation()
+    {
+
+        CreateMap();
+
+        bool flag = false;
+        while (flag)
+        {
+            First50();
+            for (int i = 0; i < mapSizeX; i++)
+            {
+                for (int j = 0; j < mapSizeY; j++)
+                {
+                    if (mapCells[i, j].type == CellType.N && mapCells[i, j].PM >= ThPM)
+                    {
+                        flag = true;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < mapSizeX; i++)
+        {
+            for (int j = 0; j < mapSizeY; j++)
+            {
+                if (mapCells[i, j].type == CellType.N && mapCells[i, j].PM >= ThPM)
+                {
+                    mapCells[i, j].type = CellType.S;
+                    mapCells[i, j].PM = 100;
+                }
+            }
+        }
+    }
+
+    void First50()
+    {
+        for (int i = 0; i < 50; i++)
+        {
+            Diffusion();
+        }
+
     }
 
     /** Equazioni di diffusione. */
