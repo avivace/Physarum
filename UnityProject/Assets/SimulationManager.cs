@@ -23,93 +23,143 @@ public class SimulationManager : MonoBehaviour
     float CAP3 = 1;
     float ThPM = 0.2f;
 
+    int t = 0;
+
+    /** False if the simulation has finished. */
+    bool simulationRunning;
+
+    /** True if we are doing the 50 steps where we apply the diffusion equations. */
+    bool fiftyStepsPhase;
+    /** Local timer to count 50 steps. */
+    int localFiftyStepsTime;
+
     // Start is called before the first frame update
     void Start()
     {
-        mapCells = new Cell[mapSizeX, mapSizeY];
-        CreateMap();
-        InitTiles();
+        Initialization();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (simulationRunning)
+        {
+            Simulation();
+            UpdateTiles();
+        }
+    }
+
+    /** Call this every time you want to restart the simulation. */
+    public void Initialization()
+    {
+        mapCells = new Cell[mapSizeX, mapSizeY];
+        LoadMap();
+        t = 0;
+        StartFiftyStepsPhase();
+        simulationRunning = true;
         DrawTiles();
     }
 
-    /** Popola la mappa con i vari tipi di cella. */
-    //TODO Qui bisogna instanziare correttamente le CELL con i loro valori!
-    void CreateMap()
+    /** Popola la mappa con i vari tipi di cella. */   //TODO Qua bisogna caricare l'immagine della mappa
+    void LoadMap()
     {
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
             {
                 if (i == 0 && j == 0) {
-                    mapCells[i, j] = new Cell(aA = true, pM = 100, cHA = 0, tE = false, CellType.S);
+                    mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
                 }
                 else if (UnityEngine.Random.value > 0.7f)
                 {
-                    mapCells[i, j] = new Cell(aA = false, pM = 0, cHA = 0, tE = false, CellType.U);
+                    mapCells[i, j] = new Cell(false, 0, 0, false, CellType.U);
                 }
                 else if(UnityEngine.Random.value > 0.9f)
                 {
-                    mapCells[i, j] = new Cell(aA = true, pM = 0, cHA = 100, tE = false, CellType.N);
+                    mapCells[i, j] = new Cell(true, 0, 100, false, CellType.N);
                 }
                 else
                 {
-                    mapCells[i, j] = new Cell(aA = true, pM = 100, cHA = 0, tE = false, CellType.A);
+                    mapCells[i, j] = new Cell(true, 0, 0, false, CellType.A);
                 }
             }
         }
     }
 
+    /** Execution of the simulation. */
     void Simulation()
     {
-
-        CreateMap();
-
-        bool flag = false;
-        while (flag)
+        if(fiftyStepsPhase)
         {
-            First50();
+            if (localFiftyStepsTime < 50)
+                ApplyDiffusionEquations();
+            else
+                fiftyStepsPhase = false;
+            localFiftyStepsTime++;
+        } else
+        {
+            List<Vector2Int> coveredNs = new List<Vector2Int>();
             for (int i = 0; i < mapSizeX; i++)
             {
                 for (int j = 0; j < mapSizeY; j++)
                 {
                     if (mapCells[i, j].type == CellType.N && mapCells[i, j].PM >= ThPM)
                     {
-                        flag = true;
+                        coveredNs.Add(new Vector2Int(i, j));
                     }
                 }
             }
-        }
 
-        for (int i = 0; i < mapSizeX; i++)
-        {
-            for (int j = 0; j < mapSizeY; j++)
+            if (coveredNs.Count > 0)
             {
-                if (mapCells[i, j].type == CellType.N && mapCells[i, j].PM >= ThPM)
+                foreach (Vector2Int cellPos in coveredNs)
                 {
-                    mapCells[i, j].type = CellType.S;
-                    mapCells[i, j].PM = 100;
+                    Cell cell = mapCells[cellPos.x, cellPos.y];
+
+                    //Connect these Ns with the SP
+                    //TODO
+
+                    //Change N into SP
+                    cell.type = CellType.S;
+                    cell.PM = 100;
                 }
             }
+
+            if(t <= 5000)
+            {
+                if (t == 5000)
+                {
+                    //Change all NS and SP as NS
+                    //TODO
+
+                    //Il penultimo NS incapsulato diventa il nuovo SP
+                    //TODO
+                }
+                
+                StartFiftyStepsPhase();
+            } else if(t < 10000)
+            {
+                StartFiftyStepsPhase();
+            } else
+            {
+                simulationRunning = false;
+            }
         }
+
+        t++;
     }
 
-    void First50()
+    private void StartFiftyStepsPhase()
     {
-        for (int i = 0; i < 50; i++)
-        {
-            Diffusion();
-        }
-
+        fiftyStepsPhase = true;
+        localFiftyStepsTime = 0;
     }
 
     /** Equazioni di diffusione. */
-    void Diffusion()
+    void ApplyDiffusionEquations()
     {
+        Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
+
         //Calcolo PM
         for (int i = 0; i < mapSizeX; i++)
         {
@@ -145,11 +195,11 @@ public class SimulationManager : MonoBehaviour
                      (1 + PA[6]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j)) + (
                      (1 + PA[7]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
-                mapCells[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
+                newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
             }
         }
 
-        //calcolo CHA
+        //Calcolo CHA
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
@@ -162,9 +212,39 @@ public class SimulationManager : MonoBehaviour
                           (GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
                           (GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j)) + (
                           (GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
-                mapCells[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
+                newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
             }
         }
+
+        //Update the map
+        UpdateMapWithNewDiffusionValues(newMap);
+    }
+
+    private void UpdateMapWithNewDiffusionValues(Cell[,] newMap)
+    {
+        for (int i = 0; i < mapSizeX; i++)
+        {
+            for (int j = 0; j < mapSizeY; j++)
+            {
+                mapCells[i, j].PM = newMap[i, j].PM;
+                mapCells[i, j].CHA = newMap[i, j].CHA;
+            }
+        }
+    }
+
+    /** Create a new filled map with generic cells. */
+    private Cell[,] CreateNewCellMap(int mapSizeX, int mapSizeY)
+    {
+        Cell[,] res = new Cell[mapSizeX, mapSizeY];
+        for (int i = 0; i < mapSizeX; i++)
+        {
+            for (int j = 0; j < mapSizeY; j++)
+            {
+                res[i, j] = new Cell();
+            }
+        }
+
+        return res;
     }
 
     float GetCHA(int i, int j)
@@ -216,7 +296,7 @@ public class SimulationManager : MonoBehaviour
     }
 
     /** Inizializza le tiles grafiche nella TileMap di Unity per visualizzare le varie Celle. */
-    void InitTiles()
+    void DrawTiles()
     {
         Tilemap tilemap = this.GetComponent<Tilemap>();
 
@@ -225,29 +305,14 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
-
-                if (type == CellType.A)
-                {
-                    tilemap.SetTile(new Vector3Int(i, j, 0), tile);
-                }
-                else if (type == CellType.U)
-                {
-                    tilemap.SetTile(new Vector3Int(i, j, 0), tile);
-                }
-                else if (type == CellType.S)
-                {
-                    tilemap.SetTile(new Vector3Int(i, j, 0), tile);
-                }
-                else
-                {
-                    tilemap.SetTile(new Vector3Int(i, j, 0), tile);
-                }
+                tilemap.SetTile(new Vector3Int(i, j, 0), tile);
             }
         }
     }
 
     /** Aggiorna le tile della TileMap con i colori corretti. */
-    void DrawTiles()
+    //TODO Qui vanno settate le sfumature delle tiles e i colori corretti
+    void UpdateTiles()
     {
         Tilemap tilemap = this.GetComponent<Tilemap>();
         for (int i = 0; i < mapSizeX; i++)
