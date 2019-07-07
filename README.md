@@ -18,6 +18,13 @@ Be sure you are on Unity 2018.3.14f1 (64-bit). For some reasons, the WebGL build
 
 TODO
 
+### Documentation
+
+TODO
+
 ## Resources
 
+#### Web UI <-> Unity
+
 - [WebGL: Interacting with browser scripting](https://docs.unity3d.com/2018.4/Documentation/Manual/webgl-interactingwithbrowserscripting.html)
+- [JsonUtility.FromJson](https://docs.unity3d.com/ScriptReference/JsonUtility.FromJson.html)
