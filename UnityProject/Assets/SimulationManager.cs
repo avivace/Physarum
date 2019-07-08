@@ -6,12 +6,16 @@ using UnityEngine.Tilemaps;
 
 public class SimulationManager : MonoBehaviour
 {
-    public int mapSizeX = 10;
-    public int mapSizeY = 10;
+    /** Per essere usata, l'immagine .png deve aggiungere l'estensione .bytes */
+    public TextAsset imageAsset;
+    public Tile tile;
+
+    Texture2D tex;
+
+    int mapSizeX;
+    int mapSizeY;
 
     public Cell[,] mapCells;
-
-    public Tile tile;
      
     float CON = 1;
     float PAP = 0.3f;  
@@ -52,35 +56,49 @@ public class SimulationManager : MonoBehaviour
     /** Call this every time you want to restart the simulation. */
     public void Initialization()
     {
-        mapCells = new Cell[mapSizeX, mapSizeY];
-        LoadMap();
+        LoadTextureMap();
+        InitCellMap();
         t = 0;
         StartFiftyStepsPhase();
         simulationRunning = true;
         DrawTiles();
     }
 
-    /** Popola la mappa con i vari tipi di cella. */   //TODO Qua bisogna caricare l'immagine della mappa
-    void LoadMap()
+    /** Carica la mappa come Texture così può leggerne i pixel. */
+    void LoadTextureMap()
     {
+        tex = new Texture2D(2, 2);
+        tex.LoadImage(imageAsset.bytes);
+        mapSizeX = tex.width;
+        mapSizeY = tex.height;
+    }
+
+    /** Popola la mappa con i vari tipi di cella. */
+    void InitCellMap()
+    {
+        mapCells = new Cell[mapSizeX, mapSizeY];
+
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
             {
-                if (i == 0 && j == 0) {
-                    mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
+                Color col = tex.GetPixel(i, j);
+
+                if(col.Equals(Color.white)) 
+                {
+                    mapCells[i, j] = new Cell(true, 0, 0, false, CellType.A);
                 }
-                else if (UnityEngine.Random.value > 0.7f)
+                else if (col.Equals(Color.red))
                 {
                     mapCells[i, j] = new Cell(false, 0, 0, false, CellType.U);
                 }
-                else if(UnityEngine.Random.value > 0.9f)
+                else if (col.Equals(Color.black))
+                {
+                    mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
+                }
+                else if (col.Equals(Color.blue))
                 {
                     mapCells[i, j] = new Cell(true, 0, 100, false, CellType.N);
-                }
-                else
-                {
-                    mapCells[i, j] = new Cell(true, 0, 0, false, CellType.A);
                 }
             }
         }
@@ -89,6 +107,7 @@ public class SimulationManager : MonoBehaviour
     /** Execution of the simulation. */
     void Simulation()
     {
+        Debug.Log("Simulation running "+t);
         if(fiftyStepsPhase)
         {
             if (localFiftyStepsTime < 50)
@@ -143,7 +162,7 @@ public class SimulationManager : MonoBehaviour
             } else
             {
                 simulationRunning = false;
-            }
+            } 
         }
 
         t++;
@@ -305,13 +324,14 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
+                Color col = tex.GetPixel(i, j);
                 tilemap.SetTile(new Vector3Int(i, j, 0), tile);
+                SetTileColour(col, new Vector3Int(i, j, 0));
             }
         }
     }
 
     /** Aggiorna le tile della TileMap con i colori corretti. */
-    //TODO Qui vanno settate le sfumature delle tiles e i colori corretti
     void UpdateTiles()
     {
         Tilemap tilemap = this.GetComponent<Tilemap>();
@@ -320,22 +340,19 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
+                float PMInRange01 = mapCells[i, j].PM / 100f;
 
-                if (type == CellType.A)
-                {
-                    SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                }
-                else if (type == CellType.U)
+                if (type == CellType.U)
                 {
                     SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
                 }
-                else if (type == CellType.S)
+                else if(type == CellType.S)
                 {
-                    SetTileColour(new Color(1, 0, 0, 1), new Vector3Int(i, j, 0));
+                    SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
                 }
                 else
                 {
-                    SetTileColour(new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1), new Vector3Int(i, j, 0));
+                    SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
                 }
             }
         }
