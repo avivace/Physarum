@@ -1,0 +1,51 @@
+\section{Automi cellulari}
+\label{automi_cellulari}
+
+Un Automa Cellulare è un modello matematico discreto e dinamico in grado di immagazzinare ed elaborare informazione utilizzando una serie di regole.
+\par
+L’idea di base degli Automi Cellulari è quella della simulazione di comportamenti complessi derivanti da sistemi naturali.
+\par
+Dal punto di vista teorico, gli Automi Cellulari vengono descritti e definiti negli anni cinquanta da John Von Neumann e Stanislaw Ulam, che li usano per simulare processi naturali e biologici. La parte interessante di questo processo non è solo la simulazione come imitazione di comportamenti biologici, ma la stessa creazione di modelli automatici in grado di indagare la vera natura di sistemi complessi esistenti in natura. In questo modo, gli automi cellulari diventano uno strumento per studiare l’auto-organizzazione e l’emergenza nei sistemi complessi.
+\par
+Un Automa Cellulare consiste di una griglia di dimensione finita costituita da un numero anch’esso finito di celle. Ciascuna cella può assumere un insieme finito di stati \texttt{k} - con \texttt{k} maggiore o uguale a 2 - e l'aggiornamento avviene in tempo discreto. All’istante t = 0 si assegna ad ogni cella un determinato stato e l’insieme di questi stati costituisce la configurazione iniziale dell'automa cellulare. Ad ogni istante temporale (solitamente avanzando t di 1) ogni cella si aggiorna e una nuova generazione, seguendo le regole - predeterminate ed invarianti nel tempo - del sistema, sostituisce la generazione precedente. Il cambiamento di stato di ogni singola cella è determinato solamente dal proprio stato attuale e dagli stati delle celle vicine a quella attuale. 
+\par
+Considerando gli Automi Cellulari bidimensionali, ci sono due metodi considerati per la definizione dei \textit{vicini}:
+\begin{itemize}
+\item Von Neumann, che considera il vicinato l'insieme delle celle in cui è compresa la cella al centro e le celle posizionate a Nord, Est, Sud e Ovest rispetto a quella centrale
+\item Moore, che considera il vicinato l'insieme delle celle del metodo Von Neumann a cui vanno aggiunte le celle posizionate a Nord-Est, Sud-Est, Sud-Ovest e Nord-Ovest rispetto a quella centrale
+\end{itemize}
+\par
+Un caso particolare è \texttt{The Game of Life}, un Automa Cellulare creato sul finire degli anni sessanta dal matematico John Horton Conway con l’intento di produrre un modello semplice dell’idea di Von Neumann della macchina capace di riprodurre se stessa avendo le proprietà della Macchina Universale di Turing. In \texttt{The Game of Life} le celle, interagendo con le otto celle vicine, possono avere due stati: vive o morte.
+\par
+Questo comportamento viene definito attraverso quattro regole:
+\begin{itemize}
+\item ogni cellula che ha meno di due vicini vivi, muore per solitudine
+\item ogni cellula con due o tre vicini vivi, sopravvive alla prossima generazion
+\item ogni cellula con più di tre vicini vivi, muore di sovraffollamento
+\item ogni cellula morta con tre vicini vivi, nasce attraverso la riproduzione
+\end{itemize}
+\par
+Il sistema nasce da una prima generazione chiamata \textit{seme} che può avere qualunque configurazione iniziale. Ad ogni istante temporale le quattro regole vengono applicate a tutte le cellule simultaneamente facendo morire, sopravvivere o nascere la prossima generazione. Il fenomeno che genera l’interesse su \texttt{The Game of Life} è che un processo così semplice e deterministico è capace di creare un comportamento che sta al limite dell’insorgenza del caos, capace di far emergere strutture estremamente complesse che possono avere anche significati spaziali.
+
+
+\section{Physarum}
+
+Il Physarum Polycephalum\cite{Tsompanas2016} è un mixomiceto melmoso unicellulare appartenente al clade Amoebozoa, comunemente conosciuto come fungo mucillaginoso o muffa melmosa, che prospera in condizioni ambientali favorevoli, in particolare quando si creano le giuste combinazioni di umidità, temperatura e presenza di nutrienti.
+\par
+Se le condizioni non sono adeguate allo sviluppo, il Physarum si comporta come un organismo unicellulare che non dimostra capacità organizzative. In condizioni opportune, si aggrega a creare reti filamentose particolarmente efficienti nella distribuzione fisica.
+\par 
+Un numero sempre maggiore di ricercatori ha condotto studi riguardanti il Physarum per esplorare la sua intelligenza nell'ambito dei problemi di ottimo. Ciò è avvenuto per via di alcuni esperimenti biologici osservati in condizioni di laboratorio in cui la muffa ha esibito capacità straordinarie, ad esempio calcolando la distribuzione più efficiente della rete ferroviaria di Tokyo o esplorando semplici labirinti trovando la via più breve. 
+\par
+Per gran parte del ciclo vitale il Physarum si trova sotto forma di un'unica massa citoplasmatica, detta plasmodio, una cellulare plurinucleare costituita da reti di vene protoplasmatiche che arriva a contenere più di 100 000 nuclei.
+Durante questa fase l'organismo cerca cibo e il plasmodio circonda il suo cibo e secerne enzimi per la digestione.
+Se le condizioni ambientali portano il plasmodio ad essiccare durante la nutrizione o la migrazione, il Physarum forma uno sclerozio. Lo sclerozio è fondamentalmente tessuto indurito multinucleato che serve per proteggere il Physarum per lunghi periodi di tempo, per poi ritornare ad una normale funzionalità una volta che le condizioni favorevoli si ripresentano. In tal caso il plasmodio riappare per proseguire la sua ricerca di cibo.
+Come l'approvvigionamento di cibo termina, il plasmodio smette di alimentarsi e inizia la fase riproduttiva. Gambi di sporangi nascono dal plasmodio, è all'interno di queste strutture, che si verifica la meiosi e le spore si formano. Gli sporangi si formano all'aperto in modo che le spore che rilasciano saranno diffuse da correnti di vento.
+Le spore possono rimanere latenti per anni se necessario. Tuttavia, quando le condizioni ambientali sono favorevoli per la crescita, le spore germinano e rilasciano sciami di cellule o flagellate o ameboidi (fase di motilità); le cellule brulicanti poi si fondono per formare un nuovo plasmodio. 
+
+
+
+
+
+NB da verificare: la muffa viene chiamata “intelligente”. In realtà il comportamento della muffa non è intelligente, bensì emergente, e l’emergenza è quello che succede quando un sistema interconnesso di elementi relativamente semplici si autoorganizza dando luogo a un comportamento più intelligente e più adattivo.
+
+NB da verificare: Era parere comune della comunità scientifica presumere l’esistenza di una tipologia di cellula “segna passi”, capace di trovare le risorse e di “comandare” le altre cellule ad aggregarsi. le cellule della Physarum polycephalum potevano essere capaci di aggregarsi seguendo i cambiamenti ambientali e rispondendo alle nuove condizioni senza aver bisogno di una cellula “segna passi”. Così essi svilupparono un modello elegante capace di riprodurle l’organizzazione dell’organismo soltanto attraverso la secrezione da parte di ogni qualunque cellula di una sostanza chimica quando si trova in vicinanza di cibo. La semplice reazione delle altre cellule al ricevimento del segnale chimico era abbastanza per far emergere un comportamento intelligente di organizzazione del gruppo, non possibile da raggiungere dalle singole cellule. 
