@@ -14,51 +14,55 @@ Let:
 
 
 
-Un Automa Cellulare è un modello matematico discreto e dinamico in grado di immagazzinare ed elaborare informazione utilizzando una serie di regole.
-\par
-L’idea di base degli Automi Cellulari è quella della simulazione di comportamenti complessi derivanti da sistemi naturali.
-\par
-Dal punto di vista teorico, gli Automi Cellulari vengono descritti e definiti negli anni cinquanta da John Von Neumann e Stanislaw Ulam, che li usano per simulare processi naturali e biologici. La parte interessante di questo processo non è solo la simulazione come imitazione di comportamenti biologici, ma la stessa creazione di modelli automatici in grado di indagare la vera natura di sistemi complessi esistenti in natura. In questo modo, gli automi cellulari diventano uno strumento per studiare l’auto-organizzazione e l’emergenza nei sistemi complessi.
-\par
-Un Automa Cellulare consiste di una griglia di dimensione finita costituita da un numero anch’esso finito di celle. Ciascuna cella può assumere un insieme finito di stati \texttt{k} - con \texttt{k} maggiore o uguale a 2 - e l'aggiornamento avviene in tempo discreto. All’istante t = 0 si assegna ad ogni cella un determinato stato e l’insieme di questi stati costituisce la configurazione iniziale dell'automa cellulare. Ad ogni istante temporale (solitamente avanzando t di 1) ogni cella si aggiorna e una nuova generazione, seguendo le regole - predeterminate ed invarianti nel tempo - del sistema, sostituisce la generazione precedente. Il cambiamento di stato di ogni singola cella è determinato solamente dal proprio stato attuale e dagli stati delle celle vicine a quella attuale. 
-\par
-Considerando gli Automi Cellulari bidimensionali, ci sono due metodi considerati per la definizione dei \textit{vicini}:
-\begin{itemize}
-\item Von Neumann, che considera il vicinato l'insieme delle celle in cui è compresa la cella al centro e le celle posizionate a Nord, Est, Sud e Ovest rispetto a quella centrale
-\item Moore, che considera il vicinato l'insieme delle celle del metodo Von Neumann a cui vanno aggiunte le celle posizionate a Nord-Est, Sud-Est, Sud-Ovest e Nord-Ovest rispetto a quella centrale
-\end{itemize}
-\par
-Un caso particolare è \texttt{The Game of Life}, un Automa Cellulare creato sul finire degli anni sessanta dal matematico John Horton Conway con l’intento di produrre un modello semplice dell’idea di Von Neumann della macchina capace di riprodurre se stessa avendo le proprietà della Macchina Universale di Turing. In \texttt{The Game of Life} le celle, interagendo con le otto celle vicine, possono avere due stati: vive o morte.
-\par
-Questo comportamento viene definito attraverso quattro regole:
-\begin{itemize}
-\item ogni cellula che ha meno di due vicini vivi, muore per solitudine
-\item ogni cellula con due o tre vicini vivi, sopravvive alla prossima generazion
-\item ogni cellula con più di tre vicini vivi, muore di sovraffollamento
-\item ogni cellula morta con tre vicini vivi, nasce attraverso la riproduzione
-\end{itemize}
-\par
-Il sistema nasce da una prima generazione chiamata \textit{seme} che può avere qualunque configurazione iniziale. Ad ogni istante temporale le quattro regole vengono applicate a tutte le cellule simultaneamente facendo morire, sopravvivere o nascere la prossima generazione. Il fenomeno che genera l’interesse su \texttt{The Game of Life} è che un processo così semplice e deterministico è capace di creare un comportamento che sta al limite dell’insorgenza del caos, capace di far emergere strutture estremamente complesse che possono avere anche significati spaziali.
+\section{Cellular Automata}
+\label{automi_cellulari}
 
+A Cellular Automaton (abbrev. CA) is a discrete and dynamic mathematical model capable of storing and processing information on a set of rules.
+\par
+The basic idea of CAs is the simulation of complex behaviors deriving from natural systems.
+\par
+The concept was originally described and defined in the 1940s by Stanislaw Ulam and John von Neumann, who use them to simulate natural and biological processes. The interesting part of this process is not only the simulation as an imitation of biological behaviors, but the creation of automatic models that can investigate the true nature of complex systems existing in nature. In this way, cellular automata become a tool to study self-organization and emergence in complex systems.
+\par
+A CA consists of a regular grid of cellss. Each cell can take a finite number \texttt{k} of different states, where \texttt{k} is a number equal or greater than 2. Cells update their states in discrete time. The time step t = 0 is usually considered as the initial step and a given state is assigned to each cell: the set of these states constitutes the initial configuration of the cellular automaton.
+At each time step (usually advancing t of 1) each cell is updated and following the invariant over time system's rules a new generation replaces the previous generation. The state change of each single cell is determined only by its current status and by the states of the cells close to the current one.
+\par
+Regarding the two-dimensional CAs, there are two fundamental types of neighbourhoods that are mainly considered:
+\begin{itemize}
+\item von Neumann neighbourhood, that consists of the central cell, whose condition is to be updated, and the four cells located to the north, south, east and west of the central cell
+\item Moore neighbourhood, that consists of the same cells with the von Neumann neighbourhood together with the four other adjacent cells of the central cell (the north-west, north-east, south-east and south-west cells)
+\end{itemize}
+\par
+The most known CA in the scientific literature is \texttt{the Game of Life}, devised by the John Horton Conway in 1970 with the intention of producing a simple model of von Neumann's idea of the machine capable of reproducing itself and simulate a Turing machine. 
+\par
+In the universe of \texttt{the Game of Life} each cell is in one of two possible states, alive or dead (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:
+\begin{itemize}
+\item Any live cell with fewer than two live neighbours dies, as if by underpopulation
+\item Any live cell with two or three live neighbours lives on to the next generation
+\item Any live cell with more than three live neighbours dies, as if by overpopulation
+\item Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction
+\end{itemize}
+\par
+The initial pattern constitutes the seed of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed; births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. Each generation is a pure function of the preceding one. The rules continue to be applied repeatedly to create further generations. 
 
 \section{Physarum}
 
-Il Physarum Polycephalum\cite{Tsompanas2016} è un mixomiceto melmoso unicellulare appartenente al clade Amoebozoa, comunemente conosciuto come fungo mucillaginoso o muffa melmosa, che prospera in condizioni ambientali favorevoli, in particolare quando si creano le giuste combinazioni di umidità, temperatura e presenza di nutrienti.
+Physarum polycephalum\cite{Tsompanas2016} is a species of order Physarales, subclass Myxogas-tromycetidae, class Myxomecetes, division Myxostelida, commonly known as a true slime mold, that inhabits shady, cool and moist areas. 
 \par
-Se le condizioni non sono adeguate allo sviluppo, il Physarum si comporta come un organismo unicellulare che non dimostra capacità organizzative. In condizioni opportune, si aggrega a creare reti filamentose particolarmente efficienti nella distribuzione fisica.
-\par 
-Un numero sempre maggiore di ricercatori ha condotto studi riguardanti il Physarum per esplorare la sua intelligenza nell'ambito dei problemi di ottimo. Ciò è avvenuto per via di alcuni esperimenti biologici osservati in condizioni di laboratorio in cui la muffa ha esibito capacità straordinarie, ad esempio calcolando la distribuzione più efficiente della rete ferroviaria di Tokyo o esplorando semplici labirinti trovando la via più breve. 
+Physarum thrives in favorable environmental conditions, particularly when the right combinations of humidity, temperature and nutrient presence are created. If the conditions are not adequate for development, Physarum behaves like a single-celled organism that does not demonstrate organizational skills. In appropriate conditions, it joins together to create particularly efficient filamentary nets in physical distribution.
+\subsection{Life cycle}
+For most of the life cycle Physarum is found in the form of a single cytoplasmic mass, called plasmodium, a plurinuclear cell made up of networks of protoplasmic veins that can contain more than 100,000 nuclei. It is during this stage that the organism searches for food. The plasmodium surrounds its food and secretes enzymes to digest it.
 \par
-Per gran parte del ciclo vitale il Physarum si trova sotto forma di un'unica massa citoplasmatica, detta plasmodio, una cellulare plurinucleare costituita da reti di vene protoplasmatiche che arriva a contenere più di 100 000 nuclei.
-Durante questa fase l'organismo cerca cibo e il plasmodio circonda il suo cibo e secerne enzimi per la digestione.
-Se le condizioni ambientali portano il plasmodio ad essiccare durante la nutrizione o la migrazione, il Physarum forma uno sclerozio. Lo sclerozio è fondamentalmente tessuto indurito multinucleato che serve per proteggere il Physarum per lunghi periodi di tempo, per poi ritornare ad una normale funzionalità una volta che le condizioni favorevoli si ripresentano. In tal caso il plasmodio riappare per proseguire la sua ricerca di cibo.
-Come l'approvvigionamento di cibo termina, il plasmodio smette di alimentarsi e inizia la fase riproduttiva. Gambi di sporangi nascono dal plasmodio, è all'interno di queste strutture, che si verifica la meiosi e le spore si formano. Gli sporangi si formano all'aperto in modo che le spore che rilasciano saranno diffuse da correnti di vento.
-Le spore possono rimanere latenti per anni se necessario. Tuttavia, quando le condizioni ambientali sono favorevoli per la crescita, le spore germinano e rilasciano sciami di cellule o flagellate o ameboidi (fase di motilità); le cellule brulicanti poi si fondono per formare un nuovo plasmodio. 
-
-
-
-
-
-NB da verificare: la muffa viene chiamata “intelligente”. In realtà il comportamento della muffa non è intelligente, bensì emergente, e l’emergenza è quello che succede quando un sistema interconnesso di elementi relativamente semplici si autoorganizza dando luogo a un comportamento più intelligente e più adattivo.
-
-NB da verificare: Era parere comune della comunità scientifica presumere l’esistenza di una tipologia di cellula “segna passi”, capace di trovare le risorse e di “comandare” le altre cellule ad aggregarsi. le cellule della Physarum polycephalum potevano essere capaci di aggregarsi seguendo i cambiamenti ambientali e rispondendo alle nuove condizioni senza aver bisogno di una cellula “segna passi”. Così essi svilupparono un modello elegante capace di riprodurle l’organizzazione dell’organismo soltanto attraverso la secrezione da parte di ogni qualunque cellula di una sostanza chimica quando si trova in vicinanza di cibo. La semplice reazione delle altre cellule al ricevimento del segnale chimico era abbastanza per far emergere un comportamento intelligente di organizzazione del gruppo, non possibile da raggiungere dalle singole cellule. 
+If environmental conditions cause the plasmodium to desiccate during feeding or migration, Physarum will form a sclerotium. The sclerotium is basically hardened multinucleated tissue that serves as a dormant stage, protecting Physarum for long periods of time. Once favorable conditions resume, the plasmodium reappears to continue its quest for food.
+\par
+As the food supply runs out, the plasmodium stops feeding and begins its reproductive phase. Stalks of sporangia form from the plasmodium. It is within these structures that meiosis occurs and spores are formed. Sporangia are usually formed in the open so that the spores they release will be spread by wind currents.
+\par
+Spores can remain dormant for years if need be. However, when environmental conditions are favorable for growth, the spores germinate and release either flagellated or amoeboid swarm cells (motile stage). The swarm cells then fuse together to form a new plasmodium. 
+\subsection{State of the art}
+An increasing number of researchers have conducted studies concerning the Physarum to explore its intelligence in the field of optimal problems. This happened due to some biological experiments observed in laboratory conditions in which the Physarum exhibited extraordinary capacities to build efficient networks.
+A first example to analyze is the work of Nakagaki et al. in 2000 (T. Nakagaki, H. Yamada, and A. Toth, “Intelligence: Maze-solving by an amoeboid organism,”). In this experiment Physarum show his intelligent behavior successfully found the shortest path between two selected points in a maze. In another famous experiment\cite{Tero439} operated by Tero et al. in 2010, Physarum built networks with comparable qualities to those of Tokyo rail system.
+\par
+In the recent years, computer scientists have been inspired by biological systems for computational approaches, in particularly with respect to complex optimization and decision problems\cite{Grube2016PhysarumQV}. In this context, Physarum emerged as a model organism which has attracted substantial interest.  The aforementioned experiments require expensive and specialized equipment and some experience on basic biological laboratory techniques. However, the majority of scientists are unfamiliar with such methods. 
+\par
+A commonly proposed alternative alleviating these difficulties is software models that simulate the behavior of the plasmodium and provide similar results. The advantages of a software model over the real Physarum are repeatability and faster productions of results.
+\par
+As slime mould has no brain or any central processing system, its distributed control can be perfectly described by the local rule of CAs. It is noteworthy that CAs are known for emerging global behavior from local interactions. The CA model was firstly proposed by Gunji et al. in 2008 to design high-quality networks. In this model, the optimization process is consistent with the properties of real cells. 
