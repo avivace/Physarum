@@ -37,6 +37,9 @@ public class SimulationManager : MonoBehaviour
     /** Local timer to count 50 steps. */
     int localFiftyStepsTime;
 
+    Vector2Int lastEncapsulatedNS;
+    Vector2Int secondToLastEncapsulatedNS;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -136,11 +139,13 @@ public class SimulationManager : MonoBehaviour
                     Cell cell = mapCells[cellPos.x, cellPos.y];
 
                     //Connect these Ns with the SP
-                    //TODO
+                    //TODO Is this really necessary or they are already connected?
 
                     //Change N into SP
                     cell.type = CellType.S;
                     cell.PM = 100;
+
+                    SetLatestEncapsulatedNS(cellPos);
                 }
             }
 
@@ -149,10 +154,19 @@ public class SimulationManager : MonoBehaviour
                 if (t == 5000)
                 {
                     //Change all NS and SP as NS
-                    //TODO
+                    for (int i = 0; i < mapSizeX; i++)
+                    {
+                        for (int j = 0; j < mapSizeY; j++)
+                        {
+                            if (mapCells[i, j].type == CellType.S)
+                            {
+                                mapCells[i, j].type = CellType.N;
+                            }
+                        }
+                    }
 
                     //Il penultimo NS incapsulato diventa il nuovo SP
-                    //TODO
+                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
                 }
                 
                 StartFiftyStepsPhase();
@@ -168,6 +182,21 @@ public class SimulationManager : MonoBehaviour
         t++;
     }
 
+    private Vector2Int GetSecondToLastCoveredNS()
+    {
+        return secondToLastEncapsulatedNS;
+    }
+
+    private void SetLatestEncapsulatedNS(Vector2Int cellPos)
+    {
+        if(lastEncapsulatedNS != null)
+        {
+            secondToLastEncapsulatedNS = lastEncapsulatedNS;
+        }
+
+        lastEncapsulatedNS = cellPos;
+    }
+
     private void StartFiftyStepsPhase()
     {
         fiftyStepsPhase = true;
@@ -179,11 +208,11 @@ public class SimulationManager : MonoBehaviour
     {
         Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
 
-        //Calcolo PM
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
             {
+                //Calcolo PM
                 float[] PA = new float[8];
                 float[] values = new float[]{
                     GetCHA(i - 1, j - 1),
@@ -196,7 +225,7 @@ public class SimulationManager : MonoBehaviour
                     GetCHA(i + 1, j),
                     GetCHA(i + 1, j + 1) };
 
-                PA[0] = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values));
+                PA[0] = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values)); //TODO Controllare tutta sta roba
                 PA[1] = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values));
                 PA[2] = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values));
                 PA[3] = (CalculatePA(GetCHA(i, j + 1), GetCHA(i, j - 1), values));
@@ -205,32 +234,26 @@ public class SimulationManager : MonoBehaviour
                 PA[6] = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values));
                 PA[7] = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values));
 
-                float PMvNN = ((1 + PA[0]) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) + (
-                     (1 + PA[1]) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) + (
-                     (1 + PA[2]) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) + (
-                     (1 + PA[3]) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j));
-                float PMeMN = ((1 + PA[4]) * GetPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j)) + (
-                     (1 + PA[5]) * GetPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j)) + (
-                     (1 + PA[6]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j)) + (
-                     (1 + PA[7]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
+                float PMvNN = ((1 + PA[0]) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[1]) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[2]) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[3]) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j));
+                float PMeMN = ((1 + PA[4]) * GetPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j))
+                    + ((1 + PA[5]) * GetPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[6]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[7]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
                 newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
-            }
-        }
 
-        //Calcolo CHA
-        for (int i = 0; i < mapSizeX; i++)
-        {
-            for (int j = 0; j < mapSizeY; j++)
-            {
-                float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j)) + (
-                      (GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
-                      (GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j)) + (
-                      (GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
-                float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
-                          (GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j)) + (
-                          (GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j)) + (
-                          (GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
+                //Calcolo CHA
+                float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j)) 
+                    + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j)) 
+                    + ((GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j)) 
+                    + ((GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
+                float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j)) 
+                    + ((GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j)) 
+                    + ((GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j)) 
+                    + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
                 newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
             }
         }
@@ -344,11 +367,15 @@ public class SimulationManager : MonoBehaviour
 
                 if (type == CellType.U)
                 {
-                    SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
+                    SetTileColour(new Color(1, 0, 0, 1), new Vector3Int(i, j, 0));
                 }
                 else if(type == CellType.S)
                 {
-                    SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
+                    SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
+                }
+                else if (type == CellType.N)
+                {
+                    SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
                 }
                 else
                 {

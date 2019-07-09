@@ -334,5 +334,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b161787691ed904f98a27dc689c108b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageAsset: {fileID: 4900000, guid: a9c8f687dbc5337499d3c683afa4a10a, type: 3}
+  imageAsset: {fileID: 4900000, guid: 25f1df2bb9cd85748afce52b2f51af71, type: 3}
   tile: {fileID: 11400000, guid: 8dd9f982876ecb341bf31f92d257f0c4, type: 2}
