@@ -336,3 +336,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageAsset: {fileID: 4900000, guid: 25f1df2bb9cd85748afce52b2f51af71, type: 3}
   tile: {fileID: 11400000, guid: 8dd9f982876ecb341bf31f92d257f0c4, type: 2}
+  payload:
+    value1: 
+    value2: 
