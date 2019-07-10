@@ -16,8 +16,11 @@ public class SimulationManager : MonoBehaviour
     int mapSizeY;
 
     public Cell[,] mapCells;
+
     
     public Payload payload;
+
+    public Cell[,] copyOfInitialCells;
 
     float CON = 1;
     float PAP = 0.3f;  
@@ -95,7 +98,7 @@ public class SimulationManager : MonoBehaviour
             {
                 Color col = tex.GetPixel(i, j);
 
-                if(col.Equals(Color.white)) 
+                if (col.Equals(Color.white))
                 {
                     mapCells[i, j] = new Cell(true, 0, 0, false, CellType.A);
                 }
@@ -113,8 +116,18 @@ public class SimulationManager : MonoBehaviour
                 }
             }
         }
+        
+        copyOfInitialCells = CreateNewCellMap(mapSizeX, mapSizeY);
+        for (int i = 0; i < mapSizeX; i++)
+        {
+            for (int j = 0; j < mapSizeY; j++)
+            {
+                copyOfInitialCells[i, j].PM = mapCells[i, j].PM;
+                copyOfInitialCells[i, j].CHA = mapCells[i, j].CHA;
+            }
+        }
     }
-
+        
     /** Execution of the simulation. */
     void Simulation()
     {
@@ -122,9 +135,13 @@ public class SimulationManager : MonoBehaviour
         if(fiftyStepsPhase)
         {
             if (localFiftyStepsTime < 50)
+            {
                 ApplyDiffusionEquations();
+            }
             else
+            {
                 fiftyStepsPhase = false;
+            }
             localFiftyStepsTime++;
         } else
         {
@@ -205,6 +222,22 @@ public class SimulationManager : MonoBehaviour
         lastEncapsulatedNS = cellPos;
     }
 
+    float InitialPM(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+            return 0;
+        else
+            return copyOfInitialCells[i, j].PM;
+    }
+
+    float InitialCHA(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+            return 0;
+        else
+            return copyOfInitialCells[i, j].CHA;
+    }
+
     private void StartFiftyStepsPhase()
     {
         fiftyStepsPhase = true;
@@ -233,23 +266,23 @@ public class SimulationManager : MonoBehaviour
                     GetCHA(i + 1, j),
                     GetCHA(i + 1, j + 1) };
 
-                PA[0] = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values)); //TODO Controllare tutta sta roba
-                PA[1] = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values));
-                PA[2] = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values));
-                PA[3] = (CalculatePA(GetCHA(i, j + 1), GetCHA(i, j - 1), values));
-                PA[4] = (CalculatePA(GetCHA(i - 1, j - 1), GetCHA(i + 1, j + 1), values));
-                PA[5] = (CalculatePA(GetCHA(i + 1, j - 1), GetCHA(i - 1, j + 1), values));
-                PA[6] = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values));
-                PA[7] = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values));
+                PA[0] = (CalculatePA(InitialCHA(i - 1, j), InitialCHA(i + 1, j), values)); //TODO Controllare tutta sta roba
+                PA[1] = (CalculatePA(InitialCHA(i, j - 1), InitialCHA(i, j + 1), values));
+                PA[2] = (CalculatePA(InitialCHA(i + 1, j), InitialCHA(i - 1, j), values));
+                PA[3] = (CalculatePA(InitialCHA(i, j + 1), InitialCHA(i, j - 1), values));
+                PA[4] = (CalculatePA(InitialCHA(i - 1, j - 1), InitialCHA(i + 1, j + 1), values));
+                PA[5] = (CalculatePA(InitialCHA(i + 1, j - 1), InitialCHA(i - 1, j + 1), values));
+                PA[6] = (CalculatePA(InitialCHA(i - 1, j + 1), InitialCHA(i + 1, j - 1), values));
+                PA[7] = (CalculatePA(InitialCHA(i + 1, j + 1), InitialCHA(i - 1, j - 1), values));
 
-                float PMvNN = ((1 + PA[0]) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) 
-                    + ((1 + PA[1]) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) 
-                    + ((1 + PA[2]) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) 
-                    + ((1 + PA[3]) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j));
-                float PMeMN = ((1 + PA[4]) * GetPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j))
-                    + ((1 + PA[5]) * GetPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j)) 
-                    + ((1 + PA[6]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j)) 
-                    + ((1 + PA[7]) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
+                float PMvNN = ((1 + PA[0]) * InitialPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[1]) * InitialPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[2]) * InitialPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[3]) * InitialPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j));
+                float PMeMN = ((1 + PA[4]) * InitialPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j))
+                    + ((1 + PA[5]) * InitialPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[6]) * InitialPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j)) 
+                    + ((1 + PA[7]) * InitialPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
                 newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
 

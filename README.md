@@ -10,7 +10,9 @@ Clone the project locally: `git clone git@github.com:avivace/Physarum.git`
 
 ### Unity
 
-Be sure you are on Unity 2018.3.14f1 (64-bit). For some reasons, the WebGL build doesn't work on Linux.
+Be sure you are on Unity 2018.3.14f1 (64-bit).
+
+> Use windows to produce the webgl build, since on linux it doesn't work, reporting `il2cpp/build/il2cpp.exe did not run properly!`.
 
 **Unity** -> **Open Project** -> **Select the "UnityProject"** folder inside the cloned repository. Once the project import finished, drag and drop the "SampleScene" from the assets folder (Project Pane) into the Hyerarchy pane. Double click on "SampleScene" then you can run the project (Play).
 
