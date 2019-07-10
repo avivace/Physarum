@@ -16,7 +16,9 @@ public class SimulationManager : MonoBehaviour
     int mapSizeY;
 
     public Cell[,] mapCells;
-     
+    
+    public Payload payload;
+
     float CON = 1;
     float PAP = 0.3f;  
     float PMP1 = 0.05f;
@@ -40,9 +42,15 @@ public class SimulationManager : MonoBehaviour
     Vector2Int lastEncapsulatedNS;
     Vector2Int secondToLastEncapsulatedNS;
 
+    void payloadHandler(){
+        string jsonString = "{\"value1\":\"1\"}";
+        Payload payload = JsonUtility.FromJson<Payload>(jsonString);
+        Debug.Log(payload.value2);
+    }
+
     // Start is called before the first frame update
     void Start()
-    {
+    {   
         Initialization();
     }
 
