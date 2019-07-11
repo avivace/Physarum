@@ -21,14 +21,12 @@ public class SimulationManager : MonoBehaviour
 
     public Payload payload;
 
-    float CON = 1;
-    float PAP = 0.3f;  
-    float PMP1 = 0.05f;
-    float PMP2 = 0.025f;
-    float PMP3 = 1;
+    float CON = 0.95f;
+    float PAP = 0.7f;  
+    float PMP1 = 0.08f;
+    float PMP2 = 0.01f;
     float CAP1 = 0.05f;
-    float CAP2 = 0.025f;
-    float CAP3 = 1;
+    float CAP2 = 0.01f;
     float ThPM = 0.2f;
 
     int t = 0;
