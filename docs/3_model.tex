@@ -1,7 +1,7 @@
 The behaviour of slime mould during the laboratory experiments have been simulated by a model based on Cellular Automata. Using CAs can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
 In particular, the model is based on the representation of diffusion of chemical attractants by nutrient sources (NSs) and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
 \par
-All of the biological studies indicated above like solving a maze and designing a transport network have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps:
+All of the biological studies indicated above, like solving a maze and designing a transport network, have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps:
 \begin{itemize}
 \item First step: the plasmodium fully searches the given space
 \item Second step: some sources of attractant or repellent stimuli are given to the plasmodium that is fully and homogeneously spreading in the space
@@ -12,7 +12,7 @@ The model manages to adequately approximate the tubular network designed by the 
 
 In the proposed CA model \cite{Tsompanas2016} the plasmodium is first starved and then introduced to an environment with some NSs located at characteristic points. The plasmodium explores the available area, encapsulates the NSs and creates a tubular network that connects all these NSs by a nature-inspired, cost effective and risk avoiding manner.
 \par
-The model imitates the entire area that is used in a laboratory experiment using the plasmodium of Physarum. The entire area can be defined, without loss of generality, as a square grid divided into identical square cells that constitute a set defined as E. This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
+The model imitates the entire area that it is used in a laboratory experiment using the plasmodium of Physarum. The entire area can be defined, without loss of generality, as a square grid divided into identical square cells that constitutes a set defined as E. This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
 Also some cells that are included in the available area set of cells, represent the oat flakes that are considered as NSs for the plasmodium (a set of cells defined as N) and one cell represents the place where the plasmodium is initially introduced to the
 experimental environment or the SP (a set of one cell defined as S). 
 The neighbourhood type used for the proposed model is Moore neighbourhood and the state of the $C_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as \[ST^t_{(i, j)} = [AA_{(i, j)}, PM^t_{(i, j)}, CHA^t_{(i, j)}, TE^t_{(i, j)}]\] where:
