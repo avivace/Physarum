@@ -16,11 +16,10 @@ public class SimulationManager : MonoBehaviour
     int mapSizeY;
 
     public Cell[,] mapCells;
+    public List<Vector2Int> Ss = new List<Vector2Int>();
+    public List<Vector2Int> Ns = new List<Vector2Int>();
 
-    
     public Payload payload;
-
-    //OLD public Cell[,] copyOfInitialCells;
 
     float CON = 1;
     float PAP = 0.3f;  
@@ -73,7 +72,7 @@ public class SimulationManager : MonoBehaviour
         LoadTextureMap();
         InitCellMap();
         t = 0;
-        StartFiftyStepsPhase();
+        ResetFiftyStepsPhase();
         simulationRunning = true;
         DrawTiles();
     }
@@ -109,23 +108,15 @@ public class SimulationManager : MonoBehaviour
                 else if (col.Equals(Color.black))
                 {
                     mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
+                    Ss.Add(new Vector2Int(i, j));
                 }
                 else if (col.Equals(new Color(1,1,0,1))) //Yellow
                 {
                     mapCells[i, j] = new Cell(true, 0, 100, false, CellType.N);
+                    Ns.Add(new Vector2Int(i, j));
                 }
             }
         }
-        
-        /*OLD copyOfInitialCells = CreateNewCellMap(mapSizeX, mapSizeY);
-        for (int i = 0; i < mapSizeX; i++)
-        {
-            for (int j = 0; j < mapSizeY; j++)
-            {
-                copyOfInitialCells[i, j].PM = mapCells[i, j].PM;
-                copyOfInitialCells[i, j].CHA = mapCells[i, j].CHA;
-            }
-        }*/
     }
         
     /** Execution of the simulation. */
@@ -134,44 +125,33 @@ public class SimulationManager : MonoBehaviour
         Debug.Log("Simulation running "+t+" "+ localFiftyStepsTime+" "+ fiftyStepsPhase);
         if(fiftyStepsPhase)
         {
-            if (localFiftyStepsTime < 50)
-            {
-                ApplyDiffusionEquations();
-            }
-            else
-            {
-                fiftyStepsPhase = false;
-            }
-            localFiftyStepsTime++;
-        } else
+            ExecuteFiftyStepsPhase();
+        }
+
+        if(!fiftyStepsPhase)
         {
-            List<Vector2Int> coveredNs = new List<Vector2Int>(); //TODO Questo può essere velocizzato ricordandoci dove sono i vari N (così non bisogna eseguire il loop dell'intera mappa)
-            for (int i = 0; i < mapSizeX; i++)
+            Debug.Log("Other stuff applied");
+            for (int k = Ns.Count - 1; k >= 0; k--)
             {
-                for (int j = 0; j < mapSizeY; j++)
-                {
-                    if (mapCells[i, j].type == CellType.N && mapCells[i, j].PM >= ThPM)
-                    {
-                        coveredNs.Add(new Vector2Int(i, j));
-                    }
-                }
-            }
+                Vector2Int v = Ns[k];
+                int i = v.x;
+                int j = v.y;
 
-            if (coveredNs.Count > 0)
-            {
-                foreach (Vector2Int cellPos in coveredNs)
-                {
-                    Cell cell = mapCells[cellPos.x, cellPos.y];
+                Cell cell = mapCells[i, j];
 
+                if (cell.type == CellType.N && cell.PM >= ThPM)
+                {
                     //Connect these Ns with the SP
-                    //TODO 
+                    ConnectNToNearestS(i, j);
 
                     //Change NS into SP
                     cell.type = CellType.S;
                     cell.PM = 100;
-                    cell.CHA = 0; //TODO E' solo qui che va oppure anche nella fiftyStepsPhase?
+                    cell.CHA = 0;
+                    Ns.RemoveAt(k);
+                    Ss.Add(v);
 
-                    SetLatestEncapsulatedNS(cellPos);
+                    SetLatestEncapsulatedNS(v);
                 }
             }
 
@@ -179,29 +159,36 @@ public class SimulationManager : MonoBehaviour
             {
                 if (t == 5000)
                 {
+                    Debug.Log("We reached 5000, changing SP in NS");
                     //Change all NS and SP as NS
-                    for (int i = 0; i < mapSizeX; i++) //TODO Anche questo può essere velocizzato ricordandoci tutti i NS e SP
+                    for (int k = Ss.Count - 1; k >= 0; k--)
                     {
-                        for (int j = 0; j < mapSizeY; j++)
-                        {
-                            if (mapCells[i, j].type == CellType.S)
-                            {
-                                mapCells[i, j].type = CellType.N;
-                                mapCells[i, j].CHA = 100;
-                            }
-                        }
+                        Vector2Int v = Ss[k];
+                        int i = v.x;
+                        int j = v.y;
+
+                        Cell cell = mapCells[i, j];
+
+                        cell.type = CellType.N;
+                        cell.CHA = 100;
+                        Ss.RemoveAt(k);
+                        Ns.Add(v);
                     }
 
                     //Il penultimo NS incapsulato diventa il nuovo SP
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = 100;
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
+                    Ns.Remove(GetSecondToLastCoveredNS());
+                    Ss.Add(GetSecondToLastCoveredNS());
                 }
                 
-                StartFiftyStepsPhase();
+                ResetFiftyStepsPhase();
+                ExecuteFiftyStepsPhase();
             } else if(t < 10000)
             {
-                StartFiftyStepsPhase();
+                ResetFiftyStepsPhase();
+                ExecuteFiftyStepsPhase();
             } else
             {
                 simulationRunning = false;
@@ -209,6 +196,58 @@ public class SimulationManager : MonoBehaviour
         }
 
         t++;
+    }
+
+    void ExecuteFiftyStepsPhase()
+    {
+        if (localFiftyStepsTime < 50)
+        {
+            ApplyDiffusionEquations();
+            localFiftyStepsTime++;
+        }
+        else
+        {
+            fiftyStepsPhase = false;
+        }
+    }
+
+    private void ConnectNToNearestS(int i, int j)
+    {
+        mapCells[i, j].TE = true;
+
+        if (mapCells[i, j].type != CellType.S)
+        {
+            int x;
+            int y;
+
+            GetHighestNeighbourPM(i, j, out x, out y);
+
+            ConnectNToNearestS(x, y);
+        }
+    }
+
+    private float GetHighestNeighbourPM(int i, int j, out int x, out int y)
+    {
+        x = -1;
+        y = -1;
+
+        float highestPM = float.MinValue;
+
+        for (int a = i - 1; a < i + 2; a++)
+        {
+            for (int b = j - 1; b < j + 2; b++)
+            {
+                float PM = GetPM(a, b);
+                if (PM > highestPM)
+                {
+                    highestPM = PM;
+                    x = a;
+                    y = b;
+                }
+            }
+        }
+
+        return highestPM;
     }
 
     private Vector2Int GetSecondToLastCoveredNS()
@@ -226,23 +265,7 @@ public class SimulationManager : MonoBehaviour
         lastEncapsulatedNS = cellPos;
     }
 
-    /* OLD float InitialPM(int i, int j)
-    {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
-            return 0;
-        else
-            return copyOfInitialCells[i, j].PM;
-    }
-
-    float InitialCHA(int i, int j)
-    {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
-            return 0;
-        else
-            return copyOfInitialCells[i, j].CHA;
-    }*/
-
-    private void StartFiftyStepsPhase()
+    private void ResetFiftyStepsPhase()
     {
         fiftyStepsPhase = true;
         localFiftyStepsTime = 0;
