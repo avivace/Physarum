@@ -30,3 +30,5 @@ TODO
 
 - [WebGL: Interacting with browser scripting](https://docs.unity3d.com/2018.4/Documentation/Manual/webgl-interactingwithbrowserscripting.html)
 - [JsonUtility.FromJson](https://docs.unity3d.com/ScriptReference/JsonUtility.FromJson.html)
+- [Application.ExternalCall](https://docs.unity3d.com/540/Documentation/ScriptReference/Application.ExternalCall.html)
+- [Application.ExternalEval](https://docs.unity3d.com/540/Documentation/ScriptReference/Application.ExternalEval.html)

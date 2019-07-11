@@ -48,11 +48,13 @@ public class SimulationManager : MonoBehaviour
         string jsonString = "{\"value1\":\"1\"}";
         Payload payload = JsonUtility.FromJson<Payload>(jsonString);
         Debug.Log(payload.value2);
+        
     }
 
     // Start is called before the first frame update
     void Start()
     {   
+        Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         Initialization();
     }
 
