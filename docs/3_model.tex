@@ -15,10 +15,157 @@ In the proposed CA model \cite{Tsompanas2016} the plasmodium is first starved an
 The model imitates the entire area that it is used in a laboratory experiment using the plasmodium of Physarum. The entire area can be defined, without loss of generality, as a square grid divided into identical square cells that constitutes a set defined as E. This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
 Also some cells that are included in the available area set of cells, represent the oat flakes that are considered as NSs for the plasmodium (a set of cells defined as N) and one cell represents the place where the plasmodium is initially introduced to the
 experimental environment or the SP (a set of one cell defined as S). 
-The neighbourhood type used for the proposed model is Moore neighbourhood and the state of the $C_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as \[ST^t_{(i, j)} = [AA_{(i, j)}, PM^t_{(i, j)}, CHA^t_{(i, j)}, TE^t_{(i, j)}]\] where:
+The neighbourhood type used for the proposed model is Moore neighbourhood and the state of the $c_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as:
+\begin{align}
+ST^t_{(i, j)} = [AA_{(i, j)}, PM^t_{(i, j)}, CHA^t_{(i, j)}, TE^t_{(i, j)}]
+\end{align}
+where:
+
 \begin{itemize}
-\item AA stands for Available Area
-\item PM stands for Physarum Mass, meaning a percentage of the cytoplasm located on a specific cell
-\item CHA stands for CHemoAttractant, substances that are located on a specific CA cell. It is also represented by a percentage
-\item TE stands for Tube Existence and represents the participation of a cell in the tubular network inside the body of the slime mould
+\item $AA$ stands for Available Area for the plasmodium to explore. It assumes a boolean value:  	
+\[AA_{(i, j)}=\begin{cases} \mbox{True}, & \forall i, j: c_{(i,j)} \in A \\ \mbox{False}, &  \forall i, j: c_{(i,j)} \in U\end{cases}\]
+\item $PM$ stands for Physarum Mass, meaning a percentage of the cytoplasm located on a specific cell
+\item $CHA$ stands for CHemoAttractant, substances that are located on a specific CA cell. It is also represented by a percentage
+\item $TE$ stands for Tube Existence and represents the participation of a cell in the tubular network inside the body of the slime mould
 \end{itemize}
+
+The initial values for parameters $PM$ and $CHA$ are defined as:
+\begin{align}
+PM^t_{(i, j)}=\begin{cases} 100, & \forall i, j: c_{(i,j)} \in S \\ 0, & \mbox{else}\end{cases}
+\end{align}
+\begin{align}
+CHA^t_{(i, j)}=\begin{cases} 100, & \forall i, j: c_{(i,j)} \in N \\ 0, & \mbox{else}\end{cases}
+\end{align}
+
+Taking into consideration the assumptions made for the way the Physarum develops through an available area, which were confirmed by laboratory experiments, it is determined that the plasmodium is "amplified" at a NS and then searches for other NSs, considering the recently encapsulated NS as a new SP. Also, when a NS is covered by the plasmodium, the generation of chemoattractant substances is ceased.
+In the proposed model the NSs are turned into SPs when the plasmodium encapsulates them with a sufficient amount of mass. Furthermore, it is realized that the plasmodium is propagating away from the most recently captured NS by taking a semi-circular form. 
+\par
+The model is analyzed in the following flowchart: TODO inserire flowchart.
+\par
+The initialization step includes the definition of parameters that have a great impact on the results of the model. These parameters include the length of the CA grid, the diffusion parameters for $PM$ (PMP1, PMP2), the minimum percentage of $CHA$ substances detected by the plasmodium (CAP1, CAP2), the consumption percentage of the $CHA$ substances by the plasmodium (CON - Consumption), the attraction of the slime mould by chemoattractant substances (PA - Physarum Attraction) and the threshold of "Physarum Mass" that encapsulates a NS (ThPM).
+\par
+After the initialization and for 50 time steps, diffusion equations are used to calculate the values for $CHA$ and $PM$ for every cell in the grid. Every cell uses the values of its neighbours at time step t to calculate the value of the $CHA$ and $PM$ parameter for time step t + 1. 
+\par
+The contribution to the diffusion of the Physarum Mass of the von Neumann neighbours ($PMvNN$) of the $c_{(i,j)}$ cell is defined as:
+\begin{equation}
+\begin{split}
+PMvNN^t_{(i, j)} = 
+(1 + PA^t_{(i, j),(i-1, j}) \times PM^t_{(i-1, j)} - AA_{(i-1, j)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i, j-1}) \times PM^t_{(i, j-1)} - AA_{(i, j-1)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i+1, j}) \times PM^t_{(i+1, j)} - AA_{(i+1, j)} \times PM^t_{(i, j)}  +
+\\(1 + PA^t_{(i, j),(i, j+1}) \times PM^t_{(i, j+1)} - AA_{(i, j+1)} \times PM^t_{(i, j)}
+\end{split}
+\end{equation}
+Moreover, the contribution to the diffusion of the Physarum Mass of the exclusively Moore neighbours ($PMeMN$) of the $c_{(i,j)}$ cell is defined as:
+\begin{equation}
+\begin{split}
+PMeMN^t_{(i, j)} = 
+(1 + PA^t_{(i, j),(i-1, j-1}) \times PM^t_{(i-1, j-1)} - AA_{(i-1, j-1)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i+1, j-1}) \times PM^t_{(i+1, j-1)} - AA_{(i+1, j-1)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i-1, j+1}) \times PM^t_{(i-1, j+1)} - AA_{(i-1, j+1)} \times PM^t_{(i, j)}  +
+\\(1 + PA^t_{(i, j),(i+1, j+1}) \times PM^t_{(i+1, j+1)} - AA_{(i+1, j+1)} \times PM^t_{(i, j)}
+\end{split}
+\end{equation}
+
+The total $PM$ for a cell $c_{(i,j)}$ for time t + 1 is a sum of the contributions of its neighbours with appropriate weights and is defined as:
+\begin{equation}
+PM^{t+1}_{(i, j)} = PM^t_{(i, j)} + PMP1 \times [PMvNN^t_{(i, j)} + PMP2 \times PMeMN^t_{(i, j)}]
+\end{equation}
+
+If a neighbouring cell is representing unavailable area, there is no contribution to the diffusion. 
+\par
+The parameter $PA_{(i, j),(k,l)}$ represents the attraction of the $PM$ in cell $c_{(i,j)}$ towards the direction of an adjacent cell $c_{(k,l)}$ ,modeling the attraction of the organism towards the higher gradient of chemoattractants. 
+\par
+It is equal to a predefined constant (PAP) for the neighbour with the higher value of chemoattractant and equals to the negative value of the parameter PAP for the neighbour across the neighbour with the higher value of chemoattractant. For all the other neighbours the parameter PAP is equal to zero. The $PA$ parameter for cell $c_{(i,j)}$ towards its north neighbour $c_{(i-1,j)}$ is defined as:
+\begin{equation}
+PA^t_{(i, j),(k,l)}=
+\begin{cases} 
+PAP, & if CHA_{(i-1, j)} = MAX(CHA_{(k, l)} \forall k, l: i - 1 \leq k \leq i + 1 \\and j - 1 \leq l \leq j+1) \\ 
+- PAP, & if CHA_{(i-1, j)} = MAX(CHA_{(k, l)} \forall k, l: i - 1 \leq k \leq i + 1 \\and j - 1 \leq l \leq j+1) \\ 
+0, & \mbox{else}
+\end{cases}
+\end{equation}
+
+\par
+The contribution to the diffusion of the chemoattractants for the plasmodium of the von Neumann neighbours ($CHAvNN$) of the $c_{(i,j)}$) cell is defined as:
+\begin{equation}
+\begin{split}
+CHAvNN^t_{(i, j)} = 
+(CHA^t_{(i-1, j)}) - AA_{(i-1, j)} \times CHA^t_{(i, j)} +
+\\(CHA^t_{(i, j-1)}) - AA_{(i, j-1)} \times CHA^t_{(i, j)} +
+\\(CHA^t_{(i+1, j)}) - AA_{(i+1, j)} \times CHA^t_{(i, j)}  +
+\\(CHA^t_{(i, j+1)} - AA_{(i, j+1)} \times CHA^t_{(i, j)}
+\end{split}
+\end{equation}
+
+Moreover, the contribution to the diffusion of the chemoattractants for the plasmodium of the exclusively Moore neighbours ($CHAeMN$) of the $c_{(i,j)}$ cell is defined as:
+
+\begin{equation}
+\begin{split}
+CHAeMN^t_{(i, j)} = 
+(CHA^t_{(i-1, j-1)}) - AA_{(i-1, j-1)} \times CHA^t_{(i, j)} +
+\\(CHA^t_{(i+1, j-1)}) - AA_{(i+1, j-1)} \times CHA^t_{(i, j)} +
+\\(CHA^t_{(i-1, j+1)}) - AA_{(i-1, j+1)} \times CHA^t_{(i, j)}  +
+\\(CHA^t_{(i+1, j+1)}) - AA_{(i+1, j+1)} \times PM^t_{(i, j)}
+\end{split}
+\end{equation}
+
+As a result, the total $CHA$ for a $c_{(i,j)}$ cell for time t + 1 is defined as:
+\begin{equation}
+CHA^{t+1}_{(i, j)} = CON \times {CHA^t_{(i, j)} + CAP1 \times (CHAvNN^t_{(i, j)} + CAP \times CHAeMN^t_{(i, j)})}
+\end{equation}
+
+\par
+The multiplication with the parameter CON provides the imitation of the consumption of the chemoattractant substances by the plasmodium.
+\par
+Also in this case as in the diffusion of $PM$, if a neighbouring cell is representing unavailable area there is no contribution to the diffusion.
+\par
+After every 50 time steps of calculating the diffusion equations in the available area, if any NS is covered with over the predefined PM (ThPM) it is connected with a SP with a Tube that follows the gradient of the PM to the higher value. More specifically, starting from the cell representing the encapsulated NS, the adjacent cell with the higher PM value is selected to participate to the tubular network. Then the cell selected to participate to the tubular network selects the next cell from its neighbours with the higher PM value to participate to the tubular network and so on, until a SP is reached.
+Finally, this NS will be transformed to a SP (PM = 100) and will act as a SP for the remaining time steps as illustrated in the following equations:
+
+\begin{equation}
+PM^t_{(i, j),(k,l)}=
+\begin{cases} 
+0, & \forall i, j: c_{(i,j)} \in U \\ 
+100, & \forall i, j: c_{(i,j)} \in S \\ 
+100, & \forall i, j: c_{(i,j)} \in N and  PM^t_{(i, j)} \geq ThPM 
+\end{cases}
+\end{equation}
+
+\begin{align}
+CHA^t_{(i, j),(k,l)}=
+\begin{cases} 
+100, & \forall i, j: c_{(i,j)} \in N and PM^t_{(i, j)} < ThPM\\ 
+0, & \forall i, j: c_{(i,j)} \in N and  PM^t_{(i, j)} \geq ThPM 
+\end{cases}
+\end{align}
+
+If more NSs are covered with the predefined PM, they are connected to the nearest SP and they are all transformed to SPs.
+
+
+
+
+
+
+
+
+\par\par
+
+
+DA INSERIRE ?: A logical question that comes to mind is why procedures (2) to (5) are executed
+for a second time. As identified in some laboratory experiments [44], after a seemingly
+random and not certain amount of time the plasmodium seems to change the
+formation of its protoplasmic networks and abandon some NSs. Then it seems to
+regenerate in a manner and re-colonize some NSs, meaning it forms new tubular
+edges that connect NSs that were already connected to other NSs. As the CA model
+is designed without the use of probabilistic equations, it uses a second starting point
+to regenerate and explore the available area once more. That point will be a point of
+interest (NS), which is empirically chosen to be away from the initial SP
+
+DA INSERIRE ?: The second to last NS to
+be encapsulated was chosen, based on the fact that it is far enough from the initial
+SP and it is less likely to be a point of interest surrounded by unavailable area that
+would cause difficulties for the growth of the plasmodium. Finally, the time period
+of 50 time steps for the diffusion equations, was also empirically chosen, although
+the alternation of that will cause little difference to the results of the model.
+
