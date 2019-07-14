@@ -52,7 +52,7 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
+        //Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         Initialization();
     }
 
@@ -62,7 +62,7 @@ public class SimulationManager : MonoBehaviour
         if (simulationRunning)
         {
             Simulation();
-            UpdateTiles();
+            UpdateTiles(); 
         }
     }
 
@@ -294,14 +294,14 @@ public class SimulationManager : MonoBehaviour
                     GetCHA(i + 1, j),
                     GetCHA(i + 1, j + 1) };
 
-                    float PA_WEST = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values));
-                    float PA_SOUTH = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values));
-                    float PA_EAST = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values));
-                    float PA_NORTH = (CalculatePA(GetCHA(i, j + 1), GetCHA(i, j - 1), values));
-                    float PA_SOUTHWEST = (CalculatePA(GetCHA(i - 1, j - 1), GetCHA(i + 1, j + 1), values));
-                    float PA_SOUTHEAST = (CalculatePA(GetCHA(i + 1, j - 1), GetCHA(i - 1, j + 1), values));
-                    float PA_NORTHWEST = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values));
-                    float PA_NORTHEAST = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values));
+                    float PA_WEST = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values, i, j));
+                    float PA_SOUTH = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values, i, j));
+                    float PA_EAST = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values, i, j));
+                    float PA_NORTH = (CalculatePA(GetCHA(i, j + 1), GetCHA(i, j - 1), values, i, j));
+                    float PA_SOUTHWEST = (CalculatePA(GetCHA(i - 1, j - 1), GetCHA(i + 1, j + 1), values, i, j));
+                    float PA_SOUTHEAST = (CalculatePA(GetCHA(i + 1, j - 1), GetCHA(i - 1, j + 1), values, i, j));
+                    float PA_NORTHWEST = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values, i, j));
+                    float PA_NORTHEAST = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values, i, j));
 
                     float PMvNN = ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j))
                         + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j))
@@ -313,6 +313,28 @@ public class SimulationManager : MonoBehaviour
                         + ((1 + PA_NORTHEAST) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
+
+                    if(newMap[i, j].PM > 100)
+                    {
+                        newMap[i, j].PM = 100;
+                    }
+
+                    /*if(i == 4 && j == 0)
+                    {
+                        Debug.Log("C AT " + i + " " + j + " " + newMap[i, j].PM+" "+ PMvNN+" "+ PMeMN+" !! "
+                            + ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j))+" "
+                            + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j))+" "
+                            + ((1 + PA_EAST) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j))+" "
+                            + ((1 + PA_NORTH) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j)));
+                    }
+                    if (i == 4 && j == 8)
+                    {
+                        Debug.Log("C AT " + i + " " + j + " " + newMap[i, j].PM + " " + PMvNN + " " + PMeMN + " !! "
+                           + ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) + " "
+                           + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) + " "
+                           + ((1 + PA_EAST) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) + " "
+                           + ((1 + PA_NORTH) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j)));
+                    }*/
 
                     /*DEBUG ONLY if(mapCells[i, j].type == CellType.N)
                     {
@@ -335,6 +357,11 @@ public class SimulationManager : MonoBehaviour
                         + ((GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j))
                         + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
                     newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
+
+                    if (newMap[i, j].CHA > 100)
+                    {
+                        newMap[i, j].CHA = 100;
+                    }
                 } else
                 {
                     newMap[i, j].CHA = mapCells[i, j].CHA;
@@ -397,11 +424,14 @@ public class SimulationManager : MonoBehaviour
             return mapCells[i, j].AA;
     }
 
-    float CalculatePA(float coord_n, float coord_o, float[] values) {
-        float max_value = GetMax(values);
-        if (coord_n == max_value)
+    float CalculatePA(float cha1, float oppositeCHA, float[] values, int i , int j) {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+            return 0;
+
+        float max_value = GetMax(values); 
+        if (cha1 == max_value)
             return PAP;
-        else if (coord_o == max_value)
+        else if (oppositeCHA == max_value)
             return -PAP;
         else
             return 0;
@@ -430,7 +460,7 @@ public class SimulationManager : MonoBehaviour
         {
             for (int j = 0; j < mapSizeY; j++)
             {
-                CellType type = mapCells[i, j].type;
+                CellType type = mapCells[i, j].type; 
                 Color col = tex.GetPixel(i, j);
                 tilemap.SetTile(new Vector3Int(i, j, 0), tile);
                 SetTileColour(col, new Vector3Int(i, j, 0));
