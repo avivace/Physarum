@@ -42,6 +42,11 @@ public class SimulationManager : MonoBehaviour
     Vector2Int lastEncapsulatedNS;
     Vector2Int secondToLastEncapsulatedNS;
 
+    float biggestCHAvalue;
+    float smallestCHAvalue;
+    float biggestPMvalue;
+    float smallestPMvalue;
+
     void payloadHandler(){
         string jsonString = "{\"value1\":\"1\"}";
         Payload payload = JsonUtility.FromJson<Payload>(jsonString);
@@ -62,7 +67,11 @@ public class SimulationManager : MonoBehaviour
         if (simulationRunning)
         {
             Simulation();
-            UpdateTiles(); 
+            UpdateTiles();
+
+            //DEBUG ONLY:
+            /*if(t > 35)
+                simulationRunning = false;*/
         }
     }
 
@@ -200,6 +209,11 @@ public class SimulationManager : MonoBehaviour
 
     void ExecuteFiftyStepsPhase()
     {
+        smallestCHAvalue = float.MaxValue;
+        biggestCHAvalue = float.MinValue;
+        smallestPMvalue = float.MaxValue;
+        biggestPMvalue = float.MinValue;
+
         if (localFiftyStepsTime < 50)
         {
             ApplyDiffusionEquations();
@@ -211,6 +225,7 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
+    int antiCrashCounter = 0;
     private void ConnectNToNearestS(int i, int j)
     {
         mapCells[i, j].TE = true;
@@ -220,9 +235,18 @@ public class SimulationManager : MonoBehaviour
             int x;
             int y;
 
-            GetHighestNeighbourPM(i, j, out x, out y);
+            float highestNearPM = GetHighestNeighbourPM(i, j, out x, out y);
 
-            ConnectNToNearestS(x, y);
+            if (antiCrashCounter < 500)
+            {
+                Debug.Log("Connecting, highest near PM: "+ highestNearPM+" "+x+" "+y);
+                antiCrashCounter++; 
+                ConnectNToNearestS(x, y);
+            } else
+            {
+                Debug.Log("Infinite Loop encountered: "+ antiCrashCounter);
+                simulationRunning = false;
+            }
         }
     }
 
@@ -237,12 +261,17 @@ public class SimulationManager : MonoBehaviour
         {
             for (int b = j - 1; b < j + 2; b++)
             {
-                float PM = GetPM(a, b);
-                if (PM > highestPM)
+                if (a == i && b == j)
                 {
-                    highestPM = PM;
-                    x = a;
-                    y = b;
+                    continue;
+                } else { 
+                    float PM = GetPM(a, b);
+                    if (PM > highestPM)
+                    {
+                        highestPM = PM;
+                        x = a;
+                        y = b;
+                    }
                 }
             }
         }
@@ -281,7 +310,7 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 //Calcolo PM
-                if (mapCells[i, j].type != CellType.S && mapCells[i, j].type != CellType.U)
+                if (/*mapCells[i, j].type != CellType.S && */mapCells[i, j].type != CellType.U)
                 {
                     float[] values = new float[]{
                     GetCHA(i - 1, j - 1),
@@ -293,7 +322,7 @@ public class SimulationManager : MonoBehaviour
                     GetCHA(i + 1, j - 1),
                     GetCHA(i + 1, j),
                     GetCHA(i + 1, j + 1) };
-
+                    
                     float PA_WEST = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values, i, j));
                     float PA_SOUTH = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values, i, j));
                     float PA_EAST = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values, i, j));
@@ -314,55 +343,44 @@ public class SimulationManager : MonoBehaviour
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
 
-                    if(newMap[i, j].PM > 100)
+                    /*if (newMap[i, j].PM > 100)
                     {
                         newMap[i, j].PM = 100;
                     }
 
-                    /*if(i == 4 && j == 0)
+                    if (newMap[i, j].CHA < 0)
                     {
-                        Debug.Log("C AT " + i + " " + j + " " + newMap[i, j].PM+" "+ PMvNN+" "+ PMeMN+" !! "
-                            + ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j))+" "
-                            + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j))+" "
-                            + ((1 + PA_EAST) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j))+" "
-                            + ((1 + PA_NORTH) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j)));
-                    }
-                    if (i == 4 && j == 8)
-                    {
-                        Debug.Log("C AT " + i + " " + j + " " + newMap[i, j].PM + " " + PMvNN + " " + PMeMN + " !! "
-                           + ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j)) + " "
-                           + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j)) + " "
-                           + ((1 + PA_EAST) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j)) + " "
-                           + ((1 + PA_NORTH) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j)));
+                        newMap[i, j].CHA = 0;
                     }*/
-
-                    /*DEBUG ONLY if(mapCells[i, j].type == CellType.N)
-                    {
-                        Debug.Log("N AT "+i+" "+j+" "+ newMap[i, j].PM);
-                    }*/
-                } else
+                }
+                else
                 {
                     newMap[i, j].PM = mapCells[i, j].PM;
                 }
 
                 //Calcolo CHA
-                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U)
+                if (/*mapCells[i, j].type != CellType.N && */mapCells[i, j].type != CellType.U)
                 {
                     float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
+                            + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
+                            + ((GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j))
+                            + ((GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
                     float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j))
                         + ((GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j))
                         + ((GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j))
                         + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
-                    newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
+                    newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN)); 
 
-                    if (newMap[i, j].CHA > 100)
+                    /*if (newMap[i, j].CHA > 100)
                     {
                         newMap[i, j].CHA = 100;
                     }
-                } else
+                    if (newMap[i, j].CHA < 0)
+                    {
+                        newMap[i, j].CHA = 0;
+                    }*/
+                }
+                else
                 {
                     newMap[i, j].CHA = mapCells[i, j].CHA;
                 }
@@ -381,6 +399,18 @@ public class SimulationManager : MonoBehaviour
             {
                 mapCells[i, j].PM = newMap[i, j].PM;
                 mapCells[i, j].CHA = newMap[i, j].CHA;
+
+                if (smallestCHAvalue > mapCells[i, j].CHA)
+                    smallestCHAvalue = mapCells[i, j].CHA;
+
+                if (biggestCHAvalue < mapCells[i, j].CHA)
+                    biggestCHAvalue = mapCells[i, j].CHA;
+
+                if (smallestPMvalue > mapCells[i, j].PM)
+                    smallestPMvalue = mapCells[i, j].PM;
+
+                if (biggestPMvalue < mapCells[i, j].PM)
+                    biggestPMvalue = mapCells[i, j].PM;
             }
         }
     }
@@ -402,7 +432,7 @@ public class SimulationManager : MonoBehaviour
 
     float GetCHA(int i, int j)
     {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
             return 0;
         else
             return mapCells[i, j].CHA;
@@ -410,22 +440,26 @@ public class SimulationManager : MonoBehaviour
 
     float GetPM(int i, int j)
     {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i,j].type == CellType.U)
+        {
             return 0;
+        }
         else
+        {
             return mapCells[i, j].PM;
+        }
     }
 
     bool GetAA(int i, int j)
     {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
             return false;
         else
             return mapCells[i, j].AA;
     }
 
     float CalculatePA(float cha1, float oppositeCHA, float[] values, int i , int j) {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY)
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
             return 0;
 
         float max_value = GetMax(values); 
@@ -477,8 +511,8 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
-                float PMInRange01 = mapCells[i, j].PM / 100f;
-                float CHAInRange01 = mapCells[i, j].CHA / 100f;
+                float PMInRange01 = mapCells[i, j].PM / (biggestPMvalue - smallestPMvalue);//mapCells[i, j].PM / 100f;
+                float CHAInRange01 = mapCells[i, j].CHA / (biggestCHAvalue - smallestCHAvalue);//mapCells[i, j].CHA / 100f;
 
                 if (type == CellType.U)
                 {
@@ -499,10 +533,11 @@ public class SimulationManager : MonoBehaviour
                 else
                 {
                     SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
-                    //DEBUG ONLY FOR CHA SetTileColour(new Color(Mathf.Lerp(0.53f, 1, CHAInRange01), Mathf.Lerp(0.8f, 0.27f, CHAInRange01), Mathf.Lerp(0.98f, 0, CHAInRange01), 1), new Vector3Int(i, j, 0));
+                    //DEBUG ONLY FOR CHA 
+                    //SetTileColour(new Color(Mathf.Lerp(0.53f, 1, CHAInRange01), Mathf.Lerp(0.8f, 0.27f, CHAInRange01), Mathf.Lerp(0.98f, 0, CHAInRange01), 1), new Vector3Int(i, j, 0));
                 }
             }
-        }
+        } 
     }
 
     /** Setta il colore della Tile. */
