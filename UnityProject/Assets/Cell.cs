@@ -15,7 +15,7 @@ public class Cell
     /** Type of the cell. */
     public CellType type;
 
-    public Cell(bool aA, int pM, int cHA, bool tE, CellType type)
+    public Cell(bool aA, float pM, float cHA, bool tE, CellType type)
     {
         this.AA = aA;
         this.PM = pM;
@@ -24,7 +24,7 @@ public class Cell
         this.type = type;
     }
 
-    public Cell(bool aA, int pM, int cHA, bool tE) : this(aA, pM, cHA, tE, CellType.A)
+    public Cell(bool aA, float pM, float cHA, bool tE) : this(aA, pM, cHA, tE, CellType.A)
     { 
     }
 

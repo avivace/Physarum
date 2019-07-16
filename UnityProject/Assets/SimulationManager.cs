@@ -19,6 +19,9 @@ public class SimulationManager : MonoBehaviour
     public List<Vector2Int> Ss = new List<Vector2Int>();
     public List<Vector2Int> Ns = new List<Vector2Int>();
 
+    public float defaultPMForS = 100;
+    public float defaultCHAForN = 100;
+
     public Payload payload;
 
     float CON = 0.95f;
@@ -46,6 +49,8 @@ public class SimulationManager : MonoBehaviour
     float smallestCHAvalue;
     float biggestPMvalue;
     float smallestPMvalue;
+    int posIbiggestPMValue;
+    int posJbiggestPMValue;
 
     void payloadHandler(){
         string jsonString = "{\"value1\":\"1\"}";
@@ -70,8 +75,8 @@ public class SimulationManager : MonoBehaviour
             UpdateTiles();
 
             //DEBUG ONLY:
-            /*if(t > 35)
-                simulationRunning = false;*/
+            //if(t > 2)
+            //    simulationRunning = false;
         }
     }
 
@@ -116,12 +121,13 @@ public class SimulationManager : MonoBehaviour
                 }
                 else if (col.Equals(Color.black))
                 {
-                    mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
+                    Debug.Log("Starting S is at " + i + " " + j);
+                    mapCells[i, j] = new Cell(true, defaultPMForS, 0, false, CellType.S);
                     Ss.Add(new Vector2Int(i, j));
                 }
                 else if (col.Equals(new Color(1,1,0,1))) //Yellow
                 {
-                    mapCells[i, j] = new Cell(true, 0, 100, false, CellType.N);
+                    mapCells[i, j] = new Cell(true, 0, defaultCHAForN, false, CellType.N);
                     Ns.Add(new Vector2Int(i, j));
                 }
             }
@@ -155,7 +161,7 @@ public class SimulationManager : MonoBehaviour
 
                     //Change NS into SP
                     cell.type = CellType.S;
-                    cell.PM = 100;
+                    cell.PM = defaultPMForS;
                     cell.CHA = 0;
                     Ns.RemoveAt(k);
                     Ss.Add(v);
@@ -179,14 +185,14 @@ public class SimulationManager : MonoBehaviour
                         Cell cell = mapCells[i, j];
 
                         cell.type = CellType.N;
-                        cell.CHA = 100;
+                        cell.CHA = defaultCHAForN;
                         Ss.RemoveAt(k);
                         Ns.Add(v);
                     }
 
                     //Il penultimo NS incapsulato diventa il nuovo SP
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
-                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = 100;
+                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
                     Ns.Remove(GetSecondToLastCoveredNS());
                     Ss.Add(GetSecondToLastCoveredNS());
@@ -209,11 +215,6 @@ public class SimulationManager : MonoBehaviour
 
     void ExecuteFiftyStepsPhase()
     {
-        smallestCHAvalue = float.MaxValue;
-        biggestCHAvalue = float.MinValue;
-        smallestPMvalue = float.MaxValue;
-        biggestPMvalue = float.MinValue;
-
         if (localFiftyStepsTime < 50)
         {
             ApplyDiffusionEquations();
@@ -322,7 +323,7 @@ public class SimulationManager : MonoBehaviour
                     GetCHA(i + 1, j - 1),
                     GetCHA(i + 1, j),
                     GetCHA(i + 1, j + 1) };
-                    
+
                     float PA_WEST = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values, i, j));
                     float PA_SOUTH = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values, i, j));
                     float PA_EAST = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values, i, j));
@@ -393,6 +394,11 @@ public class SimulationManager : MonoBehaviour
 
     private void UpdateMapWithNewDiffusionValues(Cell[,] newMap)
     {
+        smallestCHAvalue = float.MaxValue;
+        biggestCHAvalue = float.MinValue;
+        smallestPMvalue = float.MaxValue;
+        biggestPMvalue = float.MinValue;
+
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
@@ -410,7 +416,11 @@ public class SimulationManager : MonoBehaviour
                     smallestPMvalue = mapCells[i, j].PM;
 
                 if (biggestPMvalue < mapCells[i, j].PM)
+                {
                     biggestPMvalue = mapCells[i, j].PM;
+                    posIbiggestPMValue = i;
+                    posJbiggestPMValue = j;
+                }
             }
         }
     }
@@ -462,7 +472,7 @@ public class SimulationManager : MonoBehaviour
         if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
             return 0;
 
-        float max_value = GetMax(values); 
+        float max_value = GetMax(values, false);
         if (cha1 == max_value)
             return PAP;
         else if (oppositeCHA == max_value)
@@ -471,17 +481,23 @@ public class SimulationManager : MonoBehaviour
             return 0;
     }
 
-    private float GetMax(float[] values)
+    private float GetMax(float[] values, bool shouldPrintDebug)
     {
         float res = float.MinValue;
         foreach(float v in values)
         {
+            if(shouldPrintDebug)
+                Debug.Log("KAKAKA "+v);
+
             if(v > res)
             {
                 res = v;
             }
         }
 
+        if (shouldPrintDebug)
+            Debug.Log("KAKAKAFINAL " + res);
+         
         return res;
     }
 
@@ -505,6 +521,7 @@ public class SimulationManager : MonoBehaviour
     /** Aggiorna le tile della TileMap con i colori corretti. */
     void UpdateTiles()
     {
+        Debug.Log("PMs "+ smallestPMvalue+" "+ biggestPMvalue+" || "+ posIbiggestPMValue+" "+ posJbiggestPMValue);
         Tilemap tilemap = this.GetComponent<Tilemap>();
         for (int i = 0; i < mapSizeX; i++)
         {
