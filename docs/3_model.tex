@@ -48,8 +48,9 @@ The initialization step includes the definition of parameters that have a great 
 	\item The parameters for the diffusion equation for the cytoplasm of the plasmodium (PMP1, PMP2)
 	\item The parameters for the diffusion equation of the  (CAP1, CAP2)
 	\item The consumption percentage of the chemo-attractants substances by the plasmodium (CON - Consumption)
+	\item The attraction of the slime mould by chemoattractant substances (PA - Physarum Attraction)
+	\item The threshold of Physarum Mass that encapsulates a NS (ThPM).
 \end{itemize}
-the minimum percentage of $CHA$ substances detected by the plasmodium ,  the attraction of the slime mould by chemoattractant substances (PA - Physarum Attraction) and the threshold of "Physarum Mass" that encapsulates a NS (ThPM).
 \par
 After the initialization and for 50 time steps, diffusion equations are used to calculate the values for $CHA$ and $PM$ for every cell in the grid. Every cell uses the values of its neighbours at time step t to calculate the value of the $CHA$ and $PM$ parameter for time step t + 1. 
 \par
