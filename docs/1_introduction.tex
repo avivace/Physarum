@@ -1,7 +1,8 @@
 \section{Cellular Automaton}
 \label{ca}
 
-A cellular automaton is a discrete dynamical system consisting of cells that change their states simultaneously according a local update rule. This update process is repeated at discrete time steps \cite{canotes}.
+A cellular automaton (abbrev. CA) is a discrete dynamical system consisting of cells that change their states simultaneously according a local update rule. This update process is repeated at discrete time steps \cite{canotes}.
+
 
 \paragraph{Formal definition}
 
@@ -12,34 +13,28 @@ Let:
 
 \end{itemize}
 
-
-
-\section{Cellular Automata}
-\label{automi_cellulari}
-
-A Cellular Automaton (abbrev. CA) is a discrete and dynamic mathematical model capable of storing and processing information on a set of rules.
 \par
-The basic idea of CAs is the simulation of complex behaviors deriving from natural systems.
+The basic idea of CA is the simulation of complex behaviors deriving from natural systems. The concept was originally studied in the late 1940s by Stanislaw Ulam and John von Neumann: the goal was to simulate natural and biological processes using cellular automata.
 \par
-The concept was originally described and defined in the 1940s by Stanislaw Ulam and John von Neumann, that used it to simulate natural and biological processes. The interesting part of this process is not only the simulation as an imitation of biological behaviors, but the creation of automatic models that can investigate the true nature of complex systems existing in nature. In this way, CAs become a tool to study self-organization and emergence in complex systems.
+The interesting part is not only the simulation as an imitation of biological behaviors, but the creation of automatic models that can investigate complex systems and processes existing in nature governed by local and homogeneous underlying rules. In this way, CA become a tool to study and modeling these processes.
 \par
-A CA consists of a regular grid of cells. Each cell can take a finite number \texttt{k} of different states, where \texttt{k} is a number equal or greater than 2. Cells update their states in discrete time. The time step t = 0 is usually considered as the initial step and a given state is assigned to each cell: the set of these states constitutes the initial configuration of the CA.
-At each time step (usually advancing t of 1) each cell is updated and following the invariant over time system rules a new generation replaces the previous generation. The state change of each single cell is determined only by its current status and by the states of the cells close to the current one.
+A CA consists of a regular grid of cells. Each cell can take a finite number \texttt{k} of different states, where \texttt{k} is a number equal or greater than 2. The time step t = 0 is usually considered as the initial step and a given state is assigned to each cell: the set of these states constitutes the initial configuration of the CA.
+At each time step (usually advancing t of 1) each cell is updated and following the invariant over time system rules a new generation replaces the previous one. The state change of each single cell is determined only by its current status and by the states of the cells close to the current one.
 \par
 Regarding the two-dimensional CAs, there are two fundamental types of neighbourhoods that are mainly considered:
 \begin{itemize}
-\item von Neumann neighbourhood, that consists of the central cell, whose condition is to be updated, and the four cells located to the north, south, east and west of the central cell
-\item Moore neighbourhood, that consists of the same cells with the von Neumann neighbourhood together with the four other adjacent cells of the central cell (the north-west, north-east, south-east and south-west cells)
+	\item von Neumann neighbourhood, that consists of the central cell, whose condition is to be updated, and the four cells located to the north, south, east and west of the central cell
+	\item Moore neighbourhood, that consists of the same cells with the von Neumann neighbourhood together with the four other adjacent cells of the central cell (the north-west, north-east, south-east and south-west cells)
 \end{itemize}
 \par
-The most known CA in the scientific literature is \texttt{the Game of Life}, devised by the John Horton Conway in 1970 with the intention of producing a simple model of von Neumann's idea of the machine capable of reproducing itself and simulate a Turing machine. 
+The most known CA in the scientific literature is \texttt{Game of Life}, devised by the John Horton Conway in 1970 with the intention of producing a simple model of von Neumann's idea of the machine capable of reproducing itself and simulate a Turing machine. 
 \par
-In the universe of \texttt{the Game of Life} each cell is in one of two possible states, alive or dead (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:
+In the universe of \texttt{Game of Life} each cell is in one of two possible states, alive or dead (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:
 \begin{itemize}
-\item Any live cell with fewer than two live neighbours dies, as if by underpopulation
-\item Any live cell with two or three live neighbours lives on to the next generation
-\item Any live cell with more than three live neighbours dies, as if by overpopulation
-\item Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction
+	\item Any live cell with fewer than two live neighbours dies, as if by underpopulation
+	\item Any live cell with two or three live neighbours lives on to the next generation
+	\item Any live cell with more than three live neighbours dies, as if by overpopulation
+	\item Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction
 \end{itemize}
 \par
 The initial pattern constitutes the seed of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed; births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. Each generation is a pure function of the preceding one. The rules continue to be applied repeatedly to create further generations. 
