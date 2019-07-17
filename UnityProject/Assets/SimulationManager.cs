@@ -122,12 +122,14 @@ public class SimulationManager : MonoBehaviour
                 else if (col.Equals(Color.black))
                 {
                     Debug.Log("Starting S is at " + i + " " + j);
-                    mapCells[i, j] = new Cell(true, defaultPMForS, 0, false, CellType.S);
+                    //mapCells[i, j] = new Cell(true, defaultPMForS, 0, false, CellType.S);
+                    mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
                     Ss.Add(new Vector2Int(i, j));
                 }
                 else if (col.Equals(new Color(1,1,0,1))) //Yellow
                 {
-                    mapCells[i, j] = new Cell(true, 0, defaultCHAForN, false, CellType.N);
+                    //mapCells[i, j] = new Cell(true, 0, defaultCHAForN, false, CellType.N);
+                    mapCells[i, j] = new Cell(true, 0, 100, false, CellType.N);
                     Ns.Add(new Vector2Int(i, j));
                 }
             }
@@ -161,12 +163,17 @@ public class SimulationManager : MonoBehaviour
 
                     //Change NS into SP
                     cell.type = CellType.S;
-                    cell.PM = defaultPMForS;
+                    //cell.PM = defaultPMForS;
+                    cell.PM = 100;
                     cell.CHA = 0;
                     Ns.RemoveAt(k);
                     Ss.Add(v);
 
+                    /* DEBUG Passo 5000 se i nodi sono stati tutti raggiunti. Loop a 5050
                     SetLatestEncapsulatedNS(v);
+                    if (Ns.Count == 0)
+                        t = 5000;
+                    */
                 }
             }
 
@@ -185,14 +192,16 @@ public class SimulationManager : MonoBehaviour
                         Cell cell = mapCells[i, j];
 
                         cell.type = CellType.N;
-                        cell.CHA = defaultCHAForN;
+                        //cell.CHA = defaultCHAForN;
+                        cell.CHA = 100;
                         Ss.RemoveAt(k);
                         Ns.Add(v);
                     }
 
                     //Il penultimo NS incapsulato diventa il nuovo SP
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
-                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
+                    //mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
+                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = 100;
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
                     Ns.Remove(GetSecondToLastCoveredNS());
                     Ss.Add(GetSecondToLastCoveredNS());
@@ -311,7 +320,8 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 //Calcolo PM
-                if (/*mapCells[i, j].type != CellType.S && */mapCells[i, j].type != CellType.U)
+                //if (mapCells[i, j].type != CellType.U)
+                if (mapCells[i, j].type != CellType.S && mapCells[i, j].type != CellType.U)
                 {
                     float[] values = new float[]{
                     GetCHA(i - 1, j - 1),
@@ -344,15 +354,15 @@ public class SimulationManager : MonoBehaviour
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
 
-                    /*if (newMap[i, j].PM > 100)
+                    if (newMap[i, j].PM > 100)
                     {
                         newMap[i, j].PM = 100;
                     }
 
-                    if (newMap[i, j].CHA < 0)
+                    if (newMap[i, j].PM < 0)
                     {
-                        newMap[i, j].CHA = 0;
-                    }*/
+                        newMap[i, j].PM = 0;
+                    }
                 }
                 else
                 {
@@ -360,7 +370,8 @@ public class SimulationManager : MonoBehaviour
                 }
 
                 //Calcolo CHA
-                if (/*mapCells[i, j].type != CellType.N && */mapCells[i, j].type != CellType.U)
+                //if (mapCells[i, j].type != CellType.U)
+                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U)
                 {
                     float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j))
                             + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
@@ -372,14 +383,14 @@ public class SimulationManager : MonoBehaviour
                         + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
                     newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN)); 
 
-                    /*if (newMap[i, j].CHA > 100)
+                    if (newMap[i, j].CHA > 100)
                     {
                         newMap[i, j].CHA = 100;
                     }
                     if (newMap[i, j].CHA < 0)
                     {
                         newMap[i, j].CHA = 0;
-                    }*/
+                    }
                 }
                 else
                 {
@@ -521,15 +532,17 @@ public class SimulationManager : MonoBehaviour
     /** Aggiorna le tile della TileMap con i colori corretti. */
     void UpdateTiles()
     {
-        Debug.Log("PMs "+ smallestPMvalue+" "+ biggestPMvalue+" || "+ posIbiggestPMValue+" "+ posJbiggestPMValue);
+        //Debug.Log("PMs "+ smallestPMvalue+" "+ biggestPMvalue+" || "+ posIbiggestPMValue+" "+ posJbiggestPMValue);
         Tilemap tilemap = this.GetComponent<Tilemap>();
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
             {
                 CellType type = mapCells[i, j].type;
-                float PMInRange01 = mapCells[i, j].PM / (biggestPMvalue - smallestPMvalue);//mapCells[i, j].PM / 100f;
-                float CHAInRange01 = mapCells[i, j].CHA / (biggestCHAvalue - smallestCHAvalue);//mapCells[i, j].CHA / 100f;
+                //float PMInRange01 = mapCells[i, j].PM / (biggestPMvalue - smallestPMvalue);
+                float PMInRange01 = mapCells[i, j].PM / 100f;
+                //float CHAInRange01 = mapCells[i, j].CHA / (biggestCHAvalue - smallestCHAvalue);
+                float CHAInRange01 = mapCells[i, j].CHA / 100f;
 
                 if (type == CellType.U)
                 {
