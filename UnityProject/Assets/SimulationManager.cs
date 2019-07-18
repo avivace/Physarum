@@ -122,14 +122,12 @@ public class SimulationManager : MonoBehaviour
                 else if (col.Equals(Color.black))
                 {
                     Debug.Log("Starting S is at " + i + " " + j);
-                    //mapCells[i, j] = new Cell(true, defaultPMForS, 0, false, CellType.S);
-                    mapCells[i, j] = new Cell(true, 100, 0, false, CellType.S);
+                    mapCells[i, j] = new Cell(true, defaultPMForS, 0, false, CellType.S);
                     Ss.Add(new Vector2Int(i, j));
                 }
                 else if (col.Equals(new Color(1,1,0,1))) //Yellow
                 {
-                    //mapCells[i, j] = new Cell(true, 0, defaultCHAForN, false, CellType.N);
-                    mapCells[i, j] = new Cell(true, 0, 100, false, CellType.N);
+                    mapCells[i, j] = new Cell(true, 0, defaultCHAForN, false, CellType.N);
                     Ns.Add(new Vector2Int(i, j));
                 }
             }
@@ -148,6 +146,14 @@ public class SimulationManager : MonoBehaviour
         if(!fiftyStepsPhase)
         {
             Debug.Log("Other stuff applied");
+
+            if(Ns.Count == 0) //All N connected?
+            {
+                Debug.Log("No N left, stopping the simulation.");
+                simulationRunning = false;
+                return;
+            }
+
             for (int k = Ns.Count - 1; k >= 0; k--)
             {
                 Vector2Int v = Ns[k];
@@ -163,8 +169,7 @@ public class SimulationManager : MonoBehaviour
 
                     //Change NS into SP
                     cell.type = CellType.S;
-                    //cell.PM = defaultPMForS;
-                    cell.PM = 100;
+                    cell.PM = defaultPMForS;
                     cell.CHA = 0;
                     Ns.RemoveAt(k);
                     Ss.Add(v);
@@ -192,16 +197,14 @@ public class SimulationManager : MonoBehaviour
                         Cell cell = mapCells[i, j];
 
                         cell.type = CellType.N;
-                        //cell.CHA = defaultCHAForN;
-                        cell.CHA = 100;
+                        cell.CHA = defaultCHAForN;
                         Ss.RemoveAt(k);
                         Ns.Add(v);
                     }
 
                     //Il penultimo NS incapsulato diventa il nuovo SP
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
-                    //mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
-                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = 100;
+                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
                     mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
                     Ns.Remove(GetSecondToLastCoveredNS());
                     Ss.Add(GetSecondToLastCoveredNS());
@@ -354,13 +357,14 @@ public class SimulationManager : MonoBehaviour
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
 
-                    if (newMap[i, j].PM > 100)
+                    if (newMap[i, j].PM > defaultPMForS)
                     {
-                        newMap[i, j].PM = 100;
+                        newMap[i, j].PM = defaultPMForS;
                     }
 
                     if (newMap[i, j].PM < 0)
                     {
+                        Debug.Log("THIS SHOULDN'T HAPPEN: "+i+" "+j+" "+ newMap[i, j].PM);
                         newMap[i, j].PM = 0;
                     }
                 }
@@ -383,9 +387,9 @@ public class SimulationManager : MonoBehaviour
                         + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
                     newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN)); 
 
-                    if (newMap[i, j].CHA > 100)
+                    if (newMap[i, j].CHA > defaultCHAForN)
                     {
-                        newMap[i, j].CHA = 100;
+                        newMap[i, j].CHA = defaultCHAForN;
                     }
                     if (newMap[i, j].CHA < 0)
                     {
@@ -540,9 +544,9 @@ public class SimulationManager : MonoBehaviour
             {
                 CellType type = mapCells[i, j].type;
                 //float PMInRange01 = mapCells[i, j].PM / (biggestPMvalue - smallestPMvalue);
-                float PMInRange01 = mapCells[i, j].PM / 100f;
+                float PMInRange01 = mapCells[i, j].PM / defaultPMForS;
                 //float CHAInRange01 = mapCells[i, j].CHA / (biggestCHAvalue - smallestCHAvalue);
-                float CHAInRange01 = mapCells[i, j].CHA / 100f;
+                float CHAInRange01 = mapCells[i, j].CHA / defaultCHAForN;
 
                 if (type == CellType.U)
                 {
