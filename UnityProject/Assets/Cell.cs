@@ -15,6 +15,8 @@ public class Cell
     /** Type of the cell. */
     public CellType type;
 
+    public float prevPM = 0;
+
     public Cell(bool aA, float pM, float cHA, bool tE, CellType type)
     {
         this.AA = aA;

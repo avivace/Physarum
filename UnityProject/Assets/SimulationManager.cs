@@ -160,22 +160,38 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
-
+    float deltacell0, deltacell1, deltacell2, deltacell3, deltacell4 = 0;
+    float prevcell0, prevcell1, prevcell2, prevcell3, prevcell4 = 0;
     float cell0, cell1, cell2, cell3, cell4 = 0;
     float k = 0;
     private void TestProgression()
     {
-        cell4 -= cell4 / 6;
-        cell4 += cell3 / 6;
-        cell3 -= cell3 / 6;
-        cell3 += cell2 / 6;
-        cell2 -= cell2 / 6;
-        cell2 += cell1 / 6;
-        cell1 -= cell1 / 6;
-        cell1 += cell0 / 6;
-        cell0 -= cell0 / 6;
-        cell0 += leftOverPM / 6;
-        leftOverPM -= leftOverPM / 6;
+        deltacell4 = cell4 - prevcell4;
+        prevcell4 = cell4;
+        cell4 -= deltacell4 / 6;
+        cell4 += deltacell3 / 6;
+
+        deltacell3 = cell3 - prevcell3;
+        prevcell3 = cell3;
+        cell3 -= deltacell3 / 6;
+        cell3 += deltacell2 / 6;
+
+        deltacell2 = cell2 - prevcell2;
+        prevcell2 = cell2;
+        cell2 -= deltacell2 / 6;
+        cell2 += deltacell1 / 6;
+
+        deltacell1 = cell1 - prevcell1;
+        prevcell1 = cell1;
+        cell1 -= deltacell1 / 6;
+        cell1 += deltacell0 / 6;
+
+        deltacell0 = cell0 - prevcell0;
+        prevcell0 = cell0;
+        cell0 -= deltacell0 / 6;
+        cell0 += leftOverPM / 400;
+
+        leftOverPM -= leftOverPM / 400;
 
         k++;
 
@@ -272,13 +288,17 @@ public class SimulationManager : MonoBehaviour
                 //Calcolo PM
                 if (mapCells[i, j].type != CellType.U)
                 {
+                    float deltaPM = GetPM(i, j) - GetPrevPM(i, j);
+
+                    mapCells[i, j].prevPM = mapCells[i, j].PM;
+
                     float oldPM = GetPM(i, j);
                     float cellPM = oldPM;
 
                     if (mapCells[i, j].type == CellType.S && mapCells[i, j].CHA != 0)
                     {
-                        cellPM += leftOverPM / 6;
-                        leftOverPM -= leftOverPM / 6;
+                        cellPM += leftOverPM / 400;
+                        leftOverPM -= leftOverPM / 400;
                     }
 
                     for (int x = i - 1; x < (i + 2); x++)
@@ -295,22 +315,24 @@ public class SimulationManager : MonoBehaviour
                                 {
                                     if (GetCHA(x, y) < GetCHA(i, j))
                                     {
-                                        cellPM += GetPM(x, y) / 6f;
+                                        float deltaOtherPM = GetPM(x, y) - GetPrevPM(x, y);
+                                        cellPM += deltaOtherPM / 6f; // GetPM(x, y) / 6f;
                                     }
                                     else if (GetCHA(x, y) > GetCHA(i, j))
                                     {
-                                        cellPM -= oldPM / 6f;
+                                        cellPM -= deltaPM / 6f; // oldPM / 6f;
                                     }
                                 }
                                 else //MN neighbours
                                 {
                                     if (GetCHA(x, y) < GetCHA(i, j))
                                     {
-                                        cellPM += GetPM(x, y) / 12f;
+                                        float deltaOtherPM = GetPM(x, y) - GetPrevPM(x, y);
+                                        cellPM += deltaOtherPM / 6f; //GetPM(x, y) / 12f;
                                     }
                                     else if (GetCHA(x, y) > GetCHA(i, j))
                                     {
-                                        cellPM -= oldPM / 12f;
+                                        cellPM -= deltaPM / 6f; // oldPM / 12f;
                                     }
                                 }
                             }
@@ -737,6 +759,18 @@ public class SimulationManager : MonoBehaviour
         else
         {
             return mapCells[i, j].PM;
+        }
+    }
+
+    float GetPrevPM(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
+        {
+            return 0;
+        }
+        else
+        {
+            return mapCells[i, j].prevPM;
         }
     }
 
