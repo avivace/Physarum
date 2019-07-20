@@ -290,8 +290,6 @@ public class SimulationManager : MonoBehaviour
                 {
                     float deltaPM = GetPM(i, j) - GetPrevPM(i, j);
 
-                    mapCells[i, j].prevPM = mapCells[i, j].PM;
-
                     float oldPM = GetPM(i, j);
                     float cellPM = oldPM;
 
@@ -338,7 +336,9 @@ public class SimulationManager : MonoBehaviour
                             }
                         }
                     }
-                    
+
+                    newMap[i, j].prevPM = mapCells[i, j].PM;
+
                     newMap[i, j].PM = cellPM;
 
                     if (i >= 19 && i <= 24)
@@ -696,6 +696,7 @@ public class SimulationManager : MonoBehaviour
             {
                 mapCells[i, j].PM = newMap[i, j].PM;
                 mapCells[i, j].CHA = newMap[i, j].CHA;
+                mapCells[i, j].prevPM = newMap[i, j].prevPM;
 
                 if (smallestCHAvalue > mapCells[i, j].CHA)
                     smallestCHAvalue = mapCells[i, j].CHA;
@@ -867,10 +868,10 @@ public class SimulationManager : MonoBehaviour
                 {
                     SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
                     //DEBUG ONLY                    
-                    if(PMInRange01 != 0)
+                    /*if(PMInRange01 != 0)
                     {
                         SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } 
+                    } */
                     /*SetTileColour(new Color(Mathf.Lerp(1f, 0, CHAInRange01), Mathf.Lerp(1f, 1f, CHAInRange01), Mathf.Lerp(1f, 0, CHAInRange01), 1), new Vector3Int(i, j, 0));
                     if(CHAInRange01 != 0)
                     {

@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b161787691ed904f98a27dc689c108b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageAsset: {fileID: 4900000, guid: c6074d40a72bf9641a0fd7fd301185c8, type: 3}
+  imageAsset: {fileID: 4900000, guid: 038410ee1dcd4124d9757438c9ae9668, type: 3}
   tile: {fileID: 11400000, guid: 8dd9f982876ecb341bf31f92d257f0c4, type: 2}
   Ss: []
   Ns: []
