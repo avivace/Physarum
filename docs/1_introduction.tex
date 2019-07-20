@@ -67,10 +67,20 @@ A CA is a 4-tuple $A=(d, S,N,f)$ where
 	\item S is the finite state set,
 	\item N is the neighborhood vector,
 	\item f is the local update rule.
-
 \end{itemize}
 
 \subsection{Neighborhoods}
+When considering two-dimensional CA, the \textit{von Neumann} and the \texit{Moore} neighborhoods are often used.
+
+\paragraph{Moore neighborhood}
+
+The d-dimensional radius-r Moore neighboorhood, containing $(2r +1)^d$ is defined as follows:
+
+$$M_r^d = (k_1, K_2,...,k_d) \in \mathds{Z}^d \text{ where } |k_i| \leq r \text{  } \forall i = 1,2,...,d $$ 
+
+\paragraph{Von Neumann neighboorhood}
+
+
 Regarding the two-dimensional CAs, there are two fundamental types of neighbourhoods that are mainly considered:
 \begin{itemize}
 	\item von Neumann neighbourhood, that consists of the central cell, whose condition is to be updated, and the four cells located to the north, south, east and west of the central cell
@@ -83,7 +93,6 @@ Regarding the two-dimensional CAs, there are two fundamental types of neighbourh
   \subfigure[Caption A]{%
     \includegraphics[width=0.23\textwidth]{vn_n}%
     \label{fig:a}%
-    jjj
     }\hspace{1cm}%or more
     \subfigure[Caption B]{%
     \includegraphics[width=0.228\textwidth]{vn_n}%
