@@ -70,11 +70,35 @@ A CA is a 4-tuple $A=(d, S,N,f)$ where
 \end{itemize}
 
 \subsection{Neighborhoods}
-When considering two-dimensional CA, the \textit{von Neumann} and the \texit{Moore} neighborhoods are often used.
+
+\begin{figure*}
+  \centering
+  \subfigure[Von Neumann]{%
+    \includegraphics[width=0.4\textwidth]{vn_n}%
+    \label{fig:a}%
+    }\hspace{1cm}%or more
+    \subfigure[Moore]{%
+    \includegraphics[width=0.4\textwidth]{m_n}%
+    \label{fig:b}%
+    
+  }%  
+  \caption{Moore and Von Neumann neighborhoods for Cellular Automata}
+  \label{fig:2d_n}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{hex_n}%
+    
+  \caption{Hexagonal neighborhod \cite{hex_phy}}
+  \label{fig:hex_n}
+\end{figure*}
+
+When considering two-dimensional CA, the \textit{von Neumann} and the \textit{Moore} neighborhoods (pictured in figure \ref{fig:2d_n}) are often used.
 
 \paragraph{Moore neighborhood}
 
-The d-dimensional radius-r Moore neighboorhood, containing $(2r +1)^d$ is defined as follows:
+The d-dimensional radius-r Moore neighboorhood, containing $(2r +1)^d$ elements is defined as follows:
 
 $$M_r^d = (k_1, K_2,...,k_d) \in \mathds{Z}^d \text{ where } |k_i| \leq r \text{  } \forall i = 1,2,...,d $$ 
 
