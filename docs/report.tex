@@ -1,7 +1,14 @@
 \documentclass{report}
 \usepackage{amsmath}
 \usepackage{ dsfont }
-\usepackage[colorlinks,citecolor=black,urlcolor=blue,bookmarks=false,hypertexnames=true]{hyperref} 
+\usepackage{ svg }
+\usepackage[colorlinks,citecolor=black,linkcolor=black,urlcolor=blue,bookmarks=false,hypertexnames=true]{hyperref}\usepackage{kpfonts}
+\usepackage[T1]{fontenc}
+\usepackage{nimbusmononarrow}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
 \begin{document}
 
 \title{%
@@ -23,8 +30,8 @@
 
 \input{abstract}
 \tableofcontents
+\listoffigures
 
-\chapter{Introduction}
 \input{1_introduction}
 
 \chapter{State of the Art}
@@ -42,7 +49,6 @@
 \chapter{Analysis of the results}
 
 \chapter{Conclusions}
-\listoffigures
 
 \bibliographystyle{unsrt}
 \bibliography{bibliography}

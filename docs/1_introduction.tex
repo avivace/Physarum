@@ -1,35 +1,106 @@
+\chapter{Introduction}
+
+Here we introduce and familiarise with the basic definitions and notations about Cellular Automata, a tool dating back to the late 1940s, when Stanislaw Ulam and John von Neumann defined it as a model for natural and biological processes.
+
 \section{Cellular Automaton}
 \label{ca}
 
-A cellular automaton (abbrev. CA) is a discrete dynamical system consisting of cells that change their states simultaneously according a local update rule. This update process is repeated at discrete time steps \cite{canotes}.
+A cellular automaton (abbrev. CA) is a discrete dynamical system consisting of cells that change their states simultaneously according a local update rule. This update process is repeated at discrete time steps.
+Cellular automata are\cite{canotes}
+
+\begin{itemize}
+	\item discrete in space and time,
+	\item homogeneous in space and time,
+	\item local in their interactions.
+\end{itemize}
 
 
-\paragraph{Formal definition}
+\paragraph{Basics}
 
 Let:
+
 \begin{itemize}
-	\item $\mathds{Z}^{d}$ be a $d$-dimensional cellular space, with $d \in \mathds{N}^{+}$ 
-	\item $a$
+
+	\item $\mathds{Z}^{d}$ be a $d$-dimensional cellular space, with $d \in \mathds{N}^{+}$. Elements of this set are called \textit{cells}.
+
+	\item $S$ be a finite state set. Elements of this set are called \textit{states}.
+
+	\item $c$ be a \textit{configuration} of a d-dimensional CA with a state set S, defined as the following function:
+
+	$$c: \mathds{Z}^d \rightarrow S$$
+	that assigns a state to each cell.
+
+	\item $c(\vec{n })$ the state of a cell $\vec{n} \in \mathds{Z}^d$
 
 \end{itemize}
 
-\par
-The basic idea of CA is the simulation of complex behaviors deriving from natural systems. The concept was originally studied in the late 1940s by Stanislaw Ulam and John von Neumann: the goal was to simulate natural and biological processes using cellular automata.
-\par
-The interesting part is not only the simulation as an imitation of biological behaviors, but the creation of automatic models that can investigate complex systems and processes existing in nature governed by local and homogeneous underlying rules. In this way, CA become a tool to study and modeling these processes.
-\par
-A CA consists of a regular grid of cells. Each cell can take a finite number \texttt{k} of different states, where \texttt{k} is a number equal or greater than 2. The time step t = 0 is usually considered as the initial step and a given state is assigned to each cell: the set of these states constitutes the initial configuration of the CA.
-At each time step (usually advancing t of 1) each cell is updated and following the invariant over time system rules a new generation replaces the previous one. The state change of each single cell is determined only by its current status and by the states of the cells close to the current one.
-\par
+Most frequently we consider one and two-dimensional spaces, in which cases the cells from a line are indexed by $\mathds{Z}$ (line) or by $\mathds{Z}^2$ (grid).
+
+Denoting the set of functions from set A from B with $B^A$ we can write that the set of all configurations is $S^{\mathds{Z}^d}$.
+
+A d-dimensional neighborhood vector of size m is a tuple
+
+$$N = N = (\vec{n}_1,\vec{n}_2,...,\vec{n}_m) $$
+
+where each $\vec{n}_i \in \mathds{Z}^d$ and $\vec{n}_i \neq \vec{n}_j$ for all $i \neq j$.
+
+The \textit{local update rule} of a CA with state set S and size m neighborhood is a fuction
+
+$$ f: S^m \rightarrow S$$
+
+specifying the new state of the cell based on the old states of its neighborhood.
+
+As we mentioned, all cells use the same rule, and this rule is applied simultaneously. Global configuration $c$ becomes $c'$ where for all $\vec{n} \in \mathds{Z}^n$:
+
+$$c'(\vec{n}) = f[c(\vec{n}, \vec{n}_1),c(\vec{n}, \vec{n}_2), ... , c(\vec{n}, \vec{n}_m)]$$
+
+$c \mapsto c' $ is our \textit{global transition function} $G: S^{\mathds{Z}^d} \longrightarrow S^{\mathds{Z}^d}$. Typically, G is iterated to produce a time evolution of the system.
+
+$$ c \mapsto G(c) \mapsto G^2(c) \mapsto G^2(c) \mapsto..$$
+
+\paragraph{Formal definition}
+
+A CA is a 4-tuple $A=(d, S,N,f)$ where
+
+\begin{itemize}
+	\item d is the dimension,
+	\item S is the finite state set,
+	\item N is the neighborhood vector,
+	\item f is the local update rule.
+
+\end{itemize}
+
+\subsection{Neighborhoods}
 Regarding the two-dimensional CAs, there are two fundamental types of neighbourhoods that are mainly considered:
 \begin{itemize}
 	\item von Neumann neighbourhood, that consists of the central cell, whose condition is to be updated, and the four cells located to the north, south, east and west of the central cell
 	\item Moore neighbourhood, that consists of the same cells with the von Neumann neighbourhood together with the four other adjacent cells of the central cell (the north-west, north-east, south-east and south-west cells)
 \end{itemize}
+
+
+\begin{figure*}
+  \centering
+  \subfigure[Caption A]{%
+    \includegraphics[width=0.23\textwidth]{vn_n}%
+    \label{fig:a}%
+    jjj
+    }\hspace{1cm}%or more
+    \subfigure[Caption B]{%
+    \includegraphics[width=0.228\textwidth]{vn_n}%
+    \label{fig:b}%
+    
+  }%  
+  \caption{Figure Caption}
+  \label{fig:ab}
+\end{figure*}
+
+
+\subsection{Examples}
+
 \par
-The most known CA in the scientific literature is \texttt{Game of Life}, devised by the John Horton Conway in 1970 with the intention of producing a simple model of von Neumann's idea of the machine capable of reproducing itself and simulate a Turing machine. 
+The most known CA in the scientific literature is \textit{Game of Life}, devised by the John Horton Conway in 1970 with the intention of producing a simple model of von Neumann's idea of the machine capable of reproducing itself and simulate a Turing machine. 
 \par
-In the universe of \texttt{Game of Life} each cell is in one of two possible states, alive or dead (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:
+In the universe of \textit{Game of Life} each cell is in one of two possible states, alive or dead (or populated and unpopulated, respectively). Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:
 \begin{itemize}
 	\item Any live cell with fewer than two live neighbours dies, as if by underpopulation
 	\item Any live cell with two or three live neighbours lives on to the next generation
