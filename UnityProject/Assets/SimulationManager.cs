@@ -19,6 +19,8 @@ public class SimulationManager : MonoBehaviour
     public List<Vector2Int> Ss = new List<Vector2Int>();
     public List<Vector2Int> Ns = new List<Vector2Int>();
 
+    public Dictionary<Vector2Int, float> leftOverPMs = new Dictionary<Vector2Int, float>();
+
     public float defaultPMForS = 100;
     public float defaultCHAForN = 100;
 
@@ -55,9 +57,11 @@ public class SimulationManager : MonoBehaviour
     /** Keep it -1 if you want the simulation to go normally. */
     public int tToStop = -1;
 
-    float leftOverPM;
+    //float leftOverPM;
 
     bool withConservation = true;
+
+    float soglia = 0.0001f;
 
     void payloadHandler(){
         string jsonString = "{\"value1\":\"1\"}";
@@ -105,10 +109,9 @@ public class SimulationManager : MonoBehaviour
 
         if (withConservation)
         {
-            leftOverPM = defaultPMForS;
-
             foreach (Vector2Int s in Ss)
             {
+                leftOverPMs[s] = defaultPMForS;
                 mapCells[s.x, s.y].PM = 0;
             }
         }
@@ -164,6 +167,7 @@ public class SimulationManager : MonoBehaviour
     float prevcell0, prevcell1, prevcell2, prevcell3, prevcell4 = 0;
     float cell0, cell1, cell2, cell3, cell4 = 0;
     float k = 0;
+    float testLeftOverPM = 300000f;
     private void TestProgression()
     {
         deltacell4 = cell4 - prevcell4;
@@ -189,13 +193,13 @@ public class SimulationManager : MonoBehaviour
         deltacell0 = cell0 - prevcell0;
         prevcell0 = cell0;
         cell0 -= deltacell0 / 6;
-        cell0 += leftOverPM / 400;
+        cell0 += testLeftOverPM / 400;
 
-        leftOverPM -= leftOverPM / 400;
+        testLeftOverPM -= testLeftOverPM / 400;
 
         k++;
 
-        Debug.Log("Progression: " + leftOverPM + " || " + cell0 + " " + cell1 + " " + cell2 + " " + cell3 + " " + cell4 + " || " + k);
+        Debug.Log("Progression: " + testLeftOverPM + " || " + cell0 + " " + cell1 + " " + cell2 + " " + cell3 + " " + cell4 + " || " + k);
     }
 
     void SimulationWithConservation()
@@ -204,14 +208,14 @@ public class SimulationManager : MonoBehaviour
 
         ExecuteWithConservation();
 
-        /*if (Ns.Count == 0) //All N connected?
+        if (Ns.Count == 0) //All N connected?
         {
             Debug.Log("No N left, stopping the simulation.");
             simulationRunning = false;
             return;
         }
 
-       for (int k = Ns.Count - 1; k >= 0; k--)
+        for (int k = Ns.Count - 1; k >= 0; k--)
         {
             Vector2Int v = Ns[k];
             int i = v.x;
@@ -226,7 +230,8 @@ public class SimulationManager : MonoBehaviour
 
                 //Change NS into SP
                 cell.type = CellType.S;
-                cell.PM = defaultPMForS;
+                //cell.PM = cell.PM;
+                leftOverPMs[v] = defaultPMForS;
                 cell.CHA = 0;
                 Ns.RemoveAt(k);
                 Ss.Add(v);
@@ -235,7 +240,7 @@ public class SimulationManager : MonoBehaviour
 
         if (t <= 5000)
         {
-            if (t == 5000)
+            /*if (t == 5000)
             {
                 Debug.Log("We reached 5000, changing SP in NS");
                 //Change all NS and SP as NS
@@ -259,7 +264,7 @@ public class SimulationManager : MonoBehaviour
                 mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
                 Ns.Remove(GetSecondToLastCoveredNS());
                 Ss.Add(GetSecondToLastCoveredNS());
-            }
+            }*/
 
             //ResetFiftyStepsPhase();
             //ExecuteFiftyStepsPhase();
@@ -272,7 +277,7 @@ public class SimulationManager : MonoBehaviour
         else
         {
             simulationRunning = false;
-        }*/
+        }
 
         t++;
     }
@@ -293,10 +298,10 @@ public class SimulationManager : MonoBehaviour
                     float oldPM = GetPM(i, j);
                     float cellPM = oldPM;
 
-                    if (mapCells[i, j].type == CellType.S && mapCells[i, j].CHA != 0)
+                    if (mapCells[i, j].type == CellType.S/* && mapCells[i, j].CHA != 0*/)
                     {
-                        cellPM += leftOverPM / 400;
-                        leftOverPM -= leftOverPM / 400;
+                        cellPM += leftOverPMs[new Vector2Int(i, j)] / 6; //400;
+                        leftOverPMs[new Vector2Int(i, j)] -= leftOverPMs[new Vector2Int(i, j)] / 6; //400;
                     }
 
                     for (int x = i - 1; x < (i + 2); x++)
@@ -314,11 +319,13 @@ public class SimulationManager : MonoBehaviour
                                     if (GetCHA(x, y) < GetCHA(i, j))
                                     {
                                         float deltaOtherPM = GetPM(x, y) - GetPrevPM(x, y);
-                                        cellPM += deltaOtherPM / 6f; // GetPM(x, y) / 6f;
+                                        if (deltaOtherPM > soglia)
+                                            cellPM += deltaOtherPM / 6f; // GetPM(x, y) / 6f;
                                     }
                                     else if (GetCHA(x, y) > GetCHA(i, j))
                                     {
-                                        cellPM -= deltaPM / 6f; // oldPM / 6f;
+                                        if (deltaPM > soglia)
+                                            cellPM -= deltaPM / 6f; // oldPM / 6f;
                                     }
                                 }
                                 else //MN neighbours
@@ -326,11 +333,13 @@ public class SimulationManager : MonoBehaviour
                                     if (GetCHA(x, y) < GetCHA(i, j))
                                     {
                                         float deltaOtherPM = GetPM(x, y) - GetPrevPM(x, y);
-                                        cellPM += deltaOtherPM / 6f; //GetPM(x, y) / 12f;
+                                        if(deltaOtherPM > soglia)
+                                            cellPM += deltaOtherPM / 6f; //GetPM(x, y) / 12f;
                                     }
                                     else if (GetCHA(x, y) > GetCHA(i, j))
                                     {
-                                        cellPM -= deltaPM / 6f; // oldPM / 12f;
+                                        if (deltaPM > soglia)
+                                            cellPM -= deltaPM / 6f; // oldPM / 12f;
                                     }
                                 }
                             }
@@ -341,24 +350,24 @@ public class SimulationManager : MonoBehaviour
 
                     newMap[i, j].PM = cellPM;
 
-                    if (i >= 19 && i <= 24)
+                    /*if (i >= 19 && i <= 24)
                     {
                         Debug.Log("SCALA " + i + " " + j + " -> " + newMap[i, j].PM + " ||| " + (GetCHA(i - 1, j) < GetCHA(i, j)) + " " + (GetCHA(i + 1, j) < GetCHA(i, j)));
-                    }
+                    }*/
                 }
                 else
                 {
                     newMap[i, j].PM = 0;
                 }
 
-                /*if (mapCells[i, j].type == CellType.S)
+                if (mapCells[i, j].type == CellType.S)
                 {
                     Debug.Log("PM of S " + i + " " + j + " " + newMap[i, j].PM);
                 }
                 if (mapCells[i, j].type == CellType.N)
                 {
                     Debug.Log("PM of N " + i + " " + j + " " + newMap[i, j].PM);
-                }*/
+                }
 
                 //Calcolo CHA
                 if (mapCells[i, j].PM != 0)
@@ -868,10 +877,10 @@ public class SimulationManager : MonoBehaviour
                 {
                     SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
                     //DEBUG ONLY                    
-                    /*if(PMInRange01 != 0)
+                    if(PMInRange01 != 0)
                     {
                         SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } */
+                    } 
                     /*SetTileColour(new Color(Mathf.Lerp(1f, 0, CHAInRange01), Mathf.Lerp(1f, 1f, CHAInRange01), Mathf.Lerp(1f, 0, CHAInRange01), 1), new Vector3Int(i, j, 0));
                     if(CHAInRange01 != 0)
                     {
