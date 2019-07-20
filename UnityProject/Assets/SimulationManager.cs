@@ -59,7 +59,7 @@ public class SimulationManager : MonoBehaviour
 
     //float leftOverPM;
 
-    bool withConservation = true;
+    bool withConservation = false;
 
     float soglia = 0.0001f;
 
@@ -419,12 +419,13 @@ public class SimulationManager : MonoBehaviour
         {
             Debug.Log("Other stuff applied");
 
+            /*
             if(Ns.Count == 0) //All N connected?
             {
                 Debug.Log("No N left, stopping the simulation.");
                 simulationRunning = false;
                 return;
-            }
+            }*/
 
             for (int k = Ns.Count - 1; k >= 0; k--)
             {
@@ -597,6 +598,7 @@ public class SimulationManager : MonoBehaviour
                 //Calcolo PM
                 if (mapCells[i, j].type != CellType.S && mapCells[i, j].type != CellType.U)
                 {
+                    /*
                     float[] values = new float[]{
                     GetCHA(i - 1, j - 1),
                     GetCHA(i - 1, j),
@@ -616,6 +618,62 @@ public class SimulationManager : MonoBehaviour
                     float PA_SOUTHEAST = (CalculatePA(GetCHA(i + 1, j - 1), GetCHA(i - 1, j + 1), values, i, j));
                     float PA_NORTHWEST = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values, i, j));
                     float PA_NORTHEAST = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values, i, j));
+                    */
+
+                    float[] values = new float[]{
+                    GetCHA(i - 1, j),
+                    GetCHA(i, j - 1),
+                    GetCHA(i + 1, j),
+                    GetCHA(i, j + 1),
+                    GetCHA(i - 1, j - 1),
+                    GetCHA(i + 1, j - 1),
+                    GetCHA(i - 1, j + 1),
+                    GetCHA(i + 1, j + 1) };
+
+                    float maxCHA = GetMax(values, false);
+
+                    float PA_WEST = 0;
+                    float PA_SOUTH = 0;
+                    float PA_EAST = 0;
+                    float PA_NORTH = 0;
+                    float PA_SOUTHWEST = 0;
+                    float PA_SOUTHEAST = 0;
+                    float PA_NORTHEAST = 0;
+                    float PA_NORTHWEST = 0;
+                    
+                    if (maxCHA == GetCHA(i - 1, j))
+                    {
+                        PA_WEST = PAP;
+                        PA_EAST = -PAP;
+                    } else if (maxCHA == GetCHA(i, j - 1))
+                    {
+                        PA_SOUTH = PAP;
+                        PA_NORTH = -PAP;
+                    } else if (maxCHA == GetCHA(i + 1, j))
+                    {
+                        PA_EAST = PAP;
+                        PA_WEST = -PAP;
+                    } else if (maxCHA == GetCHA(i, j + 1))
+                    {
+                        PA_NORTH = PAP;
+                        PA_SOUTH = -PAP;
+                    } else if (maxCHA == GetCHA(i - 1, j - 1))
+                    {
+                        PA_SOUTHWEST = PAP;
+                        PA_NORTHEAST = -PAP;
+                    } else if (maxCHA == GetCHA(i + 1, j - 1))
+                    {
+                        PA_SOUTHEAST = PAP;
+                        PA_NORTHWEST = -PAP;
+                    } else if (maxCHA == GetCHA(i - 1, j + 1))
+                    {
+                        PA_NORTHWEST = PAP;
+                        PA_SOUTHEAST = -PAP;
+                    } else if (maxCHA == GetCHA(i - 1, j + 1))
+                    {
+                        PA_NORTHEAST = PAP;
+                        PA_SOUTHWEST = -PAP;
+                    }
 
                     float PMvNN = ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j))
                         + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j))
@@ -624,7 +682,7 @@ public class SimulationManager : MonoBehaviour
                     float PMeMN = ((1 + PA_SOUTHWEST) * GetPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j))
                         + ((1 + PA_SOUTHEAST) * GetPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j))
                         + ((1 + PA_NORTHWEST) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_NORTHEAST) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j));
+                        + ((1 + PA_NORTHEAST) * GetPM(i + 1, j + 1) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
 
@@ -877,10 +935,10 @@ public class SimulationManager : MonoBehaviour
                 {
                     SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
                     //DEBUG ONLY                    
-                    if(PMInRange01 != 0)
+                    /*if(PMInRange01 != 0)
                     {
                         SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } 
+                    } */
                     /*SetTileColour(new Color(Mathf.Lerp(1f, 0, CHAInRange01), Mathf.Lerp(1f, 1f, CHAInRange01), Mathf.Lerp(1f, 0, CHAInRange01), 1), new Vector3Int(i, j, 0));
                     if(CHAInRange01 != 0)
                     {
