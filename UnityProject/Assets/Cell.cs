@@ -17,6 +17,8 @@ public class Cell
 
     public float prevPM = 0;
 
+    public Dir direction = Dir.NONE;
+
     public Cell(bool aA, float pM, float cHA, bool tE, CellType type)
     {
         this.AA = aA;
@@ -42,4 +44,9 @@ public class Cell
 public enum CellType
 {
     S, N, U, A
+};
+
+public enum Dir
+{
+    N, NW, NE, E, W, S, SW, SE, NONE
 };
