@@ -419,13 +419,13 @@ public class SimulationManager : MonoBehaviour
         {
             Debug.Log("Other stuff applied");
 
-            /*
+            
             if(Ns.Count == 0) //All N connected?
             {
                 Debug.Log("No N left, stopping the simulation.");
                 simulationRunning = false;
                 return;
-            }*/
+            }
 
             for (int k = Ns.Count - 1; k >= 0; k--)
             {
@@ -686,7 +686,7 @@ public class SimulationManager : MonoBehaviour
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
 
-                    if (newMap[i, j].PM > defaultPMForS)
+                    /*if (newMap[i, j].PM > defaultPMForS)
                     {
                         newMap[i, j].PM = defaultPMForS;
                     }
@@ -695,7 +695,7 @@ public class SimulationManager : MonoBehaviour
                     {
                         Debug.Log("THIS SHOULDN'T HAPPEN: "+i+" "+j+" "+ newMap[i, j].PM);
                         newMap[i, j].PM = 0;
-                    }
+                    }*/
                 }
                 else
                 {
@@ -933,7 +933,30 @@ public class SimulationManager : MonoBehaviour
                 }
                 else
                 {
-                    SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
+                    //SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
+
+                    //COLORED MAP
+                    if(mapCells[i, j].PM == 0)
+                    {
+                        SetTileColour(new Color(1,1,1,1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 0.1)
+                    {
+                        SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 1)
+                    {
+                        SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 10)
+                    {
+                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 100)
+                    {
+                        SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
+                    }
+                    else if (mapCells[i, j].PM >= 100)
+                    {
+                        SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
+                    }
+
                     //DEBUG ONLY                    
                     /*if(PMInRange01 != 0)
                     {
