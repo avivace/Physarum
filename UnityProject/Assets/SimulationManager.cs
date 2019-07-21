@@ -338,7 +338,7 @@ public class SimulationManager : MonoBehaviour
 
                     if (!hasAnyTEneighbour)
                     {
-                        if (mapCells[i, j].PM == 0)
+                        if (mapCells[i, j].PM >= 0.1f)//== 0)
                         {
                             float maxPMNeighbour = 0;
                             int neighbourCoordX = -1;
