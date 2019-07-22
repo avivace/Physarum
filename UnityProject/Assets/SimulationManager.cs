@@ -28,11 +28,11 @@ public class SimulationManager : MonoBehaviour
 
     float CON = 0.95f;
     float PAP = 0.7f;  
-    float PMP1 = 0.08f;
+    float PMP1 = 0.08f; 
     float PMP2 = 0.01f;
     float CAP1 = 0.05f;
     float CAP2 = 0.01f;
-    float ThPM = 0.2f;
+    public float ThPM = 20;//0.2f;
 
     int t = 0;
 
@@ -63,6 +63,8 @@ public class SimulationManager : MonoBehaviour
     bool testMatteo = true;
 
     float soglia = 0.0001f;
+
+    public int minAgeToDryOut = 1000;
 
     void payloadHandler(){
         string jsonString = "{\"value1\":\"1\"}";
@@ -221,68 +223,46 @@ public class SimulationManager : MonoBehaviour
     void SimulationMatteo()
     {
         Debug.Log("Simulation Matteo running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
-        /*if (fiftyStepsPhase)
-        {*/
-            ExecuteMatteoFiftyStepsPhase();
-        /*}
 
-        if (!fiftyStepsPhase)
-        {*/
-            Debug.Log("Other stuff applied");
+        ApplyMatteoDiffusionEquations();
 
+        /*if (Ns.Count == 0) //All N connected?
+        {
+            Debug.Log("No N left, stopping the simulation.");
+            simulationRunning = false;
+            return;
+        }*/
 
-            if (Ns.Count == 0) //All N connected?
+        for (int k = Ns.Count - 1; k >= 0; k--)
+        {
+            Vector2Int v = Ns[k];
+            int i = v.x;
+            int j = v.y;
+
+            Cell cell = mapCells[i, j];
+
+            if (cell.type == CellType.N && cell.PM >= ThPM && cell.direction != Dir.NONE)
             {
-                Debug.Log("No N left, stopping the simulation.");
-                simulationRunning = false;
-                return;
+
+                Debug.Log("N connecting " + i + " " + j + " " + cell.PM);
+                //Connect these Ns with the SP
+                ConnectNToNearestS(i, j);
+
+                //Change NS into SP
+                cell.type = CellType.S;
+                cell.PM = defaultPMForS;
+                cell.CHA = 0;
+                Ns.RemoveAt(k);
+                Ss.Add(v);
             }
+        }
 
-            for (int k = Ns.Count - 1; k >= 0; k--)
-            {
-                Vector2Int v = Ns[k];
-                int i = v.x;
-                int j = v.y;
-
-                Cell cell = mapCells[i, j];
-
-                if (cell.type == CellType.N && cell.PM >= ThPM)
-                {
-                    //Connect these Ns with the SP
-                    ConnectNToNearestS(i, j);
-
-                    //Change NS into SP
-                    cell.type = CellType.S;
-                    cell.PM = defaultPMForS;
-                    cell.CHA = 0;
-                    Ns.RemoveAt(k);
-                    Ss.Add(v);
-                }
-            }
-
-            //ResetFiftyStepsPhase();
-            //ExecuteFiftyStepsPhase();
-
-            if (t >= 10000)
-            {
-                simulationRunning = false;
-            }
-        //}
+        if (t >= 10000)
+        {
+            simulationRunning = false;
+        }
 
         t++;
-    }
-
-    void ExecuteMatteoFiftyStepsPhase()
-    {
-        /*if (localFiftyStepsTime < 50)
-        {*/
-            ApplyMatteoDiffusionEquations();
-        /*    localFiftyStepsTime++;
-        }
-        else
-        {
-            fiftyStepsPhase = false;
-        }*/
     }
 
     void ApplyMatteoDiffusionEquations()
@@ -293,10 +273,15 @@ public class SimulationManager : MonoBehaviour
         {
             for (int j = 0; j < mapSizeY; j++)
             {
-                //Calcolo PM
-                if (mapCells[i, j].type != CellType.S && mapCells[i, j].type != CellType.U)
+                if (/*mapCells[i, j].type != CellType.S && */mapCells[i, j].type != CellType.U)
                 {
-                    if (mapCells[i, j].PM >= 0.1f && mapCells[i, j].direction == Dir.NONE)
+                    if(i == 44 && j == 42)
+                    {
+                        Debug.Log("FIFFIFIFI "+ mapCells[i, j].PM);
+                    }
+
+                    //CALCOLO DIREZIONE
+                    if (mapCells[i, j].PM >= 1 && mapCells[i, j].direction == Dir.NONE)
                     {
                         float maxPMNeighbour = 0;
                         int neighbourCoordX = -1;
@@ -365,7 +350,7 @@ public class SimulationManager : MonoBehaviour
                         }
                     }
 
-                    //CONSERVAZIONE
+                    //CALCOLO PM CON CONSERVAZIONE
                     float cellPM = GetPM(i, j);
 
                     for (int x = i - 1; x < (i + 2); x++)
@@ -378,37 +363,47 @@ public class SimulationManager : MonoBehaviour
                             }
                             else if (GetAA(x, y))
                             {
-                                if (x == i || y == j) //NN neighbours
+                                if (GetAge(x, y) > minAgeToDryOut && IsCellAInDirectionOfCellB(i, j, x, y))
                                 {
-                                    if (GetCHA(x, y) < GetCHA(i, j))
-                                    {
-                                        if (GetPM(x, y) > 12)
-                                        {
-                                            cellPM += 2;
-                                        }
-                                    }
-                                    else if (GetCHA(x, y) > GetCHA(i, j))
-                                    {
-                                        if (GetPM(i, j) > 12)
-                                        {
-                                            cellPM -= 2;
-                                        }
-                                    }
+                                    cellPM += GetPM(x, y);
                                 }
-                                else //MN neighbours
+                                else if (GetAge(i, j) > minAgeToDryOut && IsCellAInDirectionOfCellB(x, y, i, j) 
+                                    && !mapCells[i, j].TE && mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.S)
                                 {
-                                    if (GetCHA(x, y) < GetCHA(i, j))
+                                    cellPM -= GetPM(i, j);
+                                } else {
+                                    if (x == i || y == j) //NN neighbours
                                     {
-                                        if (GetPM(x, y) > 12)
+                                        if (GetCHA(x, y) < GetCHA(i, j)/* || mapCells[i, j].TE*/)
                                         {
-                                            cellPM += 1;
+                                            if (GetPM(x, y) >= 12)
+                                            {
+                                                cellPM += 2;
+                                            }
+                                        }
+                                        else if (GetCHA(x, y) > GetCHA(i, j)/* || mapCells[x, y].TE*/)
+                                        {
+                                            if (GetPM(i, j) >= 12)
+                                            {
+                                                cellPM -= 2;
+                                            }
                                         }
                                     }
-                                    else if (GetCHA(x, y) > GetCHA(i, j))
+                                    else //MN neighbours
                                     {
-                                        if (GetPM(i, j) > 12)
+                                        if (GetCHA(x, y) < GetCHA(i, j)/* || mapCells[i, j].TE*/)
                                         {
-                                            cellPM -= 1;
+                                            if (GetPM(x, y) >= 12)
+                                            {
+                                                cellPM += 1;
+                                            }
+                                        }
+                                        else if (GetCHA(x, y) > GetCHA(i, j)/* || mapCells[x, y].TE*/)
+                                        {
+                                            if (GetPM(i, j) >= 12)
+                                            {
+                                                cellPM -= 1;
+                                            }
                                         }
                                     }
                                 }
@@ -498,36 +493,70 @@ public class SimulationManager : MonoBehaviour
                 }
 
                 //Calcolo CHA
-                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U/* && !mapCells[i, j].TE*/)
+                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U /*&& !mapCells[i, j].TE/* && mapCells[i, j].PM == 0*/)
                 {
-                    float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j))
-                            + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
-                            + ((GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j))
-                            + ((GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
-                    float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
-                    newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
-
-                    if (newMap[i, j].CHA > defaultCHAForN)
-                    {
-                        newMap[i, j].CHA = defaultCHAForN;
-                    }
-                    if (newMap[i, j].CHA < 0)
+                    if (mapCells[i, j].age > minAgeToDryOut)
                     {
                         newMap[i, j].CHA = 0;
+                    }
+                    else
+                    {
+                        float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j))
+                                + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
+                                + ((GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j))
+                                + ((GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
+                        float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j))
+                            + ((GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j))
+                            + ((GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j))
+                            + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
+                        newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
+
+                        if (newMap[i, j].CHA > defaultCHAForN)
+                        {
+                            newMap[i, j].CHA = defaultCHAForN;
+                        }
+                        if (newMap[i, j].CHA < 0)
+                        {
+                            newMap[i, j].CHA = 0;
+                        }
                     }
                 }
                 else
                 {
                     newMap[i, j].CHA = mapCells[i, j].CHA;
                 }
+
+                if(mapCells[i, j].PM > 0) //Must be touched by the mold
+                    mapCells[i, j].age++;
             }
         }
 
         //Update the map
         UpdateMapWithNewDiffusionValues(newMap);
+
+        //Debug.Log("FIFFIFIFI2 " + mapCells[44, 42].PM);
+    }
+
+    private bool IsCellAInDirectionOfCellB(int Ax, int Ay, int Bx, int By)
+    {
+        if (mapCells[Bx, By].direction == Dir.N && Ax == Bx && Ay == By+1)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.NW && Ax == Bx - 1 && Ay == By + 1)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.NE && Ax == Bx + 1 && Ay == By + 1)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.W && Ax == Bx - 1 && Ay == By)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.E && Ax == Bx + 1 && Ay == By)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.S && Ax == Bx && Ay == By - 1)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.SW && Ax == Bx - 1 && Ay == By - 1)
+            return true;
+        else if (mapCells[Bx, By].direction == Dir.SE && Ax == Bx + 1 && Ay == By - 1)
+            return true;
+
+        return false;
     }
 
     void SimulationWithConservation()
@@ -842,9 +871,11 @@ public class SimulationManager : MonoBehaviour
     int antiCrashCounter = 0;
     private void ConnectNToNearestS(int i, int j)
     {
+        Debug.Log("TUBO CONNESSO " + i + " " + j + " " + mapCells[i, j].CHA + " " + mapCells[i, j].direction + " " + mapCells[i, j].type);
+
         mapCells[i, j].TE = true;
-        
-        Debug.Log("TUBO CONNESSO "+i+" "+j+" "+ mapCells[i, j].CHA + " " + mapCells[i, j].direction+" "+ mapCells[i, j].type);
+
+        //mapCells[i, j].CHA = defaultCHAForN / 3f;
 
         if (mapCells[i, j].type != CellType.S)
         {
@@ -1233,6 +1264,14 @@ public class SimulationManager : MonoBehaviour
             return mapCells[i, j].AA;
     }
 
+    int GetAge(int i, int j)
+    {
+        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
+            return 0;
+        else
+            return mapCells[i, j].age;
+    }
+
     float CalculatePA(float cha1, float oppositeCHA, float[] values, int i , int j) {
         if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
             return 0;
@@ -1310,17 +1349,43 @@ public class SimulationManager : MonoBehaviour
                 {
                     SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
                 }
-                else if (mapCells[i, j].TE)
+                /*else if (mapCells[i, j].TE)
                 {
                     //SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
                     SetTileColour(new Color(1, 0, 1, 1), new Vector3Int(i, j, 0));
-                }
+                }*/
                 else
                 {
                     //SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
 
-                    //COLORED MAP
+                    //COLORED FOR CONSERVATION MAP
                     if(mapCells[i, j].PM == 0)
+                    {
+                        SetTileColour(new Color(1,1,1,1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 12)
+                    {
+                        SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 50)
+                    {
+                        SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 75)
+                    {
+                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM < 100)
+                    {
+                        SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
+                    } else if (mapCells[i, j].PM >= 100)
+                    {
+                        SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
+                    }
+
+                    /*if (mapCells[i, j].direction != Dir.NONE)
+                    {
+                        SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
+                    }*/
+
+                    //COLORED FOR NO CONSERVATION MAP
+                    /*if(mapCells[i, j].PM == 0)
                     {
                         SetTileColour(new Color(1,1,1,1), new Vector3Int(i, j, 0));
                     } else if (mapCells[i, j].PM < 0.1)
@@ -1338,7 +1403,7 @@ public class SimulationManager : MonoBehaviour
                     } else if (mapCells[i, j].PM >= 100)
                     {
                         SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
-                    }
+                    }*/
 
                     //DEBUG DIRECTION MAP
                     /*if (mapCells[i, j].direction == Dir.N)
