@@ -1,16 +1,27 @@
-The behaviour of slime mould during the laboratory experiments have been simulated by a model based on Cellular Automata. Using CA can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
+Consider only the plasmodium stage of its life cycle, there is no single model that can describe exactly the behavior of Physarum. So far, there is a variety of modeling approaches which also are implemented by a variety of tools.
+\par
+In this project the behaviour of slime mould during the laboratory experiments have been simulated by a model based on Cellular Automata. Using CA can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
 In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
 \par
-All of the biological studies indicated above, like solving a maze and designing a transport network, have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps:
+All of the biological studies indicated above, like solving a maze and designing a transport network, have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps \cite{shirakawa2015construction}:
 \begin{itemize}
 	\item First step: the plasmodium fully searches the given space
 	\item Second step: some sources of attractant or repellent stimuli are given to the plasmodium that is fully and homogeneously spreading in the space
 	\item Third step: the plasmodium optimizes the connection between the sources
 \end{itemize}
 
-The model manages to adequately approximate the tubular network designed by the real plasmodium \cite{shirakawa2015construction}.
+The majority of the studies focus on the behaviour of the plasmodium in a closed space. However, few studies have been done for the plasmodium that is exploring an open space. We believe that we can find more enhanced biological characteristics of the biological entities by observing the behaviours of them in an open and unknown environment. In this study, we thus tried to investigate the exploratory behaviour of the plasmodium in an open space and to understand how the organism makes its decision
+in exploration. 
 
-In the proposed CA model \cite{Tsompanas2016} the plasmodium is first starved and then introduced to an environment with some NSs located at characteristic points. The plasmodium explores the available area, encapsulates the NSs and creates a tubular network that connects all these NSs by a nature-inspired, cost effective and risk avoiding manner. To note the geometry of the network created by the plasmodium depends on the positions of the NSs. Moreover, further parameters can play key role in determining exact structure of plasmodium network.
+\\
+In the proposed CA model \cite{Tsompanas2016} the plasmodium is first starved and then introduced and
+then introduced into a specific place in the space. Moreover, some NSs which produces chemo-attractants are located at characteristic points. 
+In order to simulate this biological experiment, the area is divided into a matrix of squares with identical areas and each square of the surface is represented by a CA cell.
+\par
+The plasmodium explores the available area, encapsulates the NSs and creates a tubular network that connects all these NSs by a nature-inspired, cost effective and risk avoiding manner. To note the geometry of the network created by the plasmodium depends on the positions of the NSs. Moreover, further parameters can play key role in determining exact structure of plasmodium network.
+
+
+
 \par
 The model imitates the entire area that it is used in a laboratory experiment using the plasmodium of Physarum. The entire area can be defined, without loss of generality, as a square grid divided into identical square cells that constitutes a set defined as E. This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
 Also some cells that are included in the available area set of cells, represent the oat flakes that are considered as NSs for the plasmodium (a set of cells defined as N) and one cell represents the place where the plasmodium is initially introduced to the
@@ -24,7 +35,7 @@ where:
 \begin{itemize}
 	\item $AA$ stands for Available Area for the plasmodium to explore. It assumes a boolean value:  	
 \[AA_{(i, j)}=\begin{cases} \mbox{True}, & \forall i, j: c_{(i,j)} \in A \\ \mbox{False}, &  \forall i, j: c_{(i,j)} \in U\end{cases}\]
-	\item $PM$ (Physarum Mass) is a floating-point variable. It indicates the volume of the cytoplasm located on a specific cell
+	\item $PM$ (Physarum Mass) is a floating-point variable. It indicates the volume of the cytoplasmic material of the plasmodium located on a specific cell
 	\item $CHA$ (CHemoAttractant) is a floating-point variable. It represent the concentration of chemo-attractants that are located on a specific cell
 	\item $TE$ stands for Tube Existence and represents the participation of a cell in the tubular network inside the body of the slime mould
 \end{itemize}
@@ -157,9 +168,9 @@ If more NSs are covered with the predefined PM, they are connected to the neares
 
 
 
-\par
 
 
+\\
 DA INSERIRE ?: A logical question that comes to mind is why procedures (2) to (5) are executed
 for a second time. As identified in some laboratory experiments [44], after a seemingly
 random and not certain amount of time the plasmodium seems to change the
@@ -169,7 +180,7 @@ edges that connect NSs that were already connected to other NSs. As the CA model
 is designed without the use of probabilistic equations, it uses a second starting point
 to regenerate and explore the available area once more. That point will be a point of
 interest (NS), which is empirically chosen to be away from the initial SP
-
+\\
 DA INSERIRE ?: The second to last NS to
 be encapsulated was chosen, based on the fact that it is far enough from the initial
 SP and it is less likely to be a point of interest surrounded by unavailable area that
