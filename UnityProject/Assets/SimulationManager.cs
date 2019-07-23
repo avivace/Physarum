@@ -549,7 +549,7 @@ public class SimulationManager : MonoBehaviour
                                 && mapCells[x, y].type != CellType.N
                                 && mapCells[x, y].type != CellType.S)
                             {
-                                mapCells[i,j].PM += GetPM(x, y);
+                                newMap[i,j].PM += GetPM(x, y);
                             }
                             else if (GetAge(i, j) > minAgeToDryOut
                                 && IsCellAInDirectionOfCellB(x, y, i, j)
@@ -557,13 +557,16 @@ public class SimulationManager : MonoBehaviour
                                 && mapCells[i, j].type != CellType.N
                                 && mapCells[i, j].type != CellType.S)
                             {
-                                mapCells[i,j].PM -= GetPM(i, j);
+                                newMap[i,j].PM -= GetPM(i, j);
                             }
                         }
                     }
                 }
             }
         }
+
+        //Update the map
+        UpdateMapWithNewDiffusionValues(newMap);
 
         Debug.Log("sum " + sum+" "+ (Math.Round(sum / defaultPMForS)) + " "+(sum%defaultPMForS));
 
