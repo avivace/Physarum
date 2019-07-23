@@ -338,9 +338,11 @@ MonoBehaviour:
   tile: {fileID: 11400000, guid: 8dd9f982876ecb341bf31f92d257f0c4, type: 2}
   Ss: []
   Ns: []
-  defaultPMForS: 100
+  defaultPMForS: 5625
   defaultCHAForN: 100
   payload:
     value1: 
     value2: 
+  ThPM: 20
   tToStop: -1
+  minAgeToDryOut: 1000
