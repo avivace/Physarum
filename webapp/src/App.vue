@@ -1,19 +1,32 @@
 <template>
   <div id="app">
-    <span class="brand">Physarum</span> <br />
-    <span class="subtitle"><i>Slime mould simulation</i>, July 2019 </span>
-    <div class="footer">
-      <img
-        src="./assets/Unity_Technologies_logo.svg"
-        height="34px"
-      />&nbsp;
-      <img
-        src="./assets/WebGL_Logo.svg"
-        height="38px"
-      />
-    </div>
-    <br /><br /><br />
-    {{ greetText }}
+    <v-app>
+      
+      <v-container fluid>
+        <div>
+                <span class="brand">Physarum</span>
+        <span class="subtitle"><i>&nbsp;&nbsp;Slime mould simulation</i>, July 2019 </span>
+</div>
+        <v-layout row wrap>
+          <v-flex md9 sm12 style="height:200px; background-color: #DDD">
+            webgl container
+            
+          </v-flex>
+         <v-flex md3 sm12 style="height:200px; background-color: #FFAB91">
+               <div>
+        ui controls
+      </div> 
+         </v-flex>
+         </v-layout
+      ></v-container>
+
+      <div class="footer">
+        <img src="./assets/Unity_Technologies_logo.svg" height="34px" />&nbsp;
+        <img src="./assets/WebGL_Logo.svg" height="38px" />
+      </div>
+      <br /><br /><br />
+      {{ greetText }}
+    </v-app>
   </div>
 </template>
 
@@ -53,13 +66,14 @@ export default {
   font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: -0.02rem;
+
+
 }
 #app {
   font-family: "Inter", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 5px;
   font-size: 1.5rem;
 }
 .footer {
