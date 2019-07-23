@@ -18,8 +18,6 @@ public class Cell
     public Dir direction = Dir.NONE;
     public int age = 0;
 
-    public float prevPM = 0;
-
     public Cell(bool aA, float pM, float cHA, bool tE, CellType type)
     {
         this.AA = aA;

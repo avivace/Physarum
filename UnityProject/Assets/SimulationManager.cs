@@ -19,20 +19,20 @@ public class SimulationManager : MonoBehaviour
     public List<Vector2Int> Ss = new List<Vector2Int>();
     public List<Vector2Int> Ns = new List<Vector2Int>();
 
-    public Dictionary<Vector2Int, float> leftOverPMs = new Dictionary<Vector2Int, float>();
+    public Payload payload;
 
     public float defaultPMForS = 100;
     public float defaultCHAForN = 100;
 
-    public Payload payload;
-
-    float CON = 0.95f;
-    float PAP = 0.7f;  
-    float PMP1 = 0.08f; 
-    float PMP2 = 0.01f;
-    float CAP1 = 0.05f;
-    float CAP2 = 0.01f;
+    public float CON = 0.95f;
+    public float PAP = 0.7f;
+    public float PMP1 = 0.08f;
+    public float PMP2 = 0.01f;
+    public float CAP1 = 0.05f;
+    public float CAP2 = 0.01f;
     public float ThPM = 20;//0.2f;
+
+    public int minAgeToDryOut = 1000;
 
     int t = 0;
 
@@ -54,17 +54,12 @@ public class SimulationManager : MonoBehaviour
     int posIbiggestPMValue;
     int posJbiggestPMValue;
 
-    /** Keep it -1 if you want the simulation to go normally. */
-    public int tToStop = -1;
+    /** Keep it -1 if you want the simulation to go eternally. */
+    public int tToStop = 10000;
 
-    //float leftOverPM;
-
-    bool withConservation = false;
     bool testMatteo = true;
 
-    float soglia = 0.0001f;
-
-    public int minAgeToDryOut = 1000;
+    public float totalPM = 0;
 
     void payloadHandler(){
         string jsonString = "{\"value1\":\"1\"}";
@@ -92,14 +87,7 @@ public class SimulationManager : MonoBehaviour
             }
             else
             {
-                if (withConservation)
-                {
-                    SimulationWithConservation();
-                }
-                else
-                {
-                    Simulation();
-                }
+                Simulation();
             }
             UpdateTiles();
 
@@ -122,15 +110,6 @@ public class SimulationManager : MonoBehaviour
             foreach (Vector2Int s in Ss)
             {
                 mapCells[s.x, s.y].PM = defaultPMForS;
-            }
-        }
-
-        if (withConservation)
-        {
-            foreach (Vector2Int s in Ss)
-            {
-                leftOverPMs[s] = defaultPMForS;
-                mapCells[s.x, s.y].PM = 0;
             }
         }
 
@@ -181,57 +160,11 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
-    /*float deltacell0, deltacell1, deltacell2, deltacell3, deltacell4 = 0;
-    float prevcell0, prevcell1, prevcell2, prevcell3, prevcell4 = 0;
-    float cell0, cell1, cell2, cell3, cell4 = 0;
-    float k = 0;
-    float testLeftOverPM = 300000f;
-    private void TestProgression()
-    {
-        deltacell4 = cell4 - prevcell4;
-        prevcell4 = cell4;
-        cell4 -= deltacell4 / 6;
-        cell4 += deltacell3 / 6;
-
-        deltacell3 = cell3 - prevcell3;
-        prevcell3 = cell3;
-        cell3 -= deltacell3 / 6;
-        cell3 += deltacell2 / 6;
-
-        deltacell2 = cell2 - prevcell2;
-        prevcell2 = cell2;
-        cell2 -= deltacell2 / 6;
-        cell2 += deltacell1 / 6;
-
-        deltacell1 = cell1 - prevcell1;
-        prevcell1 = cell1;
-        cell1 -= deltacell1 / 6;
-        cell1 += deltacell0 / 6;
-
-        deltacell0 = cell0 - prevcell0;
-        prevcell0 = cell0;
-        cell0 -= deltacell0 / 6;
-        cell0 += testLeftOverPM / 400;
-
-        testLeftOverPM -= testLeftOverPM / 400;
-
-        k++;
-
-        Debug.Log("Progression: " + testLeftOverPM + " || " + cell0 + " " + cell1 + " " + cell2 + " " + cell3 + " " + cell4 + " || " + k);
-    }*/
-
     void SimulationMatteo()
     {
         Debug.Log("Simulation Matteo running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
 
         ApplyMatteoDiffusionEquations();
-
-        /*if (Ns.Count == 0) //All N connected?
-        {
-            Debug.Log("No N left, stopping the simulation.");
-            simulationRunning = false;
-            return;
-        }*/
 
         for (int k = Ns.Count - 1; k >= 0; k--)
         {
@@ -257,31 +190,20 @@ public class SimulationManager : MonoBehaviour
             }
         }
 
-        if (t >= 10000)
-        {
-            simulationRunning = false;
-        }
-
         t++;
     }
 
-    float sum = 0;
     void ApplyMatteoDiffusionEquations()
     {
         Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
-        float sum = 0;
+        totalPM = 0;
 
         for (int i = 0; i < mapSizeX; i++)
         {
             for (int j = 0; j < mapSizeY; j++)
             {
-                if (/*mapCells[i, j].type != CellType.S && */mapCells[i, j].type != CellType.U)
+                if (mapCells[i, j].type != CellType.U)
                 {
-                    /*if(i == 44 && j == 42)
-                    {
-                        Debug.Log("FIFFIFIFI "+ mapCells[i, j].PM);
-                    }*/
-
                     //CALCOLO DIREZIONE
                     if (mapCells[i, j].PM >= 1 && mapCells[i, j].direction == Dir.NONE)
                     {
@@ -354,7 +276,6 @@ public class SimulationManager : MonoBehaviour
 
                     //CALCOLO PM CON CONSERVAZIONE
                     float cellPM = GetPM(i, j);
-
                     
                     for (int x = i - 1; x < (i + 2); x++)
                     {
@@ -404,82 +325,8 @@ public class SimulationManager : MonoBehaviour
                         }
                     }
 
-                    sum += cellPM;
+                    totalPM += cellPM;
                     newMap[i, j].PM = cellPM;
-
-                    /*SENZA CONSERVAZIONE
-                    float[] values = new float[]{
-                    GetCHA(i - 1, j),
-                    GetCHA(i, j - 1),
-                    GetCHA(i + 1, j),
-                    GetCHA(i, j + 1),
-                    GetCHA(i - 1, j - 1),
-                    GetCHA(i + 1, j - 1),
-                    GetCHA(i - 1, j + 1),
-                    GetCHA(i + 1, j + 1) };
-
-                    float maxCHA = GetMax(values, false);
-
-                    float PA_WEST = 0;
-                    float PA_SOUTH = 0;
-                    float PA_EAST = 0;
-                    float PA_NORTH = 0;
-                    float PA_SOUTHWEST = 0;
-                    float PA_SOUTHEAST = 0;
-                    float PA_NORTHEAST = 0;
-                    float PA_NORTHWEST = 0;
-
-                    if (maxCHA == GetCHA(i - 1, j))
-                    {
-                        PA_WEST = PAP;
-                        PA_EAST = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i, j - 1))
-                    {
-                        PA_SOUTH = PAP;
-                        PA_NORTH = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i + 1, j))
-                    {
-                        PA_EAST = PAP;
-                        PA_WEST = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i, j + 1))
-                    {
-                        PA_NORTH = PAP;
-                        PA_SOUTH = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i - 1, j - 1))
-                    {
-                        PA_SOUTHWEST = PAP;
-                        PA_NORTHEAST = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i + 1, j - 1))
-                    {
-                        PA_SOUTHEAST = PAP;
-                        PA_NORTHWEST = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i - 1, j + 1))
-                    {
-                        PA_NORTHWEST = PAP;
-                        PA_SOUTHEAST = -PAP;
-                    }
-                    else if (maxCHA == GetCHA(i - 1, j + 1))
-                    {
-                        PA_NORTHEAST = PAP;
-                        PA_SOUTHWEST = -PAP;
-                    }
-
-                    float PMvNN = ((1 + PA_WEST) * GetPM(i - 1, j) - (GetAA(i - 1, j) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_SOUTH) * GetPM(i, j - 1) - (GetAA(i, j - 1) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_EAST) * GetPM(i + 1, j) - (GetAA(i + 1, j) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_NORTH) * GetPM(i, j + 1) - (GetAA(i, j + 1) ? 1 : 0) * GetPM(i, j));
-                    float PMeMN = ((1 + PA_SOUTHWEST) * GetPM(i - 1, j - 1) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_SOUTHEAST) * GetPM(i + 1, j - 1) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_NORTHWEST) * GetPM(i - 1, j + 1) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetPM(i, j))
-                        + ((1 + PA_NORTHEAST) * GetPM(i + 1, j + 1) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetPM(i, j));
-
-                    newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);*/
                 }
                 else
                 {
@@ -487,7 +334,7 @@ public class SimulationManager : MonoBehaviour
                 }
 
                 //Calcolo CHA
-                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U /*&& !mapCells[i, j].TE/* && mapCells[i, j].PM == 0*/)
+                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U)
                 {
                     if (mapCells[i, j].age > minAgeToDryOut)
                     {
@@ -568,9 +415,7 @@ public class SimulationManager : MonoBehaviour
         //Update the map
         UpdateMapWithNewDiffusionValues(newMap);
 
-        Debug.Log("sum " + sum+" "+ (Math.Round(sum / defaultPMForS)) + " "+(sum%defaultPMForS));
-
-        //Debug.Log("FIFFIFIFI2 " + mapCells[44, 42].PM);
+        Debug.Log("TOTALPM " + totalPM+" "+ (Math.Round(totalPM / defaultPMForS)) + " "+(totalPM%defaultPMForS));
     }
 
     private bool IsCellAInDirectionOfCellB(int Ax, int Ay, int Bx, int By)
@@ -595,210 +440,7 @@ public class SimulationManager : MonoBehaviour
         return false;
     }
 
-    void SimulationWithConservation()
-    {
-        Debug.Log("Simulation running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
-
-        ExecuteWithConservation();
-
-        if (Ns.Count == 0) //All N connected?
-        {
-            Debug.Log("No N left, stopping the simulation.");
-            simulationRunning = false;
-            return;
-        }
-
-        for (int k = Ns.Count - 1; k >= 0; k--)
-        {
-            Vector2Int v = Ns[k];
-            int i = v.x;
-            int j = v.y;
-
-            Cell cell = mapCells[i, j];
-
-            if (cell.type == CellType.N && cell.PM >= ThPM)
-            {
-                //Connect these Ns with the SP
-                ConnectNToNearestS(i, j);
-
-                //Change NS into SP
-                cell.type = CellType.S;
-                //cell.PM = cell.PM;
-                leftOverPMs[v] = defaultPMForS;
-                cell.CHA = 0;
-                Ns.RemoveAt(k);
-                Ss.Add(v);
-            }
-        }
-
-        if (t <= 5000)
-        {
-            /*if (t == 5000)
-            {
-                Debug.Log("We reached 5000, changing SP in NS");
-                //Change all NS and SP as NS
-                for (int k = Ss.Count - 1; k >= 0; k--)
-                {
-                    Vector2Int v = Ss[k];
-                    int i = v.x;
-                    int j = v.y;
-
-                    Cell cell = mapCells[i, j];
-
-                    cell.type = CellType.N;
-                    cell.CHA = defaultCHAForN;
-                    Ss.RemoveAt(k);
-                    Ns.Add(v);
-                }
-
-                //Il penultimo NS incapsulato diventa il nuovo SP
-                mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
-                mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
-                mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
-                Ns.Remove(GetSecondToLastCoveredNS());
-                Ss.Add(GetSecondToLastCoveredNS());
-            }*/
-
-            //ResetFiftyStepsPhase();
-            //ExecuteFiftyStepsPhase();
-        }
-        else if (t < 10000)
-        {
-            //ResetFiftyStepsPhase();
-            //ExecuteFiftyStepsPhase();
-        }
-        else
-        {
-            simulationRunning = false;
-        }
-
-        t++;
-    }
-
-    private void ExecuteWithConservation()
-    {
-        Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
-
-        for (int i = 0; i < mapSizeX; i++)
-        {
-            for (int j = 0; j < mapSizeY; j++)
-            {
-                //Calcolo PM
-                if (mapCells[i, j].type != CellType.U)
-                {
-                    float deltaPM = GetPM(i, j) - GetPrevPM(i, j);
-
-                    float oldPM = GetPM(i, j);
-                    float cellPM = oldPM;
-
-                    if (mapCells[i, j].type == CellType.S/* && mapCells[i, j].CHA != 0*/)
-                    {
-                        cellPM += leftOverPMs[new Vector2Int(i, j)] / 6; //400;
-                        leftOverPMs[new Vector2Int(i, j)] -= leftOverPMs[new Vector2Int(i, j)] / 6; //400;
-                    }
-
-                    for (int x = i - 1; x < (i + 2); x++)
-                    {
-                        for (int y = j - 1; y < (j + 2); y++)
-                        {
-                            if (x == i && y == j)
-                            {
-                                //Nothing with the current cell
-                            }
-                            else if (GetAA(x, y))
-                            {
-                                if (x == i || y == j) //NN neighbours
-                                {
-                                    if (GetCHA(x, y) < GetCHA(i, j))
-                                    {
-                                        float deltaOtherPM = GetPM(x, y) - GetPrevPM(x, y);
-                                        if (deltaOtherPM > soglia)
-                                            cellPM += deltaOtherPM / 6f; // GetPM(x, y) / 6f;
-                                    }
-                                    else if (GetCHA(x, y) > GetCHA(i, j))
-                                    {
-                                        if (deltaPM > soglia)
-                                            cellPM -= deltaPM / 6f; // oldPM / 6f;
-                                    }
-                                }
-                                else //MN neighbours
-                                {
-                                    if (GetCHA(x, y) < GetCHA(i, j))
-                                    {
-                                        float deltaOtherPM = GetPM(x, y) - GetPrevPM(x, y);
-                                        if(deltaOtherPM > soglia)
-                                            cellPM += deltaOtherPM / 6f; //GetPM(x, y) / 12f;
-                                    }
-                                    else if (GetCHA(x, y) > GetCHA(i, j))
-                                    {
-                                        if (deltaPM > soglia)
-                                            cellPM -= deltaPM / 6f; // oldPM / 12f;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    newMap[i, j].prevPM = mapCells[i, j].PM;
-
-                    newMap[i, j].PM = cellPM;
-
-                    /*if (i >= 19 && i <= 24)
-                    {
-                        Debug.Log("SCALA " + i + " " + j + " -> " + newMap[i, j].PM + " ||| " + (GetCHA(i - 1, j) < GetCHA(i, j)) + " " + (GetCHA(i + 1, j) < GetCHA(i, j)));
-                    }*/
-                }
-                else
-                {
-                    newMap[i, j].PM = 0;
-                }
-
-                if (mapCells[i, j].type == CellType.S)
-                {
-                    Debug.Log("PM of S " + i + " " + j + " " + newMap[i, j].PM);
-                }
-                if (mapCells[i, j].type == CellType.N)
-                {
-                    Debug.Log("PM of N " + i + " " + j + " " + newMap[i, j].PM);
-                }
-
-                //Calcolo CHA
-                if (mapCells[i, j].PM != 0)
-                {
-                    newMap[i, j].CHA = mapCells[i, j].CHA;
-                }
-                else if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U)
-                {
-                    float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j))
-                            + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
-                            + ((GetCHA(i + 1, j)) - (GetAA(i + 1, j) ? 1 : 0) * GetCHA(i, j))
-                            + ((GetCHA(i, j + 1)) - (GetAA(i, j + 1) ? 1 : 0) * GetCHA(i, j));
-                    float CHAeMN = ((GetCHA(i - 1, j - 1)) - (GetAA(i - 1, j - 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i + 1, j - 1)) - (GetAA(i + 1, j - 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i - 1, j + 1)) - (GetAA(i - 1, j + 1) ? 1 : 0) * GetCHA(i, j))
-                        + ((GetCHA(i + 1, j + 1)) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetCHA(i, j));
-                    newMap[i, j].CHA = CON * (GetCHA(i, j) + CAP1 * (CHAvNN + CAP2 * CHAeMN));
-
-                    /*if (newMap[i, j].CHA > defaultCHAForN)
-                    {
-                        newMap[i, j].CHA = defaultCHAForN;
-                    }
-                    if (newMap[i, j].CHA < 0)
-                    {
-                        newMap[i, j].CHA = 0;
-                    }*/
-                }
-                else
-                {
-                    newMap[i, j].CHA = mapCells[i, j].CHA;
-                }
-            }
-        }
-
-        //Update the map
-        UpdateMapWithNewDiffusionValues(newMap);
-    }
-
+ 
     /** Execution of the simulation. */
     void Simulation()
     {
@@ -910,22 +552,20 @@ public class SimulationManager : MonoBehaviour
         Debug.Log("TUBO CONNESSO " + i + " " + j + " " + mapCells[i, j].CHA + " " + mapCells[i, j].direction + " " + mapCells[i, j].type);
 
         mapCells[i, j].TE = true;
-
-        //mapCells[i, j].CHA = defaultCHAForN / 3f;
-
+        
         if (mapCells[i, j].type != CellType.S)
         {
             int x;
             int y;
 
-            //OLD float highestNearPM = GetHighestNeighbourPM(i, j, out x, out y);
-            GetNeighbourBasedOnDirection(i, j, out x, out y);
-
-            //Debug.Log("TUBOSUPER "+x+" "+y+" "+ mapCells[i, j].direction);
+            if(testMatteo)
+                GetNeighbourBasedOnDirection(i, j, out x, out y);
+            else
+                GetHighestNeighbourPM(i, j, out x, out y);
 
             if (antiCrashCounter < 500)
             {
-                Debug.Log("Connecting, highest near PM: "+ /*highestNearPM+" "+*/x+" "+y);
+                Debug.Log("Connecting, highest near PM: "+ x+" "+y);
                 antiCrashCounter++; 
                 ConnectNToNearestS(x, y);
             } else
@@ -1047,28 +687,6 @@ public class SimulationManager : MonoBehaviour
                 //Calcolo PM
                 if (mapCells[i, j].type != CellType.S && mapCells[i, j].type != CellType.U)
                 {
-                    /*
-                    float[] values = new float[]{
-                    GetCHA(i - 1, j - 1),
-                    GetCHA(i - 1, j),
-                    GetCHA(i - 1, j + 1),
-                    GetCHA(i, j - 1),
-                    GetCHA(i, j),
-                    GetCHA(i, j + 1),
-                    GetCHA(i + 1, j - 1),
-                    GetCHA(i + 1, j),
-                    GetCHA(i + 1, j + 1) };
-
-                    float PA_WEST = (CalculatePA(GetCHA(i - 1, j), GetCHA(i + 1, j), values, i, j));
-                    float PA_SOUTH = (CalculatePA(GetCHA(i, j - 1), GetCHA(i, j + 1), values, i, j));
-                    float PA_EAST = (CalculatePA(GetCHA(i + 1, j), GetCHA(i - 1, j), values, i, j));
-                    float PA_NORTH = (CalculatePA(GetCHA(i, j + 1), GetCHA(i, j - 1), values, i, j));
-                    float PA_SOUTHWEST = (CalculatePA(GetCHA(i - 1, j - 1), GetCHA(i + 1, j + 1), values, i, j));
-                    float PA_SOUTHEAST = (CalculatePA(GetCHA(i + 1, j - 1), GetCHA(i - 1, j + 1), values, i, j));
-                    float PA_NORTHWEST = (CalculatePA(GetCHA(i - 1, j + 1), GetCHA(i + 1, j - 1), values, i, j));
-                    float PA_NORTHEAST = (CalculatePA(GetCHA(i + 1, j + 1), GetCHA(i - 1, j - 1), values, i, j));
-                    */
-
                     float[] values = new float[]{
                     GetCHA(i - 1, j),
                     GetCHA(i, j - 1),
@@ -1079,7 +697,7 @@ public class SimulationManager : MonoBehaviour
                     GetCHA(i - 1, j + 1),
                     GetCHA(i + 1, j + 1) };
 
-                    float maxCHA = GetMax(values, false);
+                    float maxCHA = GetMax(values);
 
                     float PA_WEST = 0;
                     float PA_SOUTH = 0;
@@ -1134,17 +752,6 @@ public class SimulationManager : MonoBehaviour
                         + ((1 + PA_NORTHEAST) * GetPM(i + 1, j + 1) - (GetAA(i + 1, j + 1) ? 1 : 0) * GetPM(i, j));
 
                     newMap[i, j].PM = GetPM(i, j) + PMP1 * (PMvNN + PMP2 * PMeMN);
-
-                    /*if (newMap[i, j].PM > defaultPMForS)
-                    {
-                        newMap[i, j].PM = defaultPMForS;
-                    }
-
-                    if (newMap[i, j].PM < 0)
-                    {
-                        Debug.Log("THIS SHOULDN'T HAPPEN: "+i+" "+j+" "+ newMap[i, j].PM);
-                        newMap[i, j].PM = 0;
-                    }*/
                 }
                 else
                 {
@@ -1184,7 +791,7 @@ public class SimulationManager : MonoBehaviour
         UpdateMapWithNewDiffusionValues(newMap);
     }
 
-    private float DistFromNearestS(int i, int j)
+    /*private float DistFromNearestS(int i, int j)
     {
         float res = float.MaxValue;
         foreach(Vector2Int s in Ss)
@@ -1197,7 +804,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         return res;
-    }
+    }*/
 
     private void UpdateMapWithNewDiffusionValues(Cell[,] newMap)
     {
@@ -1211,9 +818,7 @@ public class SimulationManager : MonoBehaviour
             for (int j = 0; j < mapSizeY; j++)
             {
                 mapCells[i, j].PM = newMap[i, j].PM;
-                //if(!mapCells[i, j].TE)
-                    mapCells[i, j].CHA = newMap[i, j].CHA;
-                mapCells[i, j].prevPM = newMap[i, j].prevPM;
+                mapCells[i, j].CHA = newMap[i, j].CHA;
 
                 if (smallestCHAvalue > mapCells[i, j].CHA)
                     smallestCHAvalue = mapCells[i, j].CHA;
@@ -1251,7 +856,6 @@ public class SimulationManager : MonoBehaviour
         return res;
     }
 
-
     private CellType GetType(int i, int j)
     {
         if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
@@ -1280,18 +884,6 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
-    float GetPrevPM(int i, int j)
-    {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
-        {
-            return 0;
-        }
-        else
-        {
-            return mapCells[i, j].prevPM;
-        }
-    }
-
     bool GetAA(int i, int j)
     {
         if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
@@ -1308,7 +900,7 @@ public class SimulationManager : MonoBehaviour
             return mapCells[i, j].age;
     }
 
-    float CalculatePA(float cha1, float oppositeCHA, float[] values, int i , int j) {
+    /*float CalculatePA(float cha1, float oppositeCHA, float[] values, int i , int j) {
         if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
             return 0;
 
@@ -1319,24 +911,18 @@ public class SimulationManager : MonoBehaviour
             return -PAP;
         else
             return 0;
-    }
+    }*/
 
-    private float GetMax(float[] values, bool shouldPrintDebug)
+    private float GetMax(float[] values)
     {
         float res = float.MinValue;
         foreach(float v in values)
         {
-            if(shouldPrintDebug)
-                Debug.Log("KAKAKA "+v);
-
             if(v > res)
             {
                 res = v;
             }
         }
-
-        if (shouldPrintDebug)
-            Debug.Log("KAKAKAFINAL " + res);
          
         return res;
     }
@@ -1394,52 +980,57 @@ public class SimulationManager : MonoBehaviour
                 {
                     //SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
 
-                    //COLORED FOR CONSERVATION MAP
-                    if(mapCells[i, j].PM == 0)
+                    if (testMatteo)
                     {
-                        SetTileColour(new Color(1,1,1,1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 12)
-                    {
-                        SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 50)
-                    {
-                        SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 75)
-                    {
-                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 100)
-                    {
-                        SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM >= 100)
-                    {
-                        SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
+                        //COLORED FOR CONSERVATION MAP
+                        if (mapCells[i, j].PM == 0)
+                        {
+                            SetTileColour(new Color(1, 1, 1, 1), new Vector3Int(i, j, 0));
+                        }
+                        else if (mapCells[i, j].PM < 12)
+                        {
+                            SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
+                        }
+                        else if (mapCells[i, j].PM < 50)
+                        {
+                            SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
+                        }
+                        else if (mapCells[i, j].PM < 75)
+                        {
+                            SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
+                        }
+                        else if (mapCells[i, j].PM < 100)
+                        {
+                            SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
+                        }
+                        else if (mapCells[i, j].PM >= 100)
+                        {
+                            SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
+                        }
                     }
-
-                    /*if (mapCells[i, j].direction != Dir.NONE)
+                    else
                     {
-                        SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
-                    }*/
-
-                    //COLORED FOR NO CONSERVATION MAP
-                    /*if(mapCells[i, j].PM == 0)
-                    {
-                        SetTileColour(new Color(1,1,1,1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 0.1)
-                    {
-                        SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 1)
-                    {
-                        SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 10)
-                    {
-                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM < 100)
-                    {
-                        SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } else if (mapCells[i, j].PM >= 100)
-                    {
-                        SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
-                    }*/
+                        //COLORED FOR NO CONSERVATION MAP
+                        if(mapCells[i, j].PM == 0)
+                        {
+                            SetTileColour(new Color(1,1,1,1), new Vector3Int(i, j, 0));
+                        } else if (mapCells[i, j].PM < 0.1)
+                        {
+                            SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
+                        } else if (mapCells[i, j].PM < 1)
+                        {
+                            SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
+                        } else if (mapCells[i, j].PM < 10)
+                        {
+                            SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
+                        } else if (mapCells[i, j].PM < 100)
+                        {
+                            SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
+                        } else if (mapCells[i, j].PM >= 100)
+                        {
+                            SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
+                        }
+                    }
 
                     //DEBUG DIRECTION MAP
                     /*if (mapCells[i, j].direction == Dir.N)
@@ -1473,17 +1064,6 @@ public class SimulationManager : MonoBehaviour
                     else if (mapCells[i, j].direction == Dir.SE)
                     {
                         SetTileColour(new Color(0.5f, 0.5f, 0.5f, 1), new Vector3Int(i, j, 0));
-                    }*/
-
-                    //DEBUG ONLY                    
-                    /*if(PMInRange01 != 0)
-                    {
-                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    } */
-                    /*SetTileColour(new Color(Mathf.Lerp(1f, 0, CHAInRange01), Mathf.Lerp(1f, 1f, CHAInRange01), Mathf.Lerp(1f, 0, CHAInRange01), 1), new Vector3Int(i, j, 0));
-                    if(CHAInRange01 != 0)
-                    {
-                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
                     }*/
                 }
             }
