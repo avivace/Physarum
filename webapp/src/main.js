@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import "typeface-gentium-basic"
 import Vuetify from 'vuetify'
+import 'vue-feather-icons'
 
 Vue.use(Vuetify)
 Vue.config.productionTip = false

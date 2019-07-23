@@ -1,25 +1,35 @@
 <template>
   <div id="app">
     <v-app>
-      
       <v-container fluid>
         <div>
-                <span class="brand">Physarum</span>
-        <span class="subtitle"><i>&nbsp;&nbsp;Slime mould simulation</i>, July 2019 </span>
-</div>
+          <span class="brand">Physarum</span>
+          <span class="subtitle"
+            ><i>&nbsp;&nbsp;Slime mould simulation</i>, July 2019 
+          </span>
+        </div>
         <v-layout row wrap>
-          <v-flex md9 sm12 style="height:200px; background-color: #DDD">
+          <v-flex md9 sm12>
             webgl container
-            
           </v-flex>
-         <v-flex md3 sm12 style="height:200px; background-color: #FFAB91">
-               <div>
-        ui controls
-      </div> 
-         </v-flex>
-         </v-layout
-      ></v-container>
+          <v-flex md3 sm12>
+            Status: <span style="text-transform: uppercase;font-size: 1.2rem">{{status}}</span><br>
+            Time step: <span style="text-transform: uppercase;font-size: 1.2rem">{{time}}</span>
+            <br><br><br>
 
+            <v-btn @click="a=false"><template v-if="a"><play-icon></play-icon></template><template v-if="a==false"><pause-icon></pause-icon></template> &nbsp;Start simulation </v-btn>
+            <v-btn disabled><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset </v-btn>   
+                    <v-select
+          :items="items"
+          label="Map"
+          outlined
+        ></v-select> 
+          </v-flex>
+        </v-layout>
+        <small style="position:fixed;bottom:0"
+          >Matteo Coppola, Luca Palazzi, Antonio Vivace <i data-feather="github"></i></small
+        >
+      </v-container>
       <div class="footer">
         <img src="./assets/Unity_Technologies_logo.svg" height="34px" />&nbsp;
         <img src="./assets/WebGL_Logo.svg" height="38px" />
@@ -31,14 +41,26 @@
 </template>
 
 <script>
+import { PlayIcon, PauseIcon,RefreshCcwIcon } from 'vue-feather-icons'
 export default {
+    components: {
+    PlayIcon,
+    PauseIcon,
+    RefreshCcwIcon
+  },
   name: "app",
   data: function() {
     return {
-      greetText: null
+      status: "stopped",
+      greetText: null,
+      a: true,
+      time: 50,
+      items: ["Map 1", "Map 2", "Test"]
     };
   },
-  mounted() {},
+  mounted() {
+    feather.replace();
+  },
   methods: {
     greet(text) {
       this.greetText = text;
@@ -63,11 +85,9 @@ export default {
 
 .subtitle {
   font-family: "Gentium Basic", serif;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 400;
   letter-spacing: -0.02rem;
-
-
 }
 #app {
   font-family: "Inter", Helvetica, Arial, sans-serif;
