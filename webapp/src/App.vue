@@ -4,11 +4,11 @@
     <span class="subtitle"><i>Slime mould simulation</i>, July 2019 </span>
     <div class="footer">
       <img
-        src="https://upload.wikimedia.org/wikipedia/commons/1/19/Unity_Technologies_logo.svg"
+        src="./assets/Unity_Technologies_logo.svg"
         height="34px"
       />&nbsp;
       <img
-        src="https://upload.wikimedia.org/wikipedia/commons/2/25/WebGL_Logo.svg"
+        src="./assets/WebGL_Logo.svg"
         height="38px"
       />
     </div>
