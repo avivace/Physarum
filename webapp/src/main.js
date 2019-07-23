@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import "typeface-gentium-basic"
+import Vuetify from 'vuetify'
 
+Vue.use(Vuetify)
 Vue.config.productionTip = false
 
+import 'vuetify/dist/vuetify.min.css' 
 
 // Instance Vue and expose it to the global namespace, so we can 
 //  touch things from outside, accessing `$vm[0]`
