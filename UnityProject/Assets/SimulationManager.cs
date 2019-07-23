@@ -250,7 +250,7 @@ public class SimulationManager : MonoBehaviour
 
                 //Change NS into SP
                 cell.type = CellType.S;
-                cell.PM = defaultPMForS;
+                cell.PM += defaultPMForS;
                 cell.CHA = 0;
                 Ns.RemoveAt(k);
                 Ss.Add(v);
@@ -265,9 +265,11 @@ public class SimulationManager : MonoBehaviour
         t++;
     }
 
+    float sum = 0;
     void ApplyMatteoDiffusionEquations()
     {
         Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
+        float sum = 0;
 
         for (int i = 0; i < mapSizeX; i++)
         {
@@ -275,10 +277,10 @@ public class SimulationManager : MonoBehaviour
             {
                 if (/*mapCells[i, j].type != CellType.S && */mapCells[i, j].type != CellType.U)
                 {
-                    if(i == 44 && j == 42)
+                    /*if(i == 44 && j == 42)
                     {
                         Debug.Log("FIFFIFIFI "+ mapCells[i, j].PM);
-                    }
+                    }*/
 
                     //CALCOLO DIREZIONE
                     if (mapCells[i, j].PM >= 1 && mapCells[i, j].direction == Dir.NONE)
@@ -363,7 +365,8 @@ public class SimulationManager : MonoBehaviour
                             }
                             else if (GetAA(x, y))
                             {
-                                if (GetAge(x, y) > minAgeToDryOut && IsCellAInDirectionOfCellB(i, j, x, y))
+                                if (GetAge(x, y) > minAgeToDryOut && IsCellAInDirectionOfCellB(i, j, x, y) 
+                                    && !mapCells[x, y].TE && mapCells[x, y].type != CellType.N && mapCells[x, y].type != CellType.S)
                                 {
                                     cellPM += GetPM(x, y);
                                 }
@@ -374,14 +377,14 @@ public class SimulationManager : MonoBehaviour
                                 } else {
                                     if (x == i || y == j) //NN neighbours
                                     {
-                                        if (GetCHA(x, y) < GetCHA(i, j)/* || mapCells[i, j].TE*/)
+                                        if (GetCHA(x, y) < GetCHA(i, j) && !mapCells[x, y].TE)
                                         {
                                             if (GetPM(x, y) >= 12)
                                             {
                                                 cellPM += 2;
                                             }
                                         }
-                                        else if (GetCHA(x, y) > GetCHA(i, j)/* || mapCells[x, y].TE*/)
+                                        else if (GetCHA(x, y) > GetCHA(i, j) && !mapCells[i, j].TE)
                                         {
                                             if (GetPM(i, j) >= 12)
                                             {
@@ -391,14 +394,14 @@ public class SimulationManager : MonoBehaviour
                                     }
                                     else //MN neighbours
                                     {
-                                        if (GetCHA(x, y) < GetCHA(i, j)/* || mapCells[i, j].TE*/)
+                                        if (GetCHA(x, y) < GetCHA(i, j) && !mapCells[x, y].TE)
                                         {
                                             if (GetPM(x, y) >= 12)
                                             {
                                                 cellPM += 1;
                                             }
                                         }
-                                        else if (GetCHA(x, y) > GetCHA(i, j)/* || mapCells[x, y].TE*/)
+                                        else if (GetCHA(x, y) > GetCHA(i, j) && !mapCells[i, j].TE)
                                         {
                                             if (GetPM(i, j) >= 12)
                                             {
@@ -410,7 +413,8 @@ public class SimulationManager : MonoBehaviour
                             }
                         }
                     }
-                    
+
+                    sum += cellPM;
                     newMap[i, j].PM = cellPM;
 
                     /*SENZA CONSERVAZIONE
@@ -533,6 +537,8 @@ public class SimulationManager : MonoBehaviour
 
         //Update the map
         UpdateMapWithNewDiffusionValues(newMap);
+
+        Debug.Log("sum " + sum+" "+ (Math.Round(sum / defaultPMForS)) + " "+(sum%defaultPMForS));
 
         //Debug.Log("FIFFIFIFI2 " + mapCells[44, 42].PM);
     }

@@ -345,3 +345,4 @@ MonoBehaviour:
     value2: 
   ThPM: 20
   tToStop: -1
+  minAgeToDryOut: 1000
