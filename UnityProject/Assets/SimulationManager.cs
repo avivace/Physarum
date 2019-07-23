@@ -355,6 +355,7 @@ public class SimulationManager : MonoBehaviour
                     //CALCOLO PM CON CONSERVAZIONE
                     float cellPM = GetPM(i, j);
 
+                    
                     for (int x = i - 1; x < (i + 2); x++)
                     {
                         for (int y = j - 1; y < (j + 2); y++)
@@ -365,48 +366,37 @@ public class SimulationManager : MonoBehaviour
                             }
                             else if (GetAA(x, y))
                             {
-                                if (GetAge(x, y) > minAgeToDryOut && IsCellAInDirectionOfCellB(i, j, x, y) 
-                                    && !mapCells[x, y].TE && mapCells[x, y].type != CellType.N && mapCells[x, y].type != CellType.S)
+                                if (x == i || y == j) //NN neighbours
                                 {
-                                    cellPM += GetPM(x, y);
-                                }
-                                else if (GetAge(i, j) > minAgeToDryOut && IsCellAInDirectionOfCellB(x, y, i, j) 
-                                    && !mapCells[i, j].TE && mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.S)
-                                {
-                                    cellPM -= GetPM(i, j);
-                                } else {
-                                    if (x == i || y == j) //NN neighbours
+                                    if (GetCHA(x, y) < GetCHA(i, j))
                                     {
-                                        if (GetCHA(x, y) < GetCHA(i, j) && !mapCells[x, y].TE)
+                                        if (GetPM(x, y) >= 12)
                                         {
-                                            if (GetPM(x, y) >= 12)
-                                            {
-                                                cellPM += 2;
-                                            }
-                                        }
-                                        else if (GetCHA(x, y) > GetCHA(i, j) && !mapCells[i, j].TE)
-                                        {
-                                            if (GetPM(i, j) >= 12)
-                                            {
-                                                cellPM -= 2;
-                                            }
+                                            cellPM += 2;
                                         }
                                     }
-                                    else //MN neighbours
+                                    else if (GetCHA(x, y) > GetCHA(i, j))
                                     {
-                                        if (GetCHA(x, y) < GetCHA(i, j) && !mapCells[x, y].TE)
+                                        if (GetPM(i, j) >= 12)
                                         {
-                                            if (GetPM(x, y) >= 12)
-                                            {
-                                                cellPM += 1;
-                                            }
+                                            cellPM -= 2;
                                         }
-                                        else if (GetCHA(x, y) > GetCHA(i, j) && !mapCells[i, j].TE)
+                                    }
+                                }
+                                else //MN neighbours
+                                {
+                                    if (GetCHA(x, y) < GetCHA(i, j))
+                                    {
+                                        if (GetPM(x, y) >= 12)
                                         {
-                                            if (GetPM(i, j) >= 12)
-                                            {
-                                                cellPM -= 1;
-                                            }
+                                            cellPM += 1;
+                                        }
+                                    }
+                                    else if (GetCHA(x, y) > GetCHA(i, j))
+                                    {
+                                        if (GetPM(i, j) >= 12)
+                                        {
+                                            cellPM -= 1;
                                         }
                                     }
                                 }
@@ -537,6 +527,43 @@ public class SimulationManager : MonoBehaviour
 
         //Update the map
         UpdateMapWithNewDiffusionValues(newMap);
+
+        //SHRINKING PROCESS 
+        for (int i = 0; i < mapSizeX; i++)
+        {
+            for (int j = 0; j < mapSizeY; j++)
+            {
+                for (int x = i - 1; x < (i + 2); x++)
+                {
+                    for (int y = j - 1; y < (j + 2); y++)
+                    {
+                        if (x == i && y == j)
+                        {
+                            //Nothing with the current cell
+                        }
+                        else if (GetAA(x, y))
+                        {
+                            if (GetAge(x, y) > minAgeToDryOut
+                                && IsCellAInDirectionOfCellB(i, j, x, y)
+                                && !mapCells[x, y].TE
+                                && mapCells[x, y].type != CellType.N
+                                && mapCells[x, y].type != CellType.S)
+                            {
+                                mapCells[i,j].PM += GetPM(x, y);
+                            }
+                            else if (GetAge(i, j) > minAgeToDryOut
+                                && IsCellAInDirectionOfCellB(x, y, i, j)
+                                && !mapCells[i, j].TE
+                                && mapCells[i, j].type != CellType.N
+                                && mapCells[i, j].type != CellType.S)
+                            {
+                                mapCells[i,j].PM -= GetPM(i, j);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         Debug.Log("sum " + sum+" "+ (Math.Round(sum / defaultPMForS)) + " "+(sum%defaultPMForS));
 
