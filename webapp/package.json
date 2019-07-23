@@ -11,7 +11,8 @@
     "core-js": "^2.6.5",
     "typeface-gentium-basic": "0.0.72",
     "typeface-gentium-book-basic": "0.0.72",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vuetify": "^1.5.16"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.0",
