@@ -5,7 +5,7 @@
         <div>
           <span class="brand">Physarum</span>
           <span class="subtitle"
-            ><i>&nbsp;&nbsp;Slime mould simulation</i>, July 2019 
+            ><i>&nbsp;&nbsp;Slime mould simulation</i>, July 2019
           </span>
         </div>
         <v-layout row wrap>
@@ -13,22 +13,52 @@
             webgl container
           </v-flex>
           <v-flex md3 sm12>
-            Status: <span style="text-transform: uppercase;font-size: 1.2rem">{{status}}</span><br>
-            Time step: <span style="text-transform: uppercase;font-size: 1.2rem">{{time}}</span>
-            <br><br><br>
+            Status:
+            <span style="text-transform: uppercase;font-size: 1.2rem">{{
+              status
+            }}</span
+            ><br />
+            Time step:
+            <span style="text-transform: uppercase;font-size: 1.2rem">{{
+              time
+            }}</span>
+            <br /><br /><br />
 
-            <v-btn @click="a=false"><template v-if="a"><play-icon></play-icon></template><template v-if="a==false"><pause-icon></pause-icon></template> &nbsp;Start simulation </v-btn>
-            <v-btn disabled><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset </v-btn>   
-                    <v-select
-          :items="items"
-          label="Map"
-          outlined
-        ></v-select> 
+    <v-radio-group v-model="selectedModel">
+      <v-radio
+        key="1"
+        value="2"
+        label="Paper Model"
+      ></v-radio>
+      <v-radio
+        key="2"
+        value="2"
+        label="Experimental Model"
+      ></v-radio>
+    </v-radio-group>
+    {{selectedModel}}
+            <v-btn class="abtn" @click="handleStartBtn"
+              ><template v-if="status == 'stopped'"
+                ><play-icon></play-icon>
+                Start</template
+              ><template v-if="status == 'running'"
+                ><pause-icon></pause-icon>Pause</template
+              >
+              <template v-if="status == 'paused'"
+                ><play-icon></play-icon>Resume</template
+              >
+            </v-btn>
+            <v-btn @click="handleStopBtn" :disabled='status=="stopped"'
+              ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
+            </v-btn>
+            <br><br>
+            <v-select :disabled="status!='stopped'" :items="items" label="Map" outlined></v-select>
           </v-flex>
         </v-layout>
         <small style="position:fixed;bottom:0"
-          >Matteo Coppola, Luca Palazzi, Antonio Vivace <i data-feather="github"></i></small
-        >
+          >Matteo Coppola, Luca Palazzi, Antonio Vivace
+          <i data-feather="github"></i
+        ></small>
       </v-container>
       <div class="footer">
         <img src="./assets/Unity_Technologies_logo.svg" height="34px" />&nbsp;
@@ -41,9 +71,9 @@
 </template>
 
 <script>
-import { PlayIcon, PauseIcon,RefreshCcwIcon } from 'vue-feather-icons'
+import { PlayIcon, PauseIcon, RefreshCcwIcon } from "vue-feather-icons";
 export default {
-    components: {
+  components: {
     PlayIcon,
     PauseIcon,
     RefreshCcwIcon
@@ -55,13 +85,25 @@ export default {
       greetText: null,
       a: true,
       time: 50,
-      items: ["Map 1", "Map 2", "Test"]
+      items: ["Map 1", "Map 2", "Test"],
+      selectedModel:1
     };
   },
   mounted() {
-    feather.replace();
+
   },
   methods: {
+    handleStartBtn(){
+      console.log("handle", this.status)
+      if (this.status =="running"){
+        this.status="paused"
+      } else {
+        this.status="running"
+      }
+    },
+    handleStopBtn(){
+      this.status="stopped"
+    },
     greet(text) {
       this.greetText = text;
     }
@@ -70,6 +112,16 @@ export default {
 </script>
 
 <style>
+.v-btn{
+  font-size: 16px !important;
+  border-radius:6px !important;
+  min-width: 120px !important;
+}
+.feather{
+  width: 24px;
+  height: 24px;
+  stroke-width: 2px;
+}
 .brand {
   font-family: "Gentium Basic", serif;
   font-size: 5.5rem;
@@ -90,7 +142,8 @@ export default {
   letter-spacing: -0.02rem;
 }
 #app {
-  font-family: "Inter", Helvetica, Arial, sans-serif;
+  font-family: "Barlow", Helvetica, Arial, sans-serif;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
