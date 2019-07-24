@@ -134,9 +134,10 @@ In the universe of \textit{Game of Life} each cell is in one of two possible sta
 The initial pattern constitutes the seed of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed; births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick. Each generation is a pure function of the preceding one. The rules continue to be applied repeatedly to create further generations. 
 
 \section{Physarum}
-Physarum polycephalum \cite{sun2017physarum}, \cite{mayne2016biology} is a species of order Physarales, subclass Myxogas-tromycetidae, class Myxomecetes, division Myxostelida, commonly known as a true slime mould, that inhabits shady, cool and moist areas.
+Physarum polycephalum \cite{sun2017physarum}, \cite{mayne2016biology} is a species of order Physarales, subclass Myxogas-tromycetidae, class Myxomecetes, division Myxostelida, commonly known as a true slime mould.
+It is a single celled protist that is visible to the naked eye. Slime mold inhabits shady, cool and moist areas that exist on decaying leaves and logs in forest areas.
 \par
-The slime mould exhibits a very wide repertoire of pattern formation behaviors used for growth, movement, food foraging, nutrient transport, hazard avoidance, and shape maintenance. 
+It exhibits a very wide repertoire of pattern formation behaviors used for growth, movement, food foraging, nutrient transport, hazard avoidance, and shape maintenance. 
 \par
 Physarum thrives in favorable environmental conditions, particularly when the right combinations of humidity, temperature and nutrient presence are found. If the conditions are not adequate for development, Physarum behaves like a single-celled organism that does not demonstrate organizational skills. In appropriate conditions, it joins together to create particularly efficient filamentary nets in physical distribution.
 
@@ -148,13 +149,28 @@ Spores, released from mature fruiting bodies, germinate into mononuclear amoebae
     \includegraphics[width=0.8\textwidth]{physarum_life_cycle}%
     
   \caption{The life cycle of Physarum polycephalum\cite{physlf}}
-  \label{fig:hex_n}
+  \label{fig:physarum_life_cycle}
 \end{figure*}
 
 
 It is common to refer to the Physarum by the name of its vegetative (resting) life cycle phase, the plasmodium. The Physarum plasmodium is a single yellow cytoplasmic mass that can range in size from a few mm$^2$ to over half a m$^2$. The organism will typically be composed of a network of protoplasmic veins that can contain more than 100,000 nuclei.
 \par
 It is during this stage that the organism searches for food. Multiple sources state that the plasmodium is both predatory and saprophytic: its natural foodstuffs include fungal spores, bacteria, smaller amoebae and decaying matter, the latter of which may be digested extracellularly through the secretion of enzymes.
+
+\par
+To find its prey, slime mould is able to explore its environment by spontaneous and self-organised oscillatory contractions \cite{jones2015exploiting}. This means that the slime mould is able to contract its body in an organized way, allowing the organism to slowly push itself in all directions. When a slime mould encounters a new food source, it is able to connect the new food source to its pre-existing ones. To conserve mass, the slime mould gradually funnels the link between the food sources to a single protoplasmic tube.
+ 
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{phys_tubecreation}%
+    
+  \caption{Physarum protoplasmic tube formation}
+  \label{fig:phys_tubecreation}
+\end{figure*}
+
+\par
+This protoplasmic tube has the ability to exchange not only nutrients, but also information throughout the entire network the slime mold creates. This allows the slime mould to conduct a logical and efficient search of its surroundings to decide what the most efficient method of utilizing its resources is.
+In early stages of slime mold development, the Physarum exists in a feeding phase, in which the slime mold remains on an already discovered food source, and increases in mass. The organism will then gradually transition into a more explorative phase, where it discovers new sources of food and prepares to create fruiting bodies, which eventually create more slime mould.
 \par
 If environmental conditions cause the plasmodium to desiccate during feeding or migration, Physarum will have another life cycle phase called the sclerotium. The sclerotium is basically highly resistant desiccated tissue that serves as a dormant stage, protecting Physarum for long periods of time. The organism will assume it if environmental conditions become too
 unfavourable. Once favorable conditions resume, a sclerotium can be revert back to a viable plasmodium that reappears to continue its quest for food.
@@ -164,13 +180,24 @@ As the food supply runs out, the plasmodium stops feeding and begins its reprodu
 Spores can remain dormant for years if needed. However, when environmental conditions are favorable for growth, the spores germinate and release either flagellated or amoeboid swarm cells (motile stage). The swarm cells then fuse together to form a new plasmodium. 
 
 \par
-da integrare? The plasmodium is an aggregate of protoplasm with a network of tubular elements through which nutrients and chemical signals circulate, the geometry of which is related to internal communication. Moreover, the tubes act as "legs", allowing the organism to navigate around its environment, and can be disassembled and reassembled within a few hours in response to changes in external conditions \cite{nakagaki2004obtaining}.
+DA INTEGRARE? 
+\par
+The plasmodium is an aggregate of protoplasm with a network of tubular elements through which nutrients and chemical signals circulate, the geometry of which is related to internal communication. Moreover, the tubes act as "legs", allowing the organism to navigate around its environment, and can be disassembled and reassembled within a few hours in response to changes in external conditions \cite{nakagaki2004obtaining}.
+
+
+
 
 
 \par
-da integrare? The plasmodium of Physarum is a membrane-bound syncytium of nuclei within a cytoplasm composed of a complex gel-sol network. The gel phase is composed of a spongelike matrix of contractile actin and myosin fibers through which the protoplasmic sol flows. Local oscillations in the thickness of the plasmodium spontaneously appear with approximately 2-min duration. The spatial and temporal organization of the oscillations has been shown to be extremely complex and affects the internal movement of sol through the network by assembly and disassembly of the local actin-myosin structures. The protoplasm moves backward and forward within the plasmodium in a characteristic manner known as shuttle-streaming.
+DA INTEGRARE? 
+\par
+The plasmodium of Physarum is a membrane-bound syncytium of nuclei within a cytoplasm composed of a complex gel-sol network. The gel phase is composed of a spongelike matrix of contractile actin and myosin fibers through which the protoplasmic sol flows. Local oscillations in the thickness of the plasmodium spontaneously appear with approximately 2-min duration. The spatial and temporal organization of the oscillations has been shown to be extremely complex and affects the internal movement of sol through the network by assembly and disassembly of the local actin-myosin structures. The protoplasm moves backward and forward within the plasmodium in a characteristic manner known as shuttle-streaming.
 The plasmodium is able to sense local concentration gradients, and the presence of nutrient gradients appears to alter the structure of external membrane areas. The softening of the outer membrane causes a flux of protoplasm in the general direction of the gradient in response to internal pressure changes caused by the local thickness oscillations. The strong coupling between membrane contraction and streaming movement is caused by the incompressibility of the fluid, requiring a constant volume—the weakening of the membrane provides an outlet for the pressure. When the plasmodium has located and engulfed nearby food sources, protoplasmic veins appear within the plasmodium, connecting the food sources. The veins transport protoplasm among the distributed extremes of the organism.
 The relative simplicity of the cell and the distributed nature of its control system make Physarum a suitable subject for research into distributed computation substrates. \cite{jones2010characteristics}
 
 The mechanisms used to fulfil these requirements are growth, movement, and area reduction. During the growth-and-foraging stage the plasmodium exhibits a default, broadly reticulated outward growth patter - albeit one that is influenced by substrate and gradient quality. Once nutrients have been located, the topology of the pattern is influenced by the nutrient distribution - the connectivity patterns (the protoplasmic tube network) evolve to achieve a compromise between minimal transport costs and
 fault tolerance. Since the plasmodium obviously cannot have any global knowledge about the initial or optimal topology, the network must evolve by physical forces acting on the protoplasmic transport.
+
+
+
+

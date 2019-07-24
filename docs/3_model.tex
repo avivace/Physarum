@@ -1,7 +1,6 @@
-Consider only the plasmodium stage of its life cycle, there is no single model that can describe exactly the behavior of Physarum. So far, there is a variety of modeling approaches which also are implemented by a variety of tools.
+Consider only the plasmodium stage of its life cycle, there is no single model that can describe exactly the behavior of Physarum. So far, there is a variety of modeling approaches which also are implemented by a variety of tools \cite{Tsompanas2016}, \cite{gunji2008minimal}, \cite{shirakawa2015construction}.
 \par
 In this project the behaviour of slime mould during the laboratory experiments have been simulated by a model based on Cellular Automata. Using CA can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
-In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
 \par
 All of the biological studies indicated above, like solving a maze and designing a transport network, have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps \cite{shirakawa2015construction}:
 \begin{itemize}
@@ -10,22 +9,35 @@ All of the biological studies indicated above, like solving a maze and designing
 	\item Third step: the plasmodium optimizes the connection between the sources
 \end{itemize}
 
-The majority of the studies focus on the behaviour of the plasmodium in a closed space. However, few studies have been done for the plasmodium that is exploring an open space. We believe that we can find more enhanced biological characteristics of the biological entities by observing the behaviours of them in an open and unknown environment. In this study, we thus tried to investigate the exploratory behaviour of the plasmodium in an open space and to understand how the organism makes its decision
-in exploration. 
-
+The majority of the studies focus on the behaviour of the plasmodium in a closed space. However, few studies have been done for the plasmodium that is exploring an open space. 
 \par
-In the proposed CA model \cite{Tsompanas2016} the plasmodium is first starved and then introduced and then introduced into a specific place in the space. Moreover, some NSs which produces chemo-attractants are located at characteristic points. 
-In order to simulate this biological experiment, the area is divided into a matrix of squares with identical areas and each square of the surface is represented by a CA cell.
+INIZIO CONSIDERAZIONI
+\par
+We believe that we can find more enhanced biological characteristics of the biological entities by observing the behaviours of them in an open and unknown environment. In this study, we thus tried to investigate the exploratory behaviour of the plasmodium in an open space and to understand how the organism makes its decision in exploration. 
+\par
+FINE CONSIDERAZIONI
+\par
+The CA based model that inspired us \cite{Tsompanas2016} mimics the foraging strategy and tubular network formation. In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
+\par
+However, this model - with the only information in the paper - seems not to follow the true behavior of slime mould; the main problems encountered can be summarized in the following points:
+\begin{itemize}
+	\item No mass conservation. Map flooding
+	\item Tube's creation dependent on the mass gradient. A tube is seen as a separate entity
+	\item No shrinking of the mass towards the tube
+\end{itemize}
+
+For this reason we have proposed an alternative model - starting from the model proposed in the paper - that aims at a more faithful exploration of slime mould.
+
+\section{Paper model}
+The plasmodium is first starved and then introduced into a specific place in the space. Moreover, some NSs which produces chemo-attractants are located at characteristic points. 
 \par
 The plasmodium explores the available area, encapsulates the NSs and creates a tubular network that connects all these NSs by a nature-inspired, cost effective and risk avoiding manner. To note the geometry of the network created by the plasmodium depends on the positions of the NSs. Moreover, further parameters can play key role in determining exact structure of plasmodium network.
-
-
-
 \par
-The model imitates the entire area that it is used in a laboratory experiment using the plasmodium of Physarum. The entire area can be defined, without loss of generality, as a square grid divided into identical square cells that constitutes a set defined as E. This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
+In order to imitate and simulate a biological laboratory experiment, the entire area is divided into a matrix of squares with identical areas - that constitutes a set defined as E - and each square of the surface is represented by a CA cell.
+This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
 Also some cells that are included in the available area set of cells, represent the oat flakes that are considered as NSs for the plasmodium (a set of cells defined as N) and one cell represents the place where the plasmodium is initially introduced to the
 experimental environment or the SP (a set of one cell defined as S). 
-The neighbourhood type used for the proposed model is Moore neighbourhood and the state of the $c_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as:
+The neighbourhood type used for the model is Moore neighbourhood and the state of the $c_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as:
 \begin{align}
 ST^t_{(i, j)} = [AA_{(i, j)}, PM^t_{(i, j)}, CHA^t_{(i, j)}, TE^t_{(i, j)}]
 \end{align}
@@ -48,7 +60,7 @@ CHA^t_{(i, j)}=\begin{cases} 100, & \forall i, j: c_{(i,j)} \in N \\ 0, & \mbox{
 \end{align}
 
 Taking into consideration the assumptions made for the way the Physarum develops through an available area, which were confirmed by laboratory experiments, it is determined that the plasmodium is "amplified" at a NS and then searches for other NSs, considering the recently encapsulated NS as a new SP. Also, when a NS is covered by the plasmodium, the generation of chemoattractant substances is ceased.
-In the proposed model the NSs are turned into SPs when the plasmodium encapsulates them with a sufficient amount of mass. Furthermore, it is realized that the plasmodium is propagating away from the most recently captured NS by taking a semi-circular form. 
+In the model the NSs are turned into SPs when the plasmodium encapsulates them with a sufficient amount of mass. Furthermore, it is realized that the plasmodium is propagating away from the most recently captured NS by taking a semi-circular form. 
 \par
 The model is analyzed in the following flowchart: TODO inserire flowchart.
 \par
@@ -187,3 +199,4 @@ would cause difficulties for the growth of the plasmodium. Finally, the time per
 of 50 time steps for the diffusion equations, was also empirically chosen, although
 the alternation of that will cause little difference to the results of the model.
 
+\section{Our model}
