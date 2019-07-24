@@ -18,29 +18,51 @@
               status
             }}</span
             ><br />
-            Time step:
+            Time step (t):
             <span style="text-transform: uppercase;font-size: 1.2rem">{{
               time
             }}</span>
+            <br />
+            N:
+            <span style="text-transform: uppercase;font-size: 1.2rem">
+              0
+            </span>
+            <br />
+            S:
+            <span style="text-transform: uppercase;font-size: 1.2rem">
+              0
+            </span>
+            <br />
+            Unity status:<span
+              style="text-transform: uppercase;font-size: 1.2rem"
+            >
+              <v-progress-circular
+                indeterminate
+                color="black"
+                style="height:16px"
+              ></v-progress-circular
+              >Attempting to connect</span
+            >
+            <br />
+            webgl deploy build:
+            <span
+              style="font-family: monospace; text-transform: uppercase;font-size: 1.2rem"
+            >
+              71823SD
+            </span>
             <br /><br /><br />
 
-    <v-radio-group v-model="selectedModel">
-      <v-radio
-        key="1"
-        value="2"
-        label="Paper Model"
-      ></v-radio>
-      <v-radio
-        key="2"
-        value="2"
-        label="Experimental Model"
-      ></v-radio>
-    </v-radio-group>
-    {{selectedModel}}
+            <v-radio-group
+              v-model="selectedModel"
+              :disabled="status != 'stopped'"
+            >
+              <v-radio label="Paper Model" value="1"></v-radio>
+              <v-radio label="Experimental Model" value="2"></v-radio>
+            </v-radio-group>
+
             <v-btn class="abtn" @click="handleStartBtn"
               ><template v-if="status == 'stopped'"
-                ><play-icon></play-icon>
-                Start</template
+                ><play-icon></play-icon> Start</template
               ><template v-if="status == 'running'"
                 ><pause-icon></pause-icon>Pause</template
               >
@@ -48,12 +70,38 @@
                 ><play-icon></play-icon>Resume</template
               >
             </v-btn>
-            <v-btn @click="handleStopBtn" :disabled='status=="stopped"'
+            <v-btn @click="handleStopBtn" :disabled="status == 'stopped'"
               ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
             </v-btn>
-            <br><br>
-            <v-select :disabled="status!='stopped'" :items="items" label="Map" outlined></v-select>
+            <br /><br />
+            <v-select
+              v-model="selectedMap"
+              :disabled="status != 'stopped'"
+              :items="items"
+              label="Map"
+              outlined
+            ></v-select>
           </v-flex>
+              <v-snackbar
+      v-model="snackbar"
+      :bottom="y === 'bottom'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :right="x === 'right'"
+      :timeout="timeout"
+      :top="y === 'top'"
+      :vertical="mode === 'vertical'"
+    >
+      {{ snackbarText }}
+      <v-btn
+        color="pink"
+        flat
+        @click="snackbar = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
+
         </v-layout>
         <small style="position:fixed;bottom:0"
           >Matteo Coppola, Luca Palazzi, Antonio Vivace
@@ -86,23 +134,26 @@ export default {
       a: true,
       time: 50,
       items: ["Map 1", "Map 2", "Test"],
-      selectedModel:1
+      selectedModel: "1",
+      snackbar: null,
+      snackbarText: 'Simlation reset',
+      selectedMap: "Map 1"
     };
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
-    handleStartBtn(){
-      console.log("handle", this.status)
-      if (this.status =="running"){
-        this.status="paused"
+    handleStartBtn() {
+      console.log("handle", this.status);
+      if (this.status == "running") {
+        this.status = "paused";
       } else {
-        this.status="running"
+        this.status = "running";
       }
     },
-    handleStopBtn(){
-      this.status="stopped"
+    handleStopBtn() {
+      this.status = "stopped";
+      this.snackbar= true;
+      this.selectedMap = "Map 1"
     },
     greet(text) {
       this.greetText = text;
@@ -112,12 +163,22 @@ export default {
 </script>
 
 <style>
-.v-btn{
+/* Vuetify base style is apparently seen as inline, 
+so we have to force things with !important */
+
+.v-snack__content{
+  font-size:18px !important;
+
+}
+.v-btn {
   font-size: 16px !important;
-  border-radius:6px !important;
+  border-radius: 6px !important;
   min-width: 120px !important;
 }
-.feather{
+.v-label{
+  font-size:18px !important;
+}
+.feather {
   width: 24px;
   height: 24px;
   stroke-width: 2px;
