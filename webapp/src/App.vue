@@ -9,15 +9,36 @@
           </span>
         </div>
         <v-layout row wrap>
-          <v-flex md9 sm12>
+          <v-flex md8 sm12>
             webgl container
           </v-flex>
-          <v-flex md3 sm12>
-            Status:
+          <v-flex md4 sm12>
+            Unity status:<span
+              style="text-transform: uppercase;font-size: 1.2rem"
+            >
+              <v-progress-circular
+                indeterminate
+                color="black"
+                style="height:16px"
+              ></v-progress-circular
+              >Connecting..</span
+            >
+            <br />
+            webgl deploy build:
+            <span
+              style="font-family: monospace; text-transform: uppercase;font-size: 1.2rem"
+            >
+              71823SD
+            </span>
+            <br />
+            Simulation status:
             <span style="text-transform: uppercase;font-size: 1.2rem">{{
               status
             }}</span
             ><br />
+            <br />
+
+            <br />
             Time step (t):
             <span style="text-transform: uppercase;font-size: 1.2rem">{{
               time
@@ -33,24 +54,13 @@
               0
             </span>
             <br />
-            Unity status:<span
-              style="text-transform: uppercase;font-size: 1.2rem"
-            >
-              <v-progress-circular
-                indeterminate
-                color="black"
-                style="height:16px"
-              ></v-progress-circular
-              >Attempting to connect</span
-            >
-            <br />
-            webgl deploy build:
-            <span
-              style="font-family: monospace; text-transform: uppercase;font-size: 1.2rem"
-            >
-              71823SD
+            Mass:
+            <span style="text-transform: uppercase;font-size: 1.2rem">
+              0
             </span>
-            <br /><br /><br />
+            <br />
+
+            <br /><br />
 
             <v-radio-group
               v-model="selectedModel"
@@ -74,34 +84,94 @@
               ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
             </v-btn>
             <br /><br />
-            <v-select
-              v-model="selectedMap"
-              :disabled="status != 'stopped'"
-              :items="items"
-              label="Map"
-              outlined
-            ></v-select>
+            <v-layout>
+              <v-flex xs6>
+                <v-select
+                  class="numberinput"
+                  v-model="selectedMap"
+                  :disabled="status != 'stopped'"
+                  :items="items"
+                  label="Map"
+                  outlined
+                ></v-select></v-flex
+              ><v-flex xs6
+                ><v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="Default CHA for N"
+                ></v-text-field
+              ></v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs6>
+                <v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="thpm"
+                ></v-text-field
+              ></v-flex>
+              <v-flex xs6
+                ><v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="Default PM"
+                ></v-text-field></v-flex
+            ></v-layout>
+            <v-layout>
+              <v-flex xs6
+                ><v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="minAge to dryout"
+                ></v-text-field
+              ></v-flex>
+              <v-flex xs6
+                ><v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="CAP1"
+                ></v-text-field
+              ></v-flex>
+            </v-layout>
+            <v-layout>
+              <v-flex xs6
+                ><v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="CAP2"
+                ></v-text-field
+              ></v-flex>
+              <v-flex xs6
+                ><v-text-field
+                  class="numberinput"
+                  v-model="foo"
+                  type="number"
+                  label="Default PM for S"
+                ></v-text-field
+              ></v-flex>
+            </v-layout>
           </v-flex>
-              <v-snackbar
-      v-model="snackbar"
-      :bottom="y === 'bottom'"
-      :left="x === 'left'"
-      :multi-line="mode === 'multi-line'"
-      :right="x === 'right'"
-      :timeout="timeout"
-      :top="y === 'top'"
-      :vertical="mode === 'vertical'"
-    >
-      {{ snackbarText }}
-      <v-btn
-        color="pink"
-        flat
-        @click="snackbar = false"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
-
+          <v-snackbar
+            v-model="snackbar"
+            :bottom="y === 'bottom'"
+            :left="x === 'left'"
+            :multi-line="mode === 'multi-line'"
+            :right="x === 'right'"
+            :timeout="timeout"
+            :top="y === 'top'"
+            :vertical="mode === 'vertical'"
+          >
+            {{ snackbarText }}
+            <v-btn color="pink" flat @click="snackbar = false">
+              Close
+            </v-btn>
+          </v-snackbar>
         </v-layout>
         <small style="position:fixed;bottom:0"
           >Matteo Coppola, Luca Palazzi, Antonio Vivace
@@ -136,7 +206,7 @@ export default {
       items: ["Map 1", "Map 2", "Test"],
       selectedModel: "1",
       snackbar: null,
-      snackbarText: 'Simlation reset',
+      snackbarText: "Simlation reset",
       selectedMap: "Map 1"
     };
   },
@@ -152,8 +222,8 @@ export default {
     },
     handleStopBtn() {
       this.status = "stopped";
-      this.snackbar= true;
-      this.selectedMap = "Map 1"
+      this.snackbar = true;
+      this.selectedMap = "Map 1";
     },
     greet(text) {
       this.greetText = text;
@@ -166,17 +236,19 @@ export default {
 /* Vuetify base style is apparently seen as inline, 
 so we have to force things with !important */
 
-.v-snack__content{
-  font-size:18px !important;
-
+.numberinput {
+  padding-right: 30px;
+}
+.v-snack__content {
+  font-size: 18px !important;
 }
 .v-btn {
   font-size: 16px !important;
   border-radius: 6px !important;
   min-width: 120px !important;
 }
-.v-label{
-  font-size:18px !important;
+.v-label {
+  font-size: 18px !important;
 }
 .feather {
   width: 24px;
