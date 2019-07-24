@@ -97,7 +97,7 @@
               ><v-flex xs6
                 ><v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="defaultcha"
                   type="number"
                   label="Default CHA for N"
                 ></v-text-field
@@ -107,7 +107,7 @@
               <v-flex xs6>
                 <v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="thpm"
                   type="number"
                   label="thpm"
                 ></v-text-field
@@ -115,7 +115,7 @@
               <v-flex xs6
                 ><v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="defaultpm"
                   type="number"
                   label="Default PM"
                 ></v-text-field></v-flex
@@ -124,7 +124,7 @@
               <v-flex xs6
                 ><v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="minagedryout"
                   type="number"
                   label="minAge to dryout"
                 ></v-text-field
@@ -132,7 +132,7 @@
               <v-flex xs6
                 ><v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="cap1"
                   type="number"
                   label="CAP1"
                 ></v-text-field
@@ -142,7 +142,7 @@
               <v-flex xs6
                 ><v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="cap2"
                   type="number"
                   label="CAP2"
                 ></v-text-field
@@ -150,7 +150,7 @@
               <v-flex xs6
                 ><v-text-field
                   class="numberinput"
-                  v-model="foo"
+                  v-model="defaultpms"
                   type="number"
                   label="Default PM for S"
                 ></v-text-field
@@ -207,7 +207,14 @@ export default {
       selectedModel: "1",
       snackbar: null,
       snackbarText: "Simlation reset",
-      selectedMap: "Map 1"
+      selectedMap: "Map 1",
+      defaultcha:0,
+      thpm:0,
+      defaultpm:0,
+      minagedryout:0,
+      cap1:0,
+      cap2:0,
+      defaultpms:0
     };
   },
   mounted() {},
