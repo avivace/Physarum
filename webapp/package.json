@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "typeface-barlow": "0.0.71",
     "typeface-gentium-basic": "0.0.72",
     "typeface-gentium-book-basic": "0.0.72",
     "vue": "^2.6.10",
