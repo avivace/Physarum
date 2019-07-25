@@ -19,14 +19,15 @@ FINE CONSIDERAZIONI
 \par
 The CA based model that inspired us \cite{Tsompanas2016} mimics the foraging strategy and tubular network formation. In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
 \par
-However, this model - with the only information in the paper - seems not to follow the true behavior of slime mould; the main problems encountered can be summarized in the following points:
+However, this model consideres only slime mould foraging behaviour and also - with the only information in the paper - seems not to follow the true behavior of slime mould; the main problems encountered can be summarized in the following points:
 \begin{itemize}
 	\item No mass conservation. Map flooding
 	\item Tube's creation dependent on the mass gradient. A tube is seen as a separate entity
-	\item No shrinking of the mass towards the tube
+	\item No shrinking of the mass towards the tube despite in the Physarum exploitation phase the organism tends to shrink and collect its body mass to move towards resource of attraction
+
 \end{itemize}
 
-For this reason we have proposed an alternative model - starting from the model proposed in the paper - that aims at a more faithful exploration of slime mould.
+For this reason we have proposed an alternative model - starting from the model Tsompanas et al. \cite{Tsompanas2016} - that aims at a more faithful exploration of slime mould.
 
 \section{Paper model}
 The plasmodium is first starved and then introduced to an exploring region in a SP. Moreover, some NSs which produces chemo-attractants are located at characteristic points. 
@@ -105,7 +106,7 @@ The total $PM$ for a cell $c_{(i,j)}$ for time t + 1 is a sum of the contributio
 \begin{equation}
 PM^{t+1}_{(i, j)} = PM^t_{(i, j)} + PMP1 \times [PMvNN^t_{(i, j)} + PMP2 \times PMeMN^t_{(i, j)}]
 \end{equation}
-The equation represents the exploration of the available space by the plasmodium which is affected by chemoattractants. The values PMP1 and PMP2 depict that the von Neumann and the Moore neighbours have different contributions on the diffusion of
+The equation represents the exploration of the available space by the plasmodium which is affected by chemoattractants. The values PMP1 and PMP2 depict that the von Neumann and the exclusively Moore neighbours have different contributions on the diffusion of
 these parameters. If a neighbouring cell is representing unavailable area, there is no contribution to the diffusion. 
 \par
 The parameter $PA_{(i, j),(k,l)}$ represents the attraction of the plasmodium - in cell $c_{(i,j)}$ - by the chemo-attractants towards the direction of an adjacent cell $c_{(k,l)}$, modeling the attraction of the organism towards the higher gradient of chemoattractants. It is equal to a predefined constant (PAP) for the neighbour with the higher concentration of chemo-attractants and equals to the negative value of the parameter PAP for the neighbour across the neighbour with the higher value of chemoattractant, in order to simulate the non-uniform foraging behavior of the plasmodium. For the other neighbours in an area that has no chemo-attractants, then the foraging strategy of the plasmodium is uniform and these parameters are equal to zero.
@@ -149,7 +150,7 @@ As a result, the total $CHA$ for a $c_{(i,j)}$ cell for time t + 1 is defined as
 \begin{equation}
 CHA^{t+1}_{(i, j)} = CON \times {CHA^t_{(i, j)} + CAP1 \times (CHAvNN^t_{(i, j)} + CAP \times CHAeMN^t_{(i, j)})}
 \end{equation}
-The equation represents the diffusion of chemoattractants from the NSs in the available space. The values CAP1 and CAP2 depict that the von Neumann and the Moore neighbours have different contributions on the diffusion of these parameters. The multiplication with the parameter CON provides the imitation of the consumption of the chemoattractant substances by the plasmodium. Also in this case as in the diffusion of $PM$, if a neighbouring cell is representing unavailable area there is no contribution to the diffusion.
+The equation represents the diffusion of chemoattractants from the NSs in the available space. The values CAP1 and CAP2 depict that the von Neumann and the exclusively Moore neighbours have different contributions on the diffusion of these parameters. The multiplication with the parameter CON provides the imitation of the consumption of the chemoattractant substances by the plasmodium. Also in this case as in the diffusion of $PM$, if a neighbouring cell is representing unavailable area there is no contribution to the diffusion.
 
 \par
 After every 50 time steps of calculating the diffusion equations in the available area, the operation of designing the tubular network takes place. If any NS is covered with over the predefined PM (ThPM), each NS cell is connected to a SP cell by a tubular path from the NS cell to the SP cell, following the increasing gradient of parameter PM of neighboring cells. 
@@ -176,8 +177,6 @@ CHA^t_{(i, j),(k,l)}=
 
 If more NSs are covered with the ThPM, each is connected to the nearest SP and they are all transformed to SPs. 
 
-
-
 \par
 DA INSERIRE ?
 \par
@@ -200,4 +199,7 @@ would cause difficulties for the growth of the plasmodium. Finally, the time per
 of 50 time steps for the diffusion equations, was also empirically chosen, although
 the alternation of that will cause little difference to the results of the model.
 
-\section{Our model}
+\section{Experimental model}
+
+We introduced a new rule on the Physarum diffusion process to imitate the natural process of Physarum shrinkage, where
+if a Physarum cell is not contributing to the path towards food resource for a certain time (number of iterations), the whole Physarum mass is migrated to the nearest neighbour cell contributing to the path of food resource attraction.
