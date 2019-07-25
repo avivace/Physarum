@@ -36,7 +36,6 @@
               status
             }}</span
             ><br />
-            <br />
 
             <br />
             Time step (t):
@@ -60,7 +59,7 @@
             </span>
             <br />
 
-            <br /><br />
+            <br />
 
             <v-radio-group
               v-model="selectedModel"
@@ -96,6 +95,7 @@
                 ></v-select></v-flex
               ><v-flex xs6
                 ><v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="defaultcha"
                   type="number"
@@ -106,6 +106,7 @@
             <v-layout>
               <v-flex xs6>
                 <v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="thpm"
                   type="number"
@@ -114,6 +115,7 @@
               ></v-flex>
               <v-flex xs6
                 ><v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="defaultpm"
                   type="number"
@@ -123,6 +125,7 @@
             <v-layout>
               <v-flex xs6
                 ><v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="minagedryout"
                   type="number"
@@ -131,6 +134,7 @@
               ></v-flex>
               <v-flex xs6
                 ><v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="cap1"
                   type="number"
@@ -141,6 +145,7 @@
             <v-layout>
               <v-flex xs6
                 ><v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="cap2"
                   type="number"
@@ -149,6 +154,7 @@
               ></v-flex>
               <v-flex xs6
                 ><v-text-field
+                  :disabled="status != 'stopped'"
                   class="numberinput"
                   v-model="defaultpms"
                   type="number"
@@ -208,13 +214,13 @@ export default {
       snackbar: null,
       snackbarText: "Simlation reset",
       selectedMap: "Map 1",
-      defaultcha:0,
-      thpm:0,
-      defaultpm:0,
-      minagedryout:0,
-      cap1:0,
-      cap2:0,
-      defaultpms:0
+      defaultcha: 0,
+      thpm: 0,
+      defaultpm: 0,
+      minagedryout: 0,
+      cap1: 0,
+      cap2: 0,
+      defaultpms: 0
     };
   },
   mounted() {},
@@ -286,8 +292,9 @@ so we have to force things with !important */
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #3d3d5c; /* Darkened Gray Blue (#8C92AC) */
   font-size: 1.5rem;
+  background-color: #e8e8ed; /* A really lightened Payne's Gray */
 }
 .footer {
   position: fixed;
