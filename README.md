@@ -18,11 +18,37 @@ Be sure you are on Unity 2018.3.14f1 (64-bit).
 
 ### Web UI application
 
-TODO
+A simple VueJS application, using Vuetify as CSS framework. 
+The Unity webgl build must be placed in `assets/`
+
+
+```
+npm run serve
+```
+
+Due to GitHub limitations for github pages, we use the `master` branch to deploy builds, and the `develop` as an actual branch.
+
+#### Deploy
+
+```
+npm run deploy
+```
+
+Builds the web application and deploys it at [avivace.github.io/Physarum](https://avivace.github.io/Physarum).
+
+An internal API has been developed to allow bidirectional stateful comunication between the VueJS instance and the webgl build of the Unity application. The Unity application is able to send updates about the status of the simulation to Vue, so we can se real time updates, while the Vue application can send actions and modify parameters or select the map.
+
+Vue -> Unity's PayloadHandler
+
+Unity ExternalCall -> Vue
 
 ### Documentation
 
-TODO
+To build:
+```
+cd docs/
+pdflatex report.tex
+```
 
 ## Resources
 
