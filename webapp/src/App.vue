@@ -82,6 +82,9 @@
             <v-btn @click="handleStopBtn" :disabled="status == 'stopped'"
               ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
             </v-btn>
+            <v-btn @click="handleStopBtn" :disabled="status == 'stopped'"
+              ><square-icon size="1x"></square-icon> &nbsp; Stop
+            </v-btn>
             <br /><br />
             <v-layout>
               <v-flex xs6>
@@ -195,12 +198,13 @@
 </template>
 
 <script>
-import { PlayIcon, PauseIcon, RefreshCcwIcon } from "vue-feather-icons";
+import { PlayIcon, PauseIcon, RefreshCcwIcon, SquareIcon } from "vue-feather-icons";
 export default {
   components: {
     PlayIcon,
     PauseIcon,
-    RefreshCcwIcon
+    RefreshCcwIcon,
+    SquareIcon
   },
   name: "app",
   data: function() {
