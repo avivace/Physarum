@@ -71,6 +71,8 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
+        CameraManager cameraManager = camera.GetComponent<CameraManager>();
+        cameraManager.MoveCamera();
         //Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         Initialization();
     }
