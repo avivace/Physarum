@@ -331,18 +331,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1527672249}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b161787691ed904f98a27dc689c108b, type: 3}
+  m_Script: {fileID: 11500000, guid: 496f15d0b3839b74a84bb9c7dabcafdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageAsset: {fileID: 4900000, guid: 038410ee1dcd4124d9757438c9ae9668, type: 3}
-  tile: {fileID: 11400000, guid: 8dd9f982876ecb341bf31f92d257f0c4, type: 2}
+  imageAsset: {fileID: 4900000, guid: b462cb32c9ad2e4499334444be11f3b0, type: 3}
+  tile: {fileID: 11400000, guid: 7d245d240299f46429170ee41bc04fa1, type: 2}
   Ss: []
   Ns: []
-  defaultPMForS: 5625
-  defaultCHAForN: 100
   payload:
     value1: 
     value2: 
+  defaultPMForS: 10000
+  defaultCHAForN: 100
+  CON: 0.95
+  PAP: 0.7
+  PMP1: 0.08
+  PMP2: 0.01
+  CAP1: 0.05
+  CAP2: 0.01
   ThPM: 20
-  tToStop: -1
-  minAgeToDryOut: 1000
+  minAgeToDryOut: 1500
+  tToStop: 10000
+  totalPM: 0

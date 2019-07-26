@@ -287,37 +287,68 @@ public class SimulationManager : MonoBehaviour
                             }
                             else if (GetAA(x, y))
                             {
-                                if (x == i || y == j) //NN neighbours
+                                if (GetCHA(x, y) == 0 && GetCHA(i, j) == 0 && !mapCells[i,j].didHaveCha && !mapCells[x, y].didHaveCha) //Uniform expansion case
                                 {
-                                    if (GetCHA(x, y) < GetCHA(i, j))
+                                    if (GetPM(i, j) > GetPM(x, y) && GetPM(i, j) >= 12)
                                     {
-                                        if (GetPM(x, y) >= 12)
-                                        {
-                                            cellPM += 2;
-                                        }
-                                    }
-                                    else if (GetCHA(x, y) > GetCHA(i, j))
-                                    {
-                                        if (GetPM(i, j) >= 12)
+                                        if (x == i || y == j) //NN neighbours
                                         {
                                             cellPM -= 2;
                                         }
+                                        else //MN neighbours
+                                        {
+                                            cellPM -= 1;
+                                        }
                                     }
-                                }
-                                else //MN neighbours
-                                {
-                                    if (GetCHA(x, y) < GetCHA(i, j))
+                                    else if (GetPM(i, j) < GetPM(x, y) && GetPM(x, y) >= 12)
                                     {
-                                        if (GetPM(x, y) >= 12)
+                                        if (x == i || y == j) //NN neighbours
+                                        {
+                                            cellPM += 2;
+                                        }
+                                        else //MN neighbours
                                         {
                                             cellPM += 1;
                                         }
                                     }
-                                    else if (GetCHA(x, y) > GetCHA(i, j))
+                                }
+                                else //CHA exists case
+                                {
+                                    if(GetCHA(i, j) > 0)
+                                        mapCells[i, j].didHaveCha = true;
+
+                                    if (x == i || y == j) //NN neighbours
                                     {
-                                        if (GetPM(i, j) >= 12)
+                                        if (GetCHA(x, y) < GetCHA(i, j))
                                         {
-                                            cellPM -= 1;
+                                            if (GetPM(x, y) >= 12)
+                                            {
+                                                cellPM += 2;
+                                            }
+                                        }
+                                        else if (GetCHA(x, y) > GetCHA(i, j))
+                                        {
+                                            if (GetPM(i, j) >= 12)
+                                            {
+                                                cellPM -= 2;
+                                            }
+                                        }
+                                    }
+                                    else //MN neighbours
+                                    {
+                                        if (GetCHA(x, y) < GetCHA(i, j))
+                                        {
+                                            if (GetPM(x, y) >= 12)
+                                            {
+                                                cellPM += 1;
+                                            }
+                                        }
+                                        else if (GetCHA(x, y) > GetCHA(i, j))
+                                        {
+                                            if (GetPM(i, j) >= 12)
+                                            {
+                                                cellPM -= 1;
+                                            }
                                         }
                                     }
                                 }
