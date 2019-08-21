@@ -1,5 +1,7 @@
 # Physarum
 
+![](Physarum_CNRS_2880x1500.jpg)
+
 By [Matteo Coppola](https://github.com/matteocoppola), [Luca Palazzi](https://github.com/lucapalazzi), [Antonio Vivace](https://github.com/avivace).
 
 Complex Systems exam final project.
