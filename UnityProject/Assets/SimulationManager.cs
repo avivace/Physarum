@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class SimulationManager : MonoBehaviour
-{
-    /** Per essere usata, l'immagine .png deve aggiungere l'estensione .bytes */
+{   
+    // Attached components
+    // Per essere usata, l'immagine .png deve aggiungere l'estensione .bytes
     public TextAsset imageAsset;
     public Tile tile;
+    public Camera camera;
 
     Texture2D tex;
 
