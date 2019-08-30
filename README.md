@@ -16,7 +16,18 @@ Be sure you are on Unity 2018.3.14f1 (64-bit).
 
 > Use windows to produce the webgl build, since on linux it doesn't work, reporting `il2cpp/build/il2cpp.exe did not run properly!`.
 
-**Unity** -> **Open Project** -> **Select the "UnityProject"** folder inside the cloned repository. Once the project import finished, drag and drop the "SampleScene" from the assets folder (Project Pane) into the Hyerarchy pane. Double click on "SampleScene" then you can run the project (Play).
+**Unity** -> **Open Project** -> Select the **"UnityProject"** folder inside the cloned repository. Once the project import finished, drag and drop the "SampleScene" from the assets folder (Project Pane) into the Hyerarchy pane.
+
+Each attached component and selected asset for a component loses its link due to cache being invalidated when exporting/importing so you have to manually select:
+
+- SimulationManager script, attached to GameObject
+    + ImageAsset, pointing to the desired map to run
+    + Tile: tile(Tile)
+    + Camera: the main Camera
+- Click on Tile from the inspector, and select the sprite (DefaultSprite)
+- Attach the CameraManager script to the Main Camera
+
+Double click on "SampleScene" then you can run the project (Play).
 
 ### Web UI application
 
