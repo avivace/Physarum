@@ -94,6 +94,7 @@ public class SimulationManager : MonoBehaviour
         //TestProgression();
         if (simulationRunning)
         {
+            Application.ExternalCall("vm.$children[0].unityUpdate", 0, t);
             if (testMatteo)
             {
                 SimulationMatteo();
@@ -115,8 +116,7 @@ public class SimulationManager : MonoBehaviour
     {
         Ss = new List<Vector2Int>();
         Ns = new List<Vector2Int>();
-        defaultPMForS = 15000;
-        
+
         LoadTextureMap();
         InitCellMap();
         t = 0;
@@ -131,7 +131,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Autostart or wait for the UI to start the simulation?
-        simulationRunning = true;
+        //simulationRunning = true;
         DrawTiles();
     }
 

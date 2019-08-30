@@ -269,6 +269,12 @@ export default {
     },
     greet(text) {
       this.unityStatus = 1;
+    },
+    unityUpdate(a, b){
+      if (a == 0){
+        // Updating time setp
+        this.time = b;
+      }
     }
   }
 };
