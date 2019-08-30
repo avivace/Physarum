@@ -5,7 +5,7 @@
         <div>
           <span class="brand">Physarum</span>
           <span class="subtitle"
-            ><i>&nbsp;&nbsp;Slime mould simulation</i>, July 2019
+            ><i>&nbsp;&nbsp;Slime mould simulation</i>, September 2019
           </span>
         </div>
         <v-layout row wrap>
@@ -25,7 +25,7 @@
               >Connecting..
               </template>
               <template v-if="unityStatus==1">
-                Connected
+                <check-icon></check-icon> Connected
               </template>
               </span
             >
@@ -84,6 +84,9 @@
               <template v-if="status == 'paused'"
                 ><play-icon></play-icon>Resume</template
               >
+            </v-btn>
+            <v-btn class="abtn" :disabled="unityStatus == 0 || (status == 'running')" @click="handleStepBtn">
+              <chevron-right-icon></chevron-right-icon> Step
             </v-btn>
             <v-btn @click="handleStopBtn(1)" :disabled="status == 'stopped'"
               ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
@@ -268,6 +271,9 @@ export default {
       this.snackbar = true;
       gameInstance.SendMessage("GameObject", "stop")
 
+    },
+    handleStepBtn(){
+      //placeholder
     },
     greet(text) {
       this.unityStatus = 1;
