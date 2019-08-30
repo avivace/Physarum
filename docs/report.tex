@@ -1,0 +1,56 @@
+\documentclass{report}
+\usepackage{amsmath}
+\usepackage{ dsfont }
+\usepackage{ svg }
+\usepackage[colorlinks,citecolor=black,linkcolor=black,urlcolor=blue,bookmarks=false,hypertexnames=true]{hyperref}\usepackage{kpfonts}
+\usepackage[T1]{fontenc}
+\usepackage{nimbusmononarrow}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\begin{document}
+
+\title{%
+  \Huge Physarum\\
+  \large Slime mould computing simulation\\
+    }
+\author{
+  Coppola Matteo\\
+  \texttt{793329}
+  \and
+  Palazzi Luca\\
+  \texttt{793556}
+   \and
+  Vivace Antonio\\
+  \texttt{793509}
+}
+\date{Complex Systems: Models and Simulation, \\ July 2019}
+\maketitle
+
+\input{abstract}
+\tableofcontents
+\listoffigures
+
+\input{1_introduction}
+
+\chapter{State of the Art}
+\input{2_state_art}
+
+\chapter{Model}
+\input{3_model}
+
+\chapter{Implementation}
+\input{4_implementation}
+
+\chapter{Simulations}
+\input{5_simulations}
+
+\chapter{Analysis of the results}
+
+\chapter{Conclusions}
+
+\bibliographystyle{unsrt}
+\bibliography{bibliography}
+
+\end{document}
