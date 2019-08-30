@@ -10,12 +10,11 @@
         </div>
         <v-layout row wrap>
           <v-flex md8 sm12>
-            webgl container
             <div id="gameContainer" style="width: 80%; height: 600px"></div>
           </v-flex>
           <v-flex md4 sm12>
             Unity status:<span
-              style="text-transform: uppercase;font-size: 1.2rem"
+              style="text-transform: uppercase;font-size: 1.3rem"
             >
               <template v-if="unityStatus==0">
               <v-progress-circular
@@ -39,29 +38,29 @@
             </span>
             <br />
             Simulation status:
-            <span style="text-transform: uppercase;font-size: 1.2rem">{{
+            <span style="text-transform: uppercase;font-size: 1.3rem">{{
               status
             }}</span
             ><br />
 
             <br />
             Time step (t):
-            <span style="text-transform: uppercase;font-size: 1.2rem">{{
+            <span style="text-transform: uppercase;font-size: 1.3rem">{{
               time
             }}</span>
             <br />
             N:
-            <span style="text-transform: uppercase;font-size: 1.2rem">
+            <span style="text-transform: uppercase;font-size: 1.3rem">
               {{ N }}
             </span>
             <br />
             S:
-            <span style="text-transform: uppercase;font-size: 1.2rem">
+            <span style="text-transform: uppercase;font-size: 1.3rem">
               {{ S }}
             </span>
             <br />
             Mass:
-            <span style="text-transform: uppercase;font-size: 1.2rem">
+            <span style="text-transform: uppercase;font-size: 1.3rem">
               {{ totalPM }}
             </span>
             <br />
