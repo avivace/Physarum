@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-
+    private Camera m_Camera;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +17,8 @@ public class CameraManager : MonoBehaviour
 
     }
 
-    public void MoveCamera(){
-    	Debug.Log("Test");
+    public void MoveCamera(int x, int y){
+    	Debug.Log("Moved camera");
+        transform.position = new Vector3(x, y, -10);
     }
 }

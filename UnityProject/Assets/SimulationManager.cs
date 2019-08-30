@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,9 +73,7 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        CameraManager cameraManager = camera.GetComponent<CameraManager>();
-        cameraManager.MoveCamera();
-        //Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
+        Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         Initialization();
     }
 
@@ -121,13 +119,22 @@ public class SimulationManager : MonoBehaviour
         DrawTiles();
     }
 
-    /** Carica la mappa come Texture così può leggerne i pixel. */
+    /** Load the map as texture so we can access each pixel */
     void LoadTextureMap()
     {
         tex = new Texture2D(2, 2);
         tex.LoadImage(imageAsset.bytes);
         mapSizeX = tex.width;
         mapSizeY = tex.height;
+        // Center and resize camera so the entire map fills the viewport
+        CameraManager cameraManager = camera.GetComponent<CameraManager>();
+        /*
+        To get a decent viewport:
+        Position should be size/2, size/2
+        Size should be size/2 + size/10
+        */
+        cameraManager.MoveCamera(mapSizeX/2, mapSizeY/2);
+        camera.orthographicSize = mapSizeX/2 + mapSizeX/20;
     }
 
     /** Popola la mappa con i vari tipi di cella. */
