@@ -113,6 +113,10 @@ public class SimulationManager : MonoBehaviour
     /** Call this every time you want to restart the simulation. */
     public void Initialization()
     {
+        Ss = new List<Vector2Int>();
+        Ns = new List<Vector2Int>();
+        defaultPMForS = 15000;
+        
         LoadTextureMap();
         InitCellMap();
         t = 0;
@@ -126,7 +130,8 @@ public class SimulationManager : MonoBehaviour
             }
         }
 
-        //simulationRunning = true;
+        // Autostart or wait for the UI to start the simulation?
+        simulationRunning = true;
         DrawTiles();
     }
 
@@ -601,7 +606,7 @@ public class SimulationManager : MonoBehaviour
     int antiCrashCounter = 0;
     private void ConnectNToNearestS(int i, int j)
     {
-        Debug.Log("TUBO CONNESSO " + i + " " + j + " " + mapCells[i, j].CHA + " " + mapCells[i, j].direction + " " + mapCells[i, j].type);
+        Debug.Log("Tube connected: " + i + " " + j + " " + mapCells[i, j].CHA + " " + mapCells[i, j].direction + " " + mapCells[i, j].type);
 
         mapCells[i, j].TE = true;
         
@@ -623,7 +628,9 @@ public class SimulationManager : MonoBehaviour
             } else
             {
                 Debug.Log("Infinite Loop encountered: "+ antiCrashCounter);
-                simulationRunning = false;
+                
+                // Restart?
+                Initialization();
             }
         }
     }

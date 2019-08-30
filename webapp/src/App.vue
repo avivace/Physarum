@@ -322,7 +322,7 @@ so we have to force things with !important */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #3d3d5c; /* Darkened Gray Blue (#8C92AC) */
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   background-color: #e8e8ed; /* A really lightened Payne's Gray */
 }
 .footer {
