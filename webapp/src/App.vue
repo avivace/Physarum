@@ -222,7 +222,7 @@ export default {
       status: "stopped",
       greetText: null,
       a: true,
-      time: 50,
+      time: "NAN",
       items: ["Map 1", "Map 2", "Test"],
       selectedModel: "1",
       snackbar: null,
@@ -252,7 +252,7 @@ export default {
       }
     },
     handleStopBtn(reset) {
-
+      this.time="NAN"
       if (reset){
         this.timeout = 2000;
         this.snackbarText = 'Simulation stopped and parameters set to default';
@@ -269,6 +269,12 @@ export default {
     },
     greet(text) {
       this.unityStatus = 1;
+    },
+    unityUpdate(a, b){
+      if (a == 0){
+        // Updating time setp
+        this.time = b;
+      }
     }
   }
 };
