@@ -86,10 +86,10 @@
                 ><play-icon></play-icon>Resume</template
               >
             </v-btn>
-            <v-btn @click="handleResetBtn" :disabled="status == 'stopped'"
+            <v-btn @click="handleStopBtn(1)" :disabled="status == 'stopped'"
               ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
             </v-btn>
-            <v-btn @click="handleStopBtn" :disabled="status == 'stopped'"
+            <v-btn @click="handleStopBtn(0)" :disabled="status == 'stopped'"
               ><square-icon size="1x"></square-icon> &nbsp; Stop
             </v-btn>
             <br /><br />
@@ -204,13 +204,16 @@
 </template>
 
 <script>
-import { PlayIcon, PauseIcon, RefreshCcwIcon, SquareIcon } from "vue-feather-icons";
+import {  ChevronRightIcon,Maximize2Icon,CheckIcon, PlayIcon, PauseIcon, RefreshCcwIcon, SquareIcon } from "vue-feather-icons";
 export default {
   components: {
     PlayIcon,
     PauseIcon,
     RefreshCcwIcon,
-    SquareIcon
+    SquareIcon,
+    CheckIcon,
+    Maximize2Icon,
+    ChevronRightIcon
   },
   name: "app",
   data: function() {
@@ -248,16 +251,21 @@ export default {
         this.status = "running";
       }
     },
-    // STOPS and resets the parameters
-    handleResetBtn(){
-      // TODO: reset parameters
-      this.handleStopBtn();
-    },
-    handleStopBtn() {
+    handleStopBtn(reset) {
+
+      if (reset){
+        this.timeout = 2000;
+        this.snackbarText = 'Simulation stopped and parameters set to default';
+        // TODO: reset parameters
+      } else {
+        this.timeout = 1000;
+        this.snackbarText = 'Simulation stopped';
+      }
+      
       this.status = "stopped";
       this.snackbar = true;
-      this.snackbarText = "Simulation stopped"
       gameInstance.SendMessage("GameObject", "stop")
+
     },
     greet(text) {
       this.unityStatus = 1;
