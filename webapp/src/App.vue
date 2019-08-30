@@ -11,17 +11,24 @@
         <v-layout row wrap>
           <v-flex md8 sm12>
             webgl container
+            <div id="gameContainer" style="width: 80%; height: 600px"></div>
           </v-flex>
           <v-flex md4 sm12>
             Unity status:<span
               style="text-transform: uppercase;font-size: 1.2rem"
             >
+              <template v-if="unityStatus==0">
               <v-progress-circular
                 indeterminate
                 color="black"
                 style="height:16px"
               ></v-progress-circular
-              >Connecting..</span
+              >Connecting..
+              </template>
+              <template v-if="unityStatus==1">
+                Connected
+              </template>
+              </span
             >
             <br />
             webgl deploy build:
@@ -69,7 +76,7 @@
               <v-radio label="Experimental Model" value="2"></v-radio>
             </v-radio-group>
 
-            <v-btn class="abtn" @click="handleStartBtn"
+            <v-btn class="abtn" :disabled="unityStatus == 0" @click="handleStartBtn"
               ><template v-if="status == 'stopped'"
                 ><play-icon></play-icon> Start</template
               ><template v-if="status == 'running'"
@@ -79,7 +86,7 @@
                 ><play-icon></play-icon>Resume</template
               >
             </v-btn>
-            <v-btn @click="handleStopBtn" :disabled="status == 'stopped'"
+            <v-btn @click="handleResetBtn" :disabled="status == 'stopped'"
               ><refresh-ccw-icon></refresh-ccw-icon> &nbsp; Reset
             </v-btn>
             <v-btn @click="handleStopBtn" :disabled="status == 'stopped'"
@@ -192,7 +199,6 @@
         <img src="./assets/WebGL_Logo.svg" height="38px" />
       </div>
       <br /><br /><br />
-      {{ greetText }}
     </v-app>
   </div>
 </template>
@@ -209,6 +215,7 @@ export default {
   name: "app",
   data: function() {
     return {
+      unityStatus: 0,
       status: "stopped",
       greetText: null,
       a: true,
@@ -224,26 +231,35 @@ export default {
       minagedryout: 0,
       cap1: 0,
       cap2: 0,
-      defaultpms: 0
+      defaultpms: 0,
+      x:0,
+      y:0,
+      timeout:0,
+      mode:0,
     };
   },
   mounted() {},
   methods: {
     handleStartBtn() {
-      console.log("handle", this.status);
+      gameInstance.SendMessage("GameObject", "startpause")
       if (this.status == "running") {
         this.status = "paused";
       } else {
         this.status = "running";
       }
     },
+    // STOPS and resets the parameters
+    handleResetBtn(){
+      // TODO: reset parameters
+      this.handleStopBtn();
+    },
     handleStopBtn() {
       this.status = "stopped";
       this.snackbar = true;
-      this.selectedMap = "Map 1";
+      gameInstance.SendMessage("GameObject", "stop")
     },
     greet(text) {
-      this.greetText = text;
+      this.unityStatus = 1;
     }
   }
 };
