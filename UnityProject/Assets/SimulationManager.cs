@@ -63,16 +63,27 @@ public class SimulationManager : MonoBehaviour
 
     public float totalPM = 0;
 
+    // UI handler  methods
+
+    void startpause(){
+        simulationRunning=!simulationRunning;
+    }
+
+    void stop(){
+        simulationRunning=false;
+        Initialization();
+    }
+
     void payloadHandler(){
         string jsonString = "{\"value1\":\"1\"}";
         Payload payload = JsonUtility.FromJson<Payload>(jsonString);
         Debug.Log(payload.value2);
-        
     }
 
     // Start is called before the first frame update
     void Start()
     {   
+        // Let the UI know we're alive
         Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         Initialization();
     }
@@ -115,7 +126,7 @@ public class SimulationManager : MonoBehaviour
             }
         }
 
-        simulationRunning = true;
+        //simulationRunning = true;
         DrawTiles();
     }
 
@@ -173,7 +184,7 @@ public class SimulationManager : MonoBehaviour
 
     void SimulationMatteo()
     {
-        Debug.Log("Simulation Matteo running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
+        //Debug.Log("Simulation Matteo running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
 
         ApplyMatteoDiffusionEquations();
 
@@ -457,7 +468,7 @@ public class SimulationManager : MonoBehaviour
         //Update the map
         UpdateMapWithNewDiffusionValues(newMap);
 
-        Debug.Log("TOTALPM " + totalPM+" "+ (Math.Round(totalPM / defaultPMForS)) + " "+(totalPM%defaultPMForS));
+        //Debug.Log("TOTALPM " + totalPM+" "+ (Math.Round(totalPM / defaultPMForS)) + " "+(totalPM%defaultPMForS));
     }
 
     private bool IsCellAInDirectionOfCellB(int Ax, int Ay, int Bx, int By)
@@ -482,7 +493,6 @@ public class SimulationManager : MonoBehaviour
         return false;
     }
 
- 
     /** Execution of the simulation. */
     void Simulation()
     {
@@ -880,7 +890,7 @@ public class SimulationManager : MonoBehaviour
             }
         }
 
-        Debug.Log("BIGGEST PM IS "+ biggestPMvalue+" at "+ posIbiggestPMValue+" "+ posJbiggestPMValue);
+        //Debug.Log("BIGGEST PM IS "+ biggestPMvalue+" at "+ posIbiggestPMValue+" "+ posJbiggestPMValue);
     }
 
     /** Create a new filled map with generic cells. */
