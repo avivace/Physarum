@@ -223,7 +223,7 @@ export default {
       items: ["Map 1", "Map 2", "Test"],
       selectedModel: "1",
       snackbar: null,
-      snackbarText: "Simlation reset",
+      snackbarText: "Simulation reset",
       selectedMap: "Map 1",
       defaultcha: 0,
       thpm: 0,
@@ -234,7 +234,7 @@ export default {
       defaultpms: 0,
       x:0,
       y:0,
-      timeout:0,
+      timeout:1000,
       mode:0,
     };
   },
@@ -256,6 +256,7 @@ export default {
     handleStopBtn() {
       this.status = "stopped";
       this.snackbar = true;
+      this.snackbarText = "Simulation stopped"
       gameInstance.SendMessage("GameObject", "stop")
     },
     greet(text) {
