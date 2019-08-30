@@ -94,7 +94,7 @@ public class SimulationManager : MonoBehaviour
         //TestProgression();
         if (simulationRunning)
         {
-            Application.ExternalCall("vm.$children[0].unityUpdate", 0, t);
+            Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM);
             if (testMatteo)
             {
                 SimulationMatteo();
@@ -131,7 +131,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Autostart or wait for the UI to start the simulation?
-        //simulationRunning = true;
+        // simulationRunning = true;
         DrawTiles();
     }
 

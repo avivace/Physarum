@@ -52,17 +52,17 @@
             <br />
             N:
             <span style="text-transform: uppercase;font-size: 1.2rem">
-              0
+              {{ N }}
             </span>
             <br />
             S:
             <span style="text-transform: uppercase;font-size: 1.2rem">
-              0
+              {{ S }}
             </span>
             <br />
             Mass:
             <span style="text-transform: uppercase;font-size: 1.2rem">
-              0
+              {{ totalPM }}
             </span>
             <br />
 
@@ -239,6 +239,9 @@ export default {
       y:0,
       timeout:1000,
       mode:0,
+      S: "NAN",
+      N: "NAN",
+      totalPM: "NAN"
     };
   },
   mounted() {},
@@ -270,10 +273,13 @@ export default {
     greet(text) {
       this.unityStatus = 1;
     },
-    unityUpdate(a, b){
+    unityUpdate(a, t, S, N, PM){
       if (a == 0){
         // Updating time setp
-        this.time = b;
+        this.time = t;
+        this.S = S;
+        this.N = N;
+        this.totalPM = PM;
       }
     }
   }
