@@ -74,17 +74,27 @@ public class SimulationManager : MonoBehaviour
         Initialization();
     }
 
-    void payloadHandler(){
-        string jsonString = "{\"value1\":\"1\"}";
+    void payloadHandler(string jsonString){
+        string jsonStringTest = "{\"value1\":\"1\"}";
         Payload payload = JsonUtility.FromJson<Payload>(jsonString);
         Debug.Log(payload.value2);
     }
+
+    void changeFrameRate(int targetFps){
+        Application.targetFrameRate = targetFps;
+    }
+
+    // Main lifecycle methods
 
     // Start is called before the first frame update
     void Start()
     {   
         // Let the UI know we're alive
         Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
+        // Disable V-Sync
+        QualitySettings.vSyncCount = 0;
+        // Set the framerate
+        Application.targetFrameRate = 60;
         Initialization();
     }
 
@@ -131,7 +141,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Autostart or wait for the UI to start the simulation?
-        // simulationRunning = true;
+        //simulationRunning = true;
         DrawTiles();
     }
 

@@ -75,6 +75,22 @@
               <v-radio label="Experimental Model" value="2"></v-radio>
             </v-radio-group>
 
+            <v-slider
+          v-model="fps"
+          label="Simulation Speed "
+          style="width: 500px"
+          @change="changeSpeed"
+
+        ><template v-slot:append>
+              <v-text-field
+                v-model="fps"
+                class="mt-0 pt-0"
+                hide-details
+                single-line
+                type="number"
+                style="width: 40px"
+              ></v-text-field></template></v-slider> 
+
             <v-btn class="abtn" :disabled="unityStatus == 0" @click="handleStartBtn"
               ><template v-if="status == 'stopped'"
                 ><play-icon></play-icon> Start</template
@@ -243,7 +259,8 @@ export default {
       mode:0,
       S: "NAN",
       N: "NAN",
-      totalPM: "NAN"
+      totalPM: "NAN",
+      fps: 60
     };
   },
   mounted() {},
@@ -271,6 +288,9 @@ export default {
       this.snackbar = true;
       gameInstance.SendMessage("GameObject", "stop")
 
+    },
+    changeSpeed(){
+      gameInstance.SendMessage("GameObject", "changeFrameRate", this.fps)
     },
     handleStepBtn(){
       //placeholder
