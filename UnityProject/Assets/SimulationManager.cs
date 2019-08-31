@@ -133,6 +133,13 @@ public class SimulationManager : MonoBehaviour
         Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",",mapsFileNames), 3);
     }
 
+    // Allow chanding the simulation mode from the UI
+    void selectSimulationMode(int mode){
+        simulationMode = mode;
+        simulationRunning=false;
+        Initialization();
+    }
+
     // Called by either UI (single step) or by Update when the simulation is running
     void simulationStep(){
         if (simulationMode == 1) {
@@ -142,7 +149,7 @@ public class SimulationManager : MonoBehaviour
         }
         UpdateTiles();
         // Update the UI with the current status of the simulation
-        Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM);
+        Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
     }
 
     // Update is called once per frame
