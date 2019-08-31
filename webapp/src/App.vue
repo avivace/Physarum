@@ -295,7 +295,7 @@ export default {
       gameInstance.SendMessage("GameObject", "changeFrameRate", this.fps)
     },
     handleStepBtn(){
-      //placeholder
+      gameInstance.SendMessage("GameObject", "simulationStep")
     },
     greet(text) {
       this.unityStatus = 1;
