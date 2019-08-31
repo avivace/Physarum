@@ -118,7 +118,7 @@
                 <v-select
                   class="numberinput"
                   v-model="selectedMap"
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   :items="mapItems"
                   item-text="fileName"
                   item-value="mapIndex"
@@ -128,7 +128,7 @@
                 ></v-select></v-flex
               ><v-flex xs6
                 ><v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="defaultcha"
                   type="number"
@@ -139,7 +139,7 @@
             <v-layout>
               <v-flex xs6>
                 <v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="thpm"
                   type="number"
@@ -148,7 +148,7 @@
               ></v-flex>
               <v-flex xs6
                 ><v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="defaultpm"
                   type="number"
@@ -158,7 +158,7 @@
             <v-layout>
               <v-flex xs6
                 ><v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="minagedryout"
                   type="number"
@@ -167,7 +167,7 @@
               ></v-flex>
               <v-flex xs6
                 ><v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="cap1"
                   type="number"
@@ -178,7 +178,7 @@
             <v-layout>
               <v-flex xs6
                 ><v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="cap2"
                   type="number"
@@ -187,7 +187,7 @@
               ></v-flex>
               <v-flex xs6
                 ><v-text-field
-                  :disabled="status != 'stopped'"
+                  :disabled="unityStatus == 0 || (status == 'running')"
                   class="numberinput"
                   v-model="defaultpms"
                   type="number"
