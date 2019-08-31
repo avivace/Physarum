@@ -14,6 +14,9 @@ public class SimulationManager : MonoBehaviour
 
     Texture2D tex;
 
+    public TextAsset[] maps;
+    public string[] mapsFileNames;
+
     int mapSizeX;
     int mapSizeY;
 
@@ -85,18 +88,49 @@ public class SimulationManager : MonoBehaviour
         Application.targetFrameRate = targetFps;
     }
 
+    void selectMap(int mapIndex){
+        // Should be called on simulation stoped anyway
+        simulationRunning = false;
+        imageAsset = maps[mapIndex];
+        Initialization();
+        Application.ExternalCall("vm.$childern[0].updateAvailableMaps", String.Join(",", mapsFileNames), mapIndex);
+    }
+
     // Main lifecycle methods
 
     // Start is called before the first frame update
     void Start()
     {   
+        
+        mapsFileNames = new string[] { 
+            "map_test7.png",
+            "map_test7.png",
+            "central_point_without_n.png",
+            "corner2S.png",
+            "corner2S_obstacle.png",
+            "maze.png"
+        };
+        maps = new TextAsset[mapsFileNames.Length];
+        for (int i = 0; i < mapsFileNames.Length; i++){
+            maps[i] = Resources.Load<TextAsset>(mapsFileNames[i]);
+        }
+        
+        // Default map to load
+        imageAsset = maps[3];
+
         // Disable V-Sync
         QualitySettings.vSyncCount = 0;
         // Set the framerate
-        Application.targetFrameRate = 60;
+        // To get a stable 60 fps, 56-57 is enough
+        Application.targetFrameRate = 55;
+
+        // Load the map and draw the tiles (frame 0)
         Initialization();
+        
         // Let the UI know we're alive and ready
         Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
+        // Update the UI with every map available
+        //Application.ExternalCall("vm.$childern[0].updateAvailableMaps", 1);
     }
 
     // Called by either UI (single step) or by Update when the simulation is running
@@ -142,6 +176,7 @@ public class SimulationManager : MonoBehaviour
         // Autostart or wait for the UI to start the simulation?
         //simulationRunning = true;
         DrawTiles();
+
     }
 
     /** Load the map as texture so we can access each pixel */
