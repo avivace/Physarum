@@ -93,7 +93,7 @@ public class SimulationManager : MonoBehaviour
         simulationRunning = false;
         imageAsset = maps[mapIndex];
         Initialization();
-        Application.ExternalCall("vm.$childern[0].updateAvailableMaps", String.Join(",", mapsFileNames), mapIndex);
+        Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",",mapsFileNames), mapIndex);
     }
 
     // Main lifecycle methods
@@ -104,7 +104,7 @@ public class SimulationManager : MonoBehaviour
         
         mapsFileNames = new string[] { 
             "map_test7.png",
-            "map_test7.png",
+            "map_test8.png",
             "central_point_without_n.png",
             "corner2S.png",
             "corner2S_obstacle.png",
@@ -130,7 +130,7 @@ public class SimulationManager : MonoBehaviour
         // Let the UI know we're alive and ready
         Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         // Update the UI with every map available
-        //Application.ExternalCall("vm.$childern[0].updateAvailableMaps", 1);
+        Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",",mapsFileNames), 3);
     }
 
     // Called by either UI (single step) or by Update when the simulation is running

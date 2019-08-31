@@ -318,10 +318,7 @@ export default {
       console.log("Selecting map", this.selectedMap)
       gameInstance.SendMessage("GameObject", "selectMap", this.selectedMap)
     },
-    updateAvailableMaps(b){
-      console.log("robe")
-    },
-    updateAvailableMaps2(rawMapListArray, currentMapIndex){
+    updateMaps(rawMapListArray, currentMapIndex){
       console.log(rawMapListArray, currentMapIndex)
 
       // Deserialize the arriving list of map file names
