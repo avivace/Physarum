@@ -79,6 +79,8 @@
           v-model="fps"
           label="Simulation Speed "
           style="width: 500px"
+          min="1"
+          max="60"
           @change="changeSpeed"
 
         ><template v-slot:append>
