@@ -160,8 +160,8 @@ Camera:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.909804, g: 0.909804, b: 0.9294118, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -347,16 +347,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4de46ef61a8e14b9ef8af3a4fd59a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageAsset: {fileID: 4900000, guid: 79eb72f7319765c4ca8be050efac6f8b, type: 3}
+  imageAsset: {fileID: 4900000, guid: 216f440d334c01d46b09772d7deacc61, type: 3}
   tile: {fileID: 11400000, guid: 08b697ea9c99fa14bbbbcf4dd9f6e8bc, type: 2}
   camera: {fileID: 519420031}
+  maps: []
+  mapsFileNames: []
   Ss: []
   Ns: []
   payload:
     value1: 
     value2: 
-  defaultPMForS: 15000
-  defaultCHAForN: 100
+  defaultPMForS: 1500000
+  defaultCHAForN: 10000
   CON: 0.95
   PAP: 0.7
   PMP1: 0.08
