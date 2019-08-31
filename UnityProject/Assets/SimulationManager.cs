@@ -59,7 +59,8 @@ public class SimulationManager : MonoBehaviour
     /** Keep it -1 if you want the simulation to go eternally. */
     public int tToStop = 10000;
 
-    bool testMatteo = true;
+    // 0 for the paper simulation, 1 for the experimental one
+    int simulationMode = 1;
 
     public float totalPM = 0;
 
@@ -89,35 +90,33 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        // Let the UI know we're alive
-        Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         // Disable V-Sync
         QualitySettings.vSyncCount = 0;
         // Set the framerate
         Application.targetFrameRate = 60;
         Initialization();
+        // Let the UI know we're alive and ready
+        Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
+    }
+
+    // Called by either UI (single step) or by Update when the simulation is running
+    void simulationStep(){
+        if (simulationMode == 1) {
+            experimentalSimulation();
+        } else {
+            Simulation();
+        }
+        UpdateTiles();
+        // Update the UI with the current status of the simulation
+        Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //TestProgression();
         if (simulationRunning)
         {
-            Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM);
-            if (testMatteo)
-            {
-                SimulationMatteo();
-            }
-            else
-            {
-                Simulation();
-            }
-            UpdateTiles();
-
-            //DEBUG ONLY:
-            if(t == tToStop)
-                simulationRunning = false;
+            simulationStep();            
         }
     }
 
@@ -132,7 +131,7 @@ public class SimulationManager : MonoBehaviour
         t = 0;
         ResetFiftyStepsPhase();
 
-        if (testMatteo)
+        if (simulationMode == 1)
         {
             foreach (Vector2Int s in Ss)
             {
@@ -197,7 +196,7 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
-    void SimulationMatteo()
+    void experimentalSimulation()
     {
         //Debug.Log("Simulation Matteo running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
 
@@ -625,7 +624,7 @@ public class SimulationManager : MonoBehaviour
             int x;
             int y;
 
-            if(testMatteo)
+            if(simulationMode==1)
                 GetNeighbourBasedOnDirection(i, j, out x, out y);
             else
                 GetHighestNeighbourPM(i, j, out x, out y);
@@ -1049,7 +1048,7 @@ public class SimulationManager : MonoBehaviour
                 {
                     //SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
 
-                    if (testMatteo)
+                    if (simulationMode==1)
                     {
                         //COLORED FOR CONSERVATION MAP
                         if (mapCells[i, j].PM == 0)
