@@ -119,9 +119,12 @@
                   class="numberinput"
                   v-model="selectedMap"
                   :disabled="status != 'stopped'"
-                  :items="items"
+                  :items="mapItems"
+                  item-text="fileName"
+                  item-value="mapIndex"
                   label="Map"
                   outlined
+                  @change="changeMap"
                 ></v-select></v-flex
               ><v-flex xs6
                 ><v-text-field
@@ -243,11 +246,13 @@ export default {
       greetText: null,
       a: true,
       time: "NAN",
+      // Map items
+      mapItems: [],
       items: ["Map 1", "Map 2", "Test"],
       selectedModel: "1",
       snackbar: null,
       snackbarText: "Simulation reset",
-      selectedMap: "Map 1",
+      selectedMap: {},
       defaultcha: 0,
       thpm: 0,
       defaultpm: 0,
@@ -308,6 +313,33 @@ export default {
         this.N = N;
         this.totalPM = PM;
       }
+    },
+    changeMap(mapIndex){
+      console.log("Selecting map", this.selectedMap)
+      gameInstance.SendMessage("GameObject", "selectMap", this.selectedMap)
+    },
+    updateAvailableMaps(b){
+      console.log("robe")
+    },
+    updateAvailableMaps2(rawMapListArray, currentMapIndex){
+      console.log(rawMapListArray, currentMapIndex)
+
+      // Deserialize the arriving list of map file names
+      let mapListArray = rawMapListArray.split(",");
+
+      let mapItems = this.mapItems;
+      
+      mapListArray.forEach(function(name, index){
+        console.log(name, index)
+        let mapElement  = {
+          fileName: name,
+          mapIndex: index
+        }
+        mapItems.push(mapElement)
+      })
+
+      this.selectedMap = currentMapIndex;
+    
     }
   }
 };
