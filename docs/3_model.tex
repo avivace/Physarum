@@ -1,35 +1,9 @@
-Consider only the plasmodium stage of its life cycle, there is no single model that can describe exactly the behavior of Physarum. So far, there is a variety of modeling approaches which also are implemented by a variety of tools \cite{Tsompanas2016}, \cite{gunji2008minimal}, \cite{shirakawa2015construction}.
-\par
-In this project the behaviour of slime mould during the laboratory experiments have been simulated by a model based on Cellular Automata. Using CA can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
-\par
-All of the biological studies indicated above, like solving a maze and designing a transport network, have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps \cite{shirakawa2015construction}:
-\begin{itemize}
-	\item First step: the plasmodium fully searches the given space
-	\item Second step: some sources of attractant or repellent stimuli are given to the plasmodium that is fully and homogeneously spreading in the space
-	\item Third step: the plasmodium optimizes the connection between the sources
-\end{itemize}
+In this project the behaviour of slime mould during the laboratory experiments have been simulated using models based on Cellular Automata. Using CA can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
 
-The majority of the studies focus on the behaviour of the plasmodium in a closed space. However, few studies have been done for the plasmodium that is exploring an open space. 
-\par
-INIZIO CONSIDERAZIONI
-\par
-We believe that we can find more enhanced biological characteristics of the biological entities by observing the behaviours of them in an open and unknown environment. In this study, we thus tried to investigate the exploratory behaviour of the plasmodium in an open space and to understand how the organism makes its decision in exploration. 
-\par
-FINE CONSIDERAZIONI
-\par
-The CA based model that inspired us \cite{Tsompanas2016} mimics the foraging strategy and tubular network formation. In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
-\par
-However, this model consideres only slime mould foraging behaviour and also - with the only information in the paper - seems not to follow the true behavior of slime mould; the main problems encountered can be summarized in the following points:
-\begin{itemize}
-	\item No mass conservation. Map flooding
-	\item Tube's creation dependent on the mass gradient. A tube is seen as a separate entity
-	\item No shrinking of the mass towards the tube despite in the Physarum exploitation phase the organism tends to shrink and collect its body mass to move towards resource of attraction
+\section{Physarum model}
+After reviewing the literature on several models, we have decided to use the CA based model of Tsompanas et al. \cite{Tsompanas2016} that mimics the foraging strategy and tubular network formation. In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
 
-\end{itemize}
-
-For this reason we have proposed an alternative model - starting from the model Tsompanas et al. \cite{Tsompanas2016} - that aims at a more faithful exploration of slime mould.
-
-\section{Paper model}
+\par
 The plasmodium is first starved and then introduced to an exploring region in a SP. Moreover, some NSs which produces chemo-attractants are located at characteristic points. 
 \par
 The plasmodium starts searching for nutrients, exhibiting pattern of guided movement towards/away from sources of stimulation; it explores the available area, encapsulates the NSs and creates a tubular network that connects all these NSs by a nature-inspired, cost effective and risk avoiding manner.
@@ -198,6 +172,23 @@ SP and it is less likely to be a point of interest surrounded by unavailable are
 would cause difficulties for the growth of the plasmodium. Finally, the time period
 of 50 time steps for the diffusion equations, was also empirically chosen, although
 the alternation of that will cause little difference to the results of the model.
+
+
+
+
+
+\subsection{Issues}
+
+The model introduced in the previous section considers only slime mould foraging behaviour and also - with the only information in the paper - seems not to follow the true behavior of slime mould; the main problems encountered can be summarized in the following points:
+
+\begin{itemize}
+	\item No mass conservation. Map flooding
+	\item Tube's creation dependent on the mass gradient. A tube is seen as a separate entity
+	\item No shrinking of the mass towards the tube despite in the Physarum exploitation phase the organism tends to shrink and collect its body mass to move towards resource of attraction
+
+\end{itemize}
+
+For this reason we have proposed an alternative model - starting from the Tsompanas et al. \cite{Tsompanas2016} work - that aims at a more faithful exploration of slime mould. It is introduced in the next section.
 
 \section{Experimental model}
 

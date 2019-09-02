@@ -1,12 +1,12 @@
 \chapter{Introduction}
 
-Here we introduce and familiarise with the basic definitions and notations about Cellular Automata, a tool dating back to the late 1940s, when Stanislaw Ulam and John von Neumann defined it as a model for natural and biological processes.
+Here we introduce and familiarise with the basic definitions and notations about Cellular Automata, a tool dating back to the late 1940s, when Stanislaw Ulam and John von Neumann defined it as a model for natural and biological processes. Moreover, a type of slime mould called Physarum polycephalum is introduced from a biological point of view.
 
 \section{Cellular Automaton}
 \label{ca}
 
 A cellular automaton (abbrev. CA) is a discrete dynamical system consisting of cells that change their states simultaneously according a local update rule. This update process is repeated at discrete time steps.
-Cellular automata are\cite{canotes}
+Cellular automata are \cite{canotes}:
 
 \begin{itemize}
 	\item discrete in space and time,
@@ -94,19 +94,21 @@ A CA is a 4-tuple $A=(d, S,N,f)$ where
   \label{fig:hex_n}
 \end{figure*}
 
-When considering two-dimensional CA, the \textit{von Neumann} and the \textit{Moore} neighborhoods (pictured in figure \ref{fig:2d_n}) are often used.
+When considering two-dimensional CA, the \textit{von Neumann} and the \textit{Moore} neighborhoods (pictured in Figure \ref{fig:2d_n}) are often used.
 
 \paragraph{Moore neighborhood}
 
-The d-dimensional radius-r Moore neighboorhood, containing $(2r +1)^d$ elements is defined as follows:
+The d-dimensional radius-r Moore neighborhood, containing $(2r +1)^d$ elements is defined as follows:
 
 $$M_r^d = (k_1, K_2,...,k_d) \in \mathds{Z}^d \text{ where } |k_i| \leq r \text{  } \forall i = 1,2,...,d $$ 
 
-\paragraph{Von Neumann neighboorhood}
+\paragraph{Von Neumann neighborhood}
 
 
 $$V_r^d = (k_1, K_2,...,k_d) \in \mathds{Z}^d \text{ where } \sum_{i=1}^{d} |k_i| \leq r$$
 
+\par
+IMMAGINE HEXAGONAL NEIGHBORHOOD LA INSERIAMO?
 
 
 \subsection{Examples}
@@ -151,7 +153,6 @@ Spores, released from mature fruiting bodies, germinate into mononuclear amoebae
   \caption{The life cycle of Physarum polycephalum\cite{physlf}}
   \label{fig:physarum_life_cycle}
 \end{figure*}
-
 
 It is common to refer to the Physarum by the name of its vegetative (resting) life cycle phase, the plasmodium. The Physarum plasmodium is a single yellow cytoplasmic mass that can range in size from a few mm$^2$ to over half a m$^2$. The organism will typically be composed of a network of protoplasmic veins that can contain more than 100,000 nuclei.
 \par
