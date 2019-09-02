@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
+
 
 public class SimulationManager : MonoBehaviour
 {   
@@ -59,8 +61,9 @@ public class SimulationManager : MonoBehaviour
     int posIbiggestPMValue;
     int posJbiggestPMValue;
 
+
     /** Keep it -1 if you want the simulation to go eternally. */
-    public int tToStop = 10000;
+    int tToStop = 5000;
 
     // 0 for the paper simulation, 1 for the experimental one
     int simulationMode = 1;
@@ -101,13 +104,10 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {   
-        
         mapsFileNames = new string[] { 
             "map_test7.png",
             "map_test8.png",
             "central_point_without_n.png",
-            "corner2S.png",
-            "corner2S_obstacle.png",
             "maze.png"
         };
         maps = new TextAsset[mapsFileNames.Length];
@@ -159,13 +159,24 @@ public class SimulationManager : MonoBehaviour
         {
             simulationStep();            
         }
+
     }
 
     /** Call this every time you want to restart the simulation. */
     public void Initialization()
     {
+        
         Ss = new List<Vector2Int>();
         Ns = new List<Vector2Int>();
+        lastEncapsulatedNS = new Vector2Int();
+        secondToLastEncapsulatedNS = new Vector2Int();
+
+        float biggestCHAvalue =0;
+        float smallestCHAvalue=0;
+        float biggestPMvalue=0;
+        float smallestPMvalue=0;
+        int posIbiggestPMValue=0;
+        int posJbiggestPMValue=0;
 
         LoadTextureMap();
         InitCellMap();
@@ -181,7 +192,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Autostart or wait for the UI to start the simulation?
-        //simulationRunning = true;
+        simulationRunning = true;
         DrawTiles();
 
     }
