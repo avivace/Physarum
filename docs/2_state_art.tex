@@ -20,7 +20,7 @@ The organism requires a well hydrated substrate. All true slime moulds reproduce
 \par
 The name Physarum refers to the fact that multiple apparently autonomous leading edges may exist in one plasmodium. This is an observation of note as some of the first work on slime mould was based on the principle that Physarum can "choose" the most efficient path between food sources.
 
-\subsection{Biological experiments}
+\subsection{Experiments}
 The biological basis for this involves the Physarum identifying chemical gradients with multiple advancing margins before deciding to navigate along the strongest gradient. This has been interpreted as slime mould undertaking problem solving and network optimization, such as demonstrated in the following ground-breaking experiments.
 
 \paragraph{Maze solving}
@@ -29,21 +29,12 @@ Nakagaki et al. \cite{nakagaki2000intelligence} were the first to observe that t
 \paragraph{Network formation}
 In 2010 Tero et al. \cite{Tero439} compared the actual rail network in Japan with a Physarum network consisted by 36 nutrients sources (NSs) that represented the geographical locations of cities in Tokyo area. The Physarum was planted on Tokyo and from there started its foraging  and exploration for NSs until it filled much of the available land space. Then the organism started to concentrate on the NSs by thinning out the network to leave a subset of larger interconnecting tubes. The topology of many Physarum networks appeared similar to the rail network. The conclusion was that Physarum networks showed characteristics with comparable qualities to those of the rail network in terms of cost, transport efficiency and fault tolerance.\\
 
-\par
-AGGIUNGERE MODELLO MATEMATICO?
-\par
-
-\par
-SEZIONE SEPARATA?
-
 \section{CS approach}
 In the recent years, computer scientists have been inspired by biological systems for computational approaches, in particularly with respect to complex optimization and decision problems \cite{grube2016physarum}. In this context, Physarum emerged as a model organism which has attracted substantial interest. The aforementioned experiments require expensive and specialized equipment and some experience on basic biological laboratory techniques. However, the majority of scientists are unfamiliar with such methods and the experiments on a living organism may last a lot of hours or maybe some days to provide data.
+
 \par
 A commonly proposed alternative alleviating these difficulties is software models that simulate the behavior of the plasmodium and provide similar results. The advantages of a software model over the real slime mould are repeatability and faster productions of results.
-\par
-As slime mould has no brain or any central processing system, its distributed control can be perfectly described by the local rule of CAs. It is noteworthy that CAs are known for emerging global behavior from local interactions. 
-\par
-Consider only the plasmodium stage of its life cycle, there is no single model that can describe exactly the behavior of Physarum. So far, there is a variety of modeling approaches which also are implemented by a variety of tools \cite{Tsompanas2016}, \cite{gunji2008minimal}, \cite{shirakawa2015construction}.
+
 \par
 All of the biological studies indicated above, like solving a maze and designing a transport network, have observed the optimization behaviour of the plasmodium with the experimental setups roughly consisting of three steps \cite{shirakawa2015construction}:
 \begin{itemize}
@@ -52,11 +43,8 @@ All of the biological studies indicated above, like solving a maze and designing
 	\item Third step: the plasmodium optimizes the connection between the sources
 \end{itemize}
 
-The majority of the studies focus on the behaviour of the plasmodium in a closed space. However, few studies have been done for the plasmodium that is exploring an open space. 
 \par
-INIZIO CONSIDERAZIONI
-\par
-We believe that we can find more enhanced biological characteristics of the biological entities by observing the behaviours of them in an open and unknown environment. In this study, we thus tried to investigate the exploratory behaviour of the plasmodium in an open space and to understand how the organism makes its decision in exploration. 
-\par
-FINE CONSIDERAZIONI
+Consider only the plasmodium stage of its life cycle, there is no single model that can describe exactly the behavior of Physarum.
+As slime mould has no brain or any central processing system, its distributed control can be perfectly described by the local rule of CAs. So far, there is a variety of CA modeling approaches which also are implemented by a variety of tools \cite{Tsompanas2016}, \cite{gunji2008minimal}, \cite{shirakawa2015construction}.
+
 
