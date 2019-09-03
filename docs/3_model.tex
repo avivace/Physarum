@@ -206,3 +206,37 @@ To correctly simulate this behaviour in our model, every cell that contains some
 
 \par
 The simulations correctly end with all the reachable NS as part of the mold network, connecting tubes visible, no mass in useless cells and a constant total amount of mass.
+
+%% Experimental model rules
+
+\begin{align*} &
+\text{Direction of Stretch}=
+\begin{cases} 
+None, & mapCells[i, j].PM = 0 \\ 
+MaxPMNeighbourRelativePosition, & \mbox{else}
+\end{cases}
+\end{align*}
+
+dove  MaxPMNeighbourRelativePosition = North se vicino a Nord è quello con PM massimo, etc.
+
+\begin{align*} &
+PM=
+\begin{cases} 
+PM + PMVonNeumannUniformContribution + PMMooreUniformContribution,& GetCHA(x, y) == 0 and GetCHA(i, j) == 0 \\ 
+PM+PMVonNeumannGradientContribution+PMMooreGradientContribution , & \mbox{else}
+\end{cases}
+\end{align*}
+
+Dove:
+
+%TODO:
+
+PMVonNeumannUniformContribution = sommatoria(2* (von neumann.PM > currentcell.PM and von neumann.PM >= minPM)) - sommatoria(2*(von neumann.PM < currentcell.PM and currentcell.PM >= minPM))
+
+PMMooreUniformContribution = sommatoria(moore.PM > currentcell.PM and moore.PM >= minPM) – sommatoria(moore.PM < currentcell.PM and currentcell.PM >= minPM)
+
+PMVonNeumannGradientContribution = sommatoria(2*(von neumann.CHA < currentcell.CHA and von neumann.PM > minPM)) - sommatoria(2*(von neumann.CHA > currentcell.CHA and currentcell.PM >= minPM))
+
+PMMooreGradientContribution = sommatoria(moore.CHA < currentcell.CHA and moore.PM >= minPM) – sommatoria(moore.CHA > currentcell.CHA and currentcell.PM >= minPM)
+
+minPM = 12
