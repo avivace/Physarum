@@ -66,7 +66,7 @@ public class SimulationManager : MonoBehaviour
     int tToStop = 5000;
 
     // 0 for the paper simulation, 1 for the experimental one
-    int simulationMode = 1;
+    public int simulationMode = 1;
 
     public float totalPM = 0;
 
@@ -114,9 +114,9 @@ public class SimulationManager : MonoBehaviour
         for (int i = 0; i < mapsFileNames.Length; i++){
             maps[i] = Resources.Load<TextAsset>(mapsFileNames[i]);
         }
-        
+
         // Default map to load
-        imageAsset = maps[3];
+        imageAsset = maps[0];//imageAsset = maps[3];
 
         // Disable V-Sync
         QualitySettings.vSyncCount = 0;
@@ -166,6 +166,37 @@ public class SimulationManager : MonoBehaviour
     {
         this.GetComponent<Tilemap>().ClearAllTiles();
 
+        if (simulationMode == 0)
+        {
+            defaultPMForS = 100;
+            defaultCHAForN = 100;
+
+            CON = 0.95f;
+            PAP = 0.7f;
+            PMP1 = 0.08f;
+            PMP2 = 0.01f;
+            CAP1 = 0.05f;
+            CAP2 = 0.01f;
+            ThPM = 0.2f;
+
+            minAgeToDryOut = 0;
+        }
+        else if (simulationMode == 1)
+        {
+            defaultPMForS = 10000;
+            defaultCHAForN = 100;
+
+            CON = 0.95f;
+            PAP = 0;
+            PMP1 = 0;
+            PMP2 = 0;
+            CAP1 = 0.05f;
+            CAP2 = 0.01f;
+            ThPM = 20f;
+
+            minAgeToDryOut = 1000;
+        }
+
         Ss = new List<Vector2Int>();
         Ns = new List<Vector2Int>();
         lastEncapsulatedNS = new Vector2Int();
@@ -194,7 +225,6 @@ public class SimulationManager : MonoBehaviour
         // Autostart or wait for the UI to start the simulation?
         simulationRunning = true;
         DrawTiles();
-
     }
 
     /** Load the map as texture so we can access each pixel */
@@ -1092,11 +1122,11 @@ public class SimulationManager : MonoBehaviour
                 {
                     SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
                 }
-                /*else if (mapCells[i, j].TE)
+                else if (mapCells[i, j].TE && simulationMode == 0)
                 {
                     //SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
                     SetTileColour(new Color(1, 0, 1, 1), new Vector3Int(i, j, 0));
-                }*/
+                }
                 else
                 {
                     //SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
