@@ -1,6 +1,6 @@
 # Physarum
 
-<img src="docs/final_lightroom_inverted.jpg" width="500"/>
+<img src="docs/1900full.png"/>
 
 Complex Systems exam final project: *Physarum polycephalum slime mould computing simulations.*
 
