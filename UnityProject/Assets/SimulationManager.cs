@@ -159,13 +159,13 @@ public class SimulationManager : MonoBehaviour
         {
             simulationStep();            
         }
-
     }
 
     /** Call this every time you want to restart the simulation. */
     public void Initialization()
     {
-        
+        this.GetComponent<Tilemap>().ClearAllTiles();
+
         Ss = new List<Vector2Int>();
         Ns = new List<Vector2Int>();
         lastEncapsulatedNS = new Vector2Int();

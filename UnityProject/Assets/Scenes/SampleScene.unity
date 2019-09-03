@@ -148,7 +148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8085edfad40bf8740b0270926b0c5cb7, type: 3}
+  m_Script: {fileID: 11500000, guid: 157d73a85bba9184180dc28564d71b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!20 &519420031
@@ -344,11 +344,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1527672249}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e4de46ef61a8e14b9ef8af3a4fd59a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 496f15d0b3839b74a84bb9c7dabcafdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageAsset: {fileID: 4900000, guid: 216f440d334c01d46b09772d7deacc61, type: 3}
-  tile: {fileID: 11400000, guid: 08b697ea9c99fa14bbbbcf4dd9f6e8bc, type: 2}
+  imageAsset: {fileID: 4900000, guid: b2c0a4b1ede16b84ca461c41828491b6, type: 3}
+  tile: {fileID: 11400000, guid: 7d245d240299f46429170ee41bc04fa1, type: 2}
   camera: {fileID: 519420031}
   maps: []
   mapsFileNames: []
@@ -357,8 +357,8 @@ MonoBehaviour:
   payload:
     value1: 
     value2: 
-  defaultPMForS: 1500000
-  defaultCHAForN: 10000
+  defaultPMForS: 10000
+  defaultCHAForN: 100
   CON: 0.95
   PAP: 0.7
   PMP1: 0.08
@@ -367,5 +367,4 @@ MonoBehaviour:
   CAP2: 0.01
   ThPM: 20
   minAgeToDryOut: 1000
-  tToStop: 10000
   totalPM: 0
