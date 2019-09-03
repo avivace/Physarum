@@ -1,20 +1,24 @@
 In this project the behaviour of slime mould during the laboratory experiments have been simulated using models based on Cellular Automata. Using CA can be justified by the emergence of global behaviour from local interactions, a rule that applies also on the real slime mould.
 
 \section{Physarum model}
+
 After reviewing the literature on several models, we have decided to use the CA based model of Tsompanas et al. \cite{Tsompanas2016} that mimics the foraging strategy and tubular network formation. In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
 
 \par
 The plasmodium is first starved and then introduced to an exploring region in a SP. Moreover, some NSs which produces chemo-attractants are located at characteristic points. 
+
 \par
 The plasmodium starts searching for nutrients, exhibiting pattern of guided movement towards/away from sources of stimulation; it explores the available area, encapsulates the NSs and creates a tubular network that connects all these NSs by a nature-inspired, cost effective and risk avoiding manner.
-Typically, slime mould is stimulated in experimental situations by providing a number of spatially distributed chemoattractant nutrient NSs towards which it will migrate (chemotaxis). 
+Typically, slime mould is stimulated in experimental situations by providing a number of spatially distributed chemoattractant nutrient NSs towards which it will migrate (chemotaxis).
+
 \par
 To note the geometry of the network created by the plasmodium depends on the positions of the NSs. Moreover, further parameters can play key role in determining exact structure of plasmodium network.
+
 \par
 In order to imitate and simulate a biological laboratory experiment, the entire area is divided into a matrix of squares with identical areas - that constitutes a set defined as E - and each square of the surface is represented by a CA cell.
 This area can be categorized as available area (a set of cells defined as A) and unavailable area (a set of cells defined as U) for the development of the plasmodium.
 Also some cells that are included in the available area set of cells, represent the oat flakes that are considered as NSs for the plasmodium (a set of cells defined as N) and one cell represents the place where the plasmodium is initially introduced to the
-experimental environment or the SP (a set of one cell defined as S). 
+experimental environment or the SP (a set of one cell defined as S).
 The neighbourhood type used for the model is Moore neighbourhood and the state of the $c_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as:
 \begin{align}
 ST^t_{(i, j)} = [AA_{(i, j)}, PM^t_{(i, j)}, CHA^t_{(i, j)}, TE^t_{(i, j)}]
@@ -39,8 +43,10 @@ CHA^t_{(i, j)}=\begin{cases} 100, & \forall i, j: c_{(i,j)} \in N \\ 0, & \mbox{
 
 Taking into consideration the assumptions made for the way the Physarum develops through an available area, which were confirmed by laboratory experiments, it is determined that the plasmodium is "amplified" at a NS and then searches for other NSs, considering the recently encapsulated NS as a new SP. Also, when a NS is covered by the plasmodium, the generation of chemoattractant substances is ceased.
 In the model the NSs are turned into SPs when the plasmodium encapsulates them with a sufficient amount of mass. Furthermore, it is realized that the plasmodium is propagating away from the most recently captured NS by taking a semi-circular form. 
+
 \par
 The model is analyzed in the following flowchart: TODO inserire flowchart.
+
 \par
 The initialization step includes the definition of parameters that have a great impact on the results of the model. These parameters include:
 \begin{itemize}
@@ -54,6 +60,7 @@ The initialization step includes the definition of parameters that have a great 
 
 \par
 After the initialization and for 50 time steps, diffusion equations are used to calculate the values for $CHA$ and $PM$ for every cell in the grid. Every cell uses the values of its neighbours at time step t to calculate the value of the $CHA$ and $PM$ parameter for time step t + 1. 
+
 \par
 The contribution to the diffusion of the Physarum Mass of the von Neumann neighbours ($PMvNN$) of the $c_{(i,j)}$ cell is defined as:
 \begin{equation}
@@ -80,12 +87,11 @@ The total $PM$ for a cell $c_{(i,j)}$ for time t + 1 is a sum of the contributio
 \begin{equation}
 PM^{t+1}_{(i, j)} = PM^t_{(i, j)} + PMP1 \times [PMvNN^t_{(i, j)} + PMP2 \times PMeMN^t_{(i, j)}]
 \end{equation}
-The equation represents the exploration of the available space by the plasmodium which is affected by chemoattractants. The values PMP1 and PMP2 depict that the von Neumann and the exclusively Moore neighbours have different contributions on the diffusion of
-these parameters. If a neighbouring cell is representing unavailable area, there is no contribution to the diffusion. 
+The equation represents the exploration of the available space by the plasmodium which is affected by chemoattractants. The values PMP1 and PMP2 depict that the von Neumann and the exclusively Moore neighbours have different contributions on the diffusion of these parameters. If a neighbouring cell is representing unavailable area, there is no contribution to the diffusion.
+ 
 \par
 The parameter $PA_{(i, j),(k,l)}$ represents the attraction of the plasmodium - in cell $c_{(i,j)}$ - by the chemo-attractants towards the direction of an adjacent cell $c_{(k,l)}$, modeling the attraction of the organism towards the higher gradient of chemoattractants. It is equal to a predefined constant (PAP) for the neighbour with the higher concentration of chemo-attractants and equals to the negative value of the parameter PAP for the neighbour across the neighbour with the higher value of chemoattractant, in order to simulate the non-uniform foraging behavior of the plasmodium. For the other neighbours in an area that has no chemo-attractants, then the foraging strategy of the plasmodium is uniform and these parameters are equal to zero.
-\par
-INSERIAMO LA FORMULAZIONE DI PA?
+
 \par
 The $PA$ parameter for cell $c_{(i,j)}$ towards its north neighbour $c_{(i-1,j)}$ is defined as:
 \begin{equation}
@@ -96,6 +102,7 @@ PAP, & if CHA_{(i-1, j)} = MAX(CHA_{(k, l)} \forall k, l: i - 1 \leq k \leq i + 
 0, & \mbox{else}
 \end{cases}
 \end{equation}
+
 \par
 The contribution to the diffusion of the chemoattractants for the plasmodium of the von Neumann neighbours ($CHAvNN$) of the $c_{(i,j)}$) cell is defined as:
 \begin{equation}
@@ -129,6 +136,7 @@ The equation represents the diffusion of chemoattractants from the NSs in the av
 \par
 After every 50 time steps of calculating the diffusion equations in the available area, the operation of designing the tubular network takes place. If any NS is covered with over the predefined PM (ThPM), each NS cell is connected to a SP cell by a tubular path from the NS cell to the SP cell, following the increasing gradient of parameter PM of neighboring cells. 
 More specifically, starting from the cell representing the encapsulated NS, the adjacent cell with the higher PM value is selected to participate to the tubular network. Then the cell selected to participate to the tubular network selects the next cell from its neighbours with the higher PM value to participate to the tubular network and so on, until a SP is reached.
+
 \par
 Finally, the NS cell is transformed to a SP, which means changing its parameters as illustrated in the following equations:
 
@@ -151,46 +159,53 @@ CHA^t_{(i, j),(k,l)}=
 
 If more NSs are covered with the ThPM, each is connected to the nearest SP and they are all transformed to SPs. 
 
-\par
-DA INSERIRE ?
-\par
- A logical question that comes to mind is why procedures (2) to (5) are executed
-for a second time. As identified in some laboratory experiments [44], after a seemingly
-random and not certain amount of time the plasmodium seems to change the
-formation of its protoplasmic networks and abandon some NSs. Then it seems to
-regenerate in a manner and re-colonize some NSs, meaning it forms new tubular
-edges that connect NSs that were already connected to other NSs. As the CA model
-is designed without the use of probabilistic equations, it uses a second starting point
-to regenerate and explore the available area once more. That point will be a point of
-interest (NS), which is empirically chosen to be away from the initial SP
-\par
-DA INSERIRE ?
-\par 
-The second to last NS to
-be encapsulated was chosen, based on the fact that it is far enough from the initial
-SP and it is less likely to be a point of interest surrounded by unavailable area that
-would cause difficulties for the growth of the plasmodium. Finally, the time period
-of 50 time steps for the diffusion equations, was also empirically chosen, although
-the alternation of that will cause little difference to the results of the model.
-
-
-
-
-
-\subsection{Issues}
-
-The model introduced in the previous section considers only slime mould foraging behaviour and also - with the only information in the paper - seems not to follow the true behavior of slime mould; the main problems encountered can be summarized in the following points:
-
-\begin{itemize}
-	\item No mass conservation. Map flooding
-	\item Tube's creation dependent on the mass gradient. A tube is seen as a separate entity
-	\item No shrinking of the mass towards the tube despite in the Physarum exploitation phase the organism tends to shrink and collect its body mass to move towards resource of attraction
-
-\end{itemize}
-
-For this reason we have proposed an alternative model - starting from the Tsompanas et al. \cite{Tsompanas2016} work - that aims at a more faithful exploration of slime mould. It is introduced in the next section.
-
 \section{Experimental model}
 
-We introduced a new rule on the Physarum diffusion process to imitate the natural process of Physarum shrinkage, where
-if a Physarum cell is not contributing to the path towards food resource for a certain time (number of iterations), the whole Physarum mass is migrated to the nearest neighbour cell contributing to the path of food resource attraction.
+The model introduced in the previous section considers only slime mould foraging behaviour and also - with the only information in the paper - seems not to follow the true behavior of slime mould. For this reason we have proposed our new experimental model which objective was to fix the issues that emerged from the many executions of Tsompanas et al. \cite{Tsompanas2016}. 
+
+\par
+Their algorithm reaches the results for the different types of simulation neglecting important realistic constraints such as mass conservation, resulting in topologies that sometimes slightly differed from the Physarum's. We found their CA's behaviour an excessive approximation of the real mould dynamics, therefore we worked on improving their original algorithm to the point of changing most of the steps.
+
+\par
+To accomplish this task, we went back observing the actual behaviour of Physarum. From all the scientific evidence, the first thing we noted was that the mould had a finite amount of mass that it could use to expand and explore the sorroundings. Only when a N was digested more mass was created. 
+
+\par
+Our model quantizes the mass and sets a discrete starting amount of mass that is placed on the SP at the beginning of the simulation. This amount must be enough to reach the various NSs placed in the map, otherwise the expansion will simply stop. In reality, when the Physarum can't reach any NSs it simply contracts and eventually goes into another phase of its life cycle.
+
+\par
+If no external stymolus is given to the virtual mould, it expands uniformly in all directions to find clues (the chemoattractant) about reachable NSs until it runs out of available mass. As in Tsompanas et al. \cite{Tsompanas2016}, every NS releases chemoattractant in an uniform way around the available area of the map. Therefore after some ticks each free cell of the map contains some chemottractant, creating a gradient that conducts to the NSs.
+
+\par
+As soon as the mould finds one of these cells, it stops the uniform expansions and starts moving the whole mass to follow the gradient. This can happen in more than a location at the same time moving the available mass in many directions depending on the number of near NS, exactly how the real Physarum behaves.
+
+\par
+During the uniform expansion each neighbour cell that has a lower amount of mass (PM) receives some, moving the mass from a nearby cell thus conserving the total amount of mass. If a cell has PM lower than a threshold value, it can't distribute its mass to its neighbours. This local rule generates the typical circular explorative behaviour of the mold.
+
+\par 
+When there is a chemoattractant gradient, the mass is moved to the cells that have a higher CHA, except if the cell mass is lower than the same previous threshold. This rule causes the elongation of the mould towards the NSs.
+
+\par
+Once an NS is reached, more and more mass is accumulated on that cell until it reaches a threshold value as in Tsompanas et al. \cite{Tsompanas2016}. At this point the tube formation process begins.
+
+\par
+As the many biological studies about Physarum show, the mould's plasmodium contains fibers that get an orientation based on the vector of expansion. The more the mould is stretched the more these fibers align perfectly into the direction of the stretch. When it finally reaches an NS, all the fibers are already correctly aligned from the SP to the reached NS. The mould then shrinks around the shortest path between NS and SP, condensating the oriented fibers forming the visible tubes that will transport the nutrients towards SP.
+
+\par
+Tsompanas et al. \cite{Tsompanas2016} creates the tubes out of nothing as if they are artifacts assembled by the Physarum on the fly. This is wrong as the tubes are a simply result of condensed fibers along the best path. Our model assigns to each available cell a new variable containing the "direction of stretch": when the cell receives some mass for the first time it remembers the direction of the neighbour with the highest PM. The resulting gradient simulates the alignment of the fibers.
+
+\par
+When the nearest NS is reached with enough mass the gradient is followed backward to enstablish the shape of the tube, then the NS is changed into a new SP with a new amount of available mass and its CHA value is set to zero as the nutrient has been correctly digested.
+
+\par
+At this step the best path has been enstablished but the tubes are not yet visible because the mould mass is still distribuited in all the cells with high CHA gradient.
+As Tsompanas et al. \cite{Tsompanas2016} create the tubes on the fly, they don't pay attention to and haven't coded this typical Physarum step: the shrinking process.
+
+\par
+During the laboratory experiments after a while the mould shrinks to optimize the usage of its mass, condensing it around the tubes and the SPs, eventually showing the famous network topology.
+To correctly simulate this behaviour in our model, every cell that contains some mass gets older at every tick of the simulation. When the age of a cell that is not part of a connecting path reaches a threshold value, it gives all its mass to neighbour cell which corresponds to the cell's "direction of stretch". The mass of the mould will then slowly concentrate on the connecting paths, freeing the useless cells and exposing the tubes of the network.
+
+\par
+The simulations correctly end with all the reachable NS as part of the mold network, connecting tubes visible, no mass in useless cells and a constant total amount of mass.
+
+
+
