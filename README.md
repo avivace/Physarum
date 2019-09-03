@@ -8,7 +8,7 @@ By [Matteo Coppola](https://github.com/matteocoppola), [Luca Palazzi](https://gi
 
 ### [Live demo](https://avivace.github.io/Physarum)
 
-### [Documentation](slides.pdf)
+### [Documentation](docs/report.pdf)
 
 
 
