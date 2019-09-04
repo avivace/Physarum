@@ -33,7 +33,7 @@ public class SimulationManager : MonoBehaviour
     /*** Parameters for simulation ***/
 
     // 0 for the paper simulation, 1 for the experimental one
-    public int simulationMode = 1;
+    public int simulationMode = 0;
 
     public float defaultPMForS;
     public float defaultCHAForN;
@@ -145,7 +145,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Default map to load
-        imageAsset = maps[0];
+        imageAsset = maps[3];
 
         // Disable V-Sync
         QualitySettings.vSyncCount = 0;
@@ -655,27 +655,37 @@ public class SimulationManager : MonoBehaviour
                 if (t == 5000)
                 {
                     Debug.Log("We reached 5000, changing SP in NS");
-                    //Change all NS and SP as NS
-                    for (int k = Ss.Count - 1; k >= 0; k--)
+                    if (Ss.Count == 1)
                     {
-                        Vector2Int v = Ss[k];
-                        int i = v.x;
-                        int j = v.y;
+                        Debug.Log("Error: there's only one S and we have reached step 5050. We cannot change it into an N!");
 
-                        Cell cell = mapCells[i, j];
-
-                        cell.type = CellType.N;
-                        cell.CHA = defaultCHAForN;
-                        Ss.RemoveAt(k);
-                        Ns.Add(v);
+                        // Restart?
+                        Initialization();
                     }
+                    else
+                    {
+                        //Change all NS and SP as NS
+                        for (int k = Ss.Count - 1; k >= 0; k--)
+                        {
+                            Vector2Int v = Ss[k];
+                            int i = v.x;
+                            int j = v.y;
 
-                    //Il penultimo NS incapsulato diventa il nuovo SP
-                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
-                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
-                    mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
-                    Ns.Remove(GetSecondToLastCoveredNS());
-                    Ss.Add(GetSecondToLastCoveredNS());
+                            Cell cell = mapCells[i, j];
+
+                            cell.type = CellType.N;
+                            cell.CHA = defaultCHAForN;
+                            Ss.RemoveAt(k);
+                            Ns.Add(v);
+                        }
+
+                        //Il penultimo NS incapsulato diventa il nuovo SP
+                        mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].type = CellType.S;
+                        mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].PM = defaultPMForS;
+                        mapCells[GetSecondToLastCoveredNS().x, GetSecondToLastCoveredNS().y].CHA = 0;
+                        Ns.Remove(GetSecondToLastCoveredNS());
+                        Ss.Add(GetSecondToLastCoveredNS());
+                    }
                 }
 
                 ResetPaperFiftyStepsPhase();
