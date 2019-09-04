@@ -143,7 +143,11 @@ public class SimulationManager : MonoBehaviour
 			"map_test7.png",
 			"map_test8.png",
 			"central_point_without_n.png",
-			"maze.png"
+			"maze.png",
+			"wsn_network_20.png",
+			"wsn_network_40.png",
+			"wsn_network_60.png",
+			"maze_gpgpu.png"
 		};
 		maps = new TextAsset[mapsFileNames.Length];
 		for (int i = 0; i < mapsFileNames.Length; i++)
