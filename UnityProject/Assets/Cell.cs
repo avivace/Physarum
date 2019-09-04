@@ -14,7 +14,7 @@ public class Cell
     public bool TE;
     /** Type of the cell. */
     public CellType type;
-
+    /** Direction towards the neighbour that had highest PM. */
     public Dir direction = Dir.NONE;
     public int age = 0;
 

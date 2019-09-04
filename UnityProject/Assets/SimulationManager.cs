@@ -7,13 +7,17 @@ using UnityEngine.SceneManagement;
 
 
 public class SimulationManager : MonoBehaviour
-{   
-    // Attached components
+{
+    //Payload for UI data exchange
+    public Payload payload;
+
+    /*** Attached components ***/
     // Per essere usata, l'immagine .png deve aggiungere l'estensione .bytes
     public TextAsset imageAsset;
     public Tile tile;
     public Camera camera;
 
+    /*** Maps variables ***/
     Texture2D tex;
 
     public TextAsset[] maps;
@@ -26,34 +30,41 @@ public class SimulationManager : MonoBehaviour
     public List<Vector2Int> Ss = new List<Vector2Int>();
     public List<Vector2Int> Ns = new List<Vector2Int>();
 
-    public Payload payload;
+    /*** Parameters for simulation ***/
 
-    public float defaultPMForS = 100;
-    public float defaultCHAForN = 100;
+    // 0 for the paper simulation, 1 for the experimental one
+    public int simulationMode = 1;
 
-    public float CON = 0.95f;
-    public float PAP = 0.7f;
-    public float PMP1 = 0.08f;
-    public float PMP2 = 0.01f;
-    public float CAP1 = 0.05f;
-    public float CAP2 = 0.01f;
-    public float ThPM = 20;//0.2f;
+    public float defaultPMForS;
+    public float defaultCHAForN;
 
-    public int minAgeToDryOut = 1000;
+    public float CON;
+    public float PAP;
+    public float PMP1;
+    public float PMP2;
+    public float CAP1;
+    public float CAP2;
+    public float ThPM;
 
+    public int minAgeToDryOut;
+
+    /*** Internal simulation variables ***/
+    //Time
     int t = 0;
 
     /** False if the simulation has finished. */
     bool simulationRunning;
 
-    /** True if we are doing the 50 steps where we apply the diffusion equations. */
+    /** True if we are doing the 50 steps where we apply the diffusion equations in paper's simulation. */
     bool fiftyStepsPhase;
-    /** Local timer to count 50 steps. */
+    /** Local timer to count 50 steps in paper's simulation. */
     int localFiftyStepsTime;
 
+    //Variables for second part of paper's simulation
     Vector2Int lastEncapsulatedNS;
     Vector2Int secondToLastEncapsulatedNS;
 
+    //Variables used for drawing the tiles
     float biggestCHAvalue;
     float smallestCHAvalue;
     float biggestPMvalue;
@@ -61,16 +72,10 @@ public class SimulationManager : MonoBehaviour
     int posIbiggestPMValue;
     int posJbiggestPMValue;
 
+    //Total mass of the mould during the simulation, automatically calculated
+    float totalPM = 0;
 
-    /** Keep it -1 if you want the simulation to go eternally. */
-    int tToStop = 5000;
-
-    // 0 for the paper simulation, 1 for the experimental one
-    public int simulationMode = 1;
-
-    public float totalPM = 0;
-
-    // UI handler  methods
+    /*** UI handler  methods ***/
 
     void startpause(){
         simulationRunning=!simulationRunning;
@@ -99,7 +104,31 @@ public class SimulationManager : MonoBehaviour
         Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",",mapsFileNames), mapIndex);
     }
 
-    // Main lifecycle methods
+    // Allow changing the simulation mode
+    void selectSimulationMode(int mode)
+    {
+        simulationMode = mode;
+        simulationRunning = false;
+        Initialization();
+    }
+
+    // Called by either UI (single step) or by Update when the simulation is running
+    void simulationStep()
+    {
+        if (simulationMode == 0)
+        {
+            PaperSimulation();
+        }
+        else
+        {
+            ExperimentalSimulation();
+        }
+        UpdateTiles();
+        // Update the UI with the current status of the simulation
+        Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
+    }
+
+    /*** Main lifecycle methods ***/
 
     // Start is called before the first frame update
     void Start()
@@ -116,7 +145,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Default map to load
-        imageAsset = maps[0];//imageAsset = maps[3];
+        imageAsset = maps[0];
 
         // Disable V-Sync
         QualitySettings.vSyncCount = 0;
@@ -131,34 +160,6 @@ public class SimulationManager : MonoBehaviour
         Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
         // Update the UI with every map available
         Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",",mapsFileNames), 3);
-    }
-
-    // Allow chanding the simulation mode from the UI
-    void selectSimulationMode(int mode){
-        simulationMode = mode;
-        simulationRunning=false;
-        Initialization();
-    }
-
-    // Called by either UI (single step) or by Update when the simulation is running
-    void simulationStep(){
-        if (simulationMode == 1) {
-            experimentalSimulation();
-        } else {
-            Simulation();
-        }
-        UpdateTiles();
-        // Update the UI with the current status of the simulation
-        Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (simulationRunning)
-        {
-            simulationStep();            
-        }
     }
 
     /** Call this every time you want to restart the simulation. */
@@ -202,19 +203,21 @@ public class SimulationManager : MonoBehaviour
         lastEncapsulatedNS = new Vector2Int();
         secondToLastEncapsulatedNS = new Vector2Int();
 
-        float biggestCHAvalue =0;
-        float smallestCHAvalue=0;
-        float biggestPMvalue=0;
-        float smallestPMvalue=0;
-        int posIbiggestPMValue=0;
-        int posJbiggestPMValue=0;
+        float biggestCHAvalue = 0;
+        float smallestCHAvalue = 0;
+        float biggestPMvalue = 0;
+        float smallestPMvalue = 0;
+        int posIbiggestPMValue = 0;
+        int posJbiggestPMValue = 0;
 
-        LoadTextureMap();
+        LoadTextureMapAndSetCameraCorrectly();
         InitCellMap();
         t = 0;
-        ResetFiftyStepsPhase();
 
-        if (simulationMode == 1)
+        if (simulationMode == 0)
+        {
+            ResetPaperFiftyStepsPhase();
+        } else
         {
             foreach (Vector2Int s in Ss)
             {
@@ -224,11 +227,11 @@ public class SimulationManager : MonoBehaviour
 
         // Autostart or wait for the UI to start the simulation?
         simulationRunning = true;
-        DrawTiles();
+        CreateTiles();
     }
 
     /** Load the map as texture so we can access each pixel */
-    void LoadTextureMap()
+    void LoadTextureMapAndSetCameraCorrectly()
     {
         tex = new Texture2D(2, 2);
         tex.LoadImage(imageAsset.bytes);
@@ -241,8 +244,8 @@ public class SimulationManager : MonoBehaviour
         Position should be size/2, size/2
         Size should be size/2 + size/10
         */
-        cameraManager.MoveCamera(mapSizeX/2, mapSizeY/2);
-        camera.orthographicSize = mapSizeX/2 + mapSizeX/20;
+        cameraManager.MoveCamera(mapSizeX / 2, mapSizeY / 2);
+        camera.orthographicSize = mapSizeX / 2 + mapSizeX / 20;
     }
 
     /** Popola la mappa con i vari tipi di cella. */
@@ -270,7 +273,7 @@ public class SimulationManager : MonoBehaviour
                     mapCells[i, j] = new Cell(true, defaultPMForS, 0, false, CellType.S);
                     Ss.Add(new Vector2Int(i, j));
                 }
-                else if (col.Equals(new Color(1,1,0,1))) //Yellow
+                else if (col.Equals(new Color(1, 1, 0, 1))) //Yellow
                 {
                     mapCells[i, j] = new Cell(true, 0, defaultCHAForN, false, CellType.N);
                     Ns.Add(new Vector2Int(i, j));
@@ -279,11 +282,18 @@ public class SimulationManager : MonoBehaviour
         }
     }
 
-    void experimentalSimulation()
+    // Update is called once per frame
+    void Update()
     {
-        //Debug.Log("Simulation Matteo running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
+        if (simulationRunning)
+        {
+            simulationStep();
+        }
+    }
 
-        ApplyMatteoDiffusionEquations();
+    void ExperimentalSimulation()
+    {
+        ApplyExperimentalDiffusionEquations();
 
         for (int k = Ns.Count - 1; k >= 0; k--)
         {
@@ -312,7 +322,7 @@ public class SimulationManager : MonoBehaviour
         t++;
     }
 
-    void ApplyMatteoDiffusionEquations()
+    void ApplyExperimentalDiffusionEquations()
     {
         Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
         totalPM = 0;
@@ -568,6 +578,7 @@ public class SimulationManager : MonoBehaviour
         //Debug.Log("TOTALPM " + totalPM+" "+ (Math.Round(totalPM / defaultPMForS)) + " "+(totalPM%defaultPMForS));
     }
 
+    /** Do I reach cell A if I follow the direction of cell B? */
     private bool IsCellAInDirectionOfCellB(int Ax, int Ay, int Bx, int By)
     {
         if (mapCells[Bx, By].direction == Dir.N && Ax == Bx && Ay == By+1)
@@ -591,20 +602,20 @@ public class SimulationManager : MonoBehaviour
     }
 
     /** Execution of the simulation. */
-    void Simulation()
+    void PaperSimulation()
     {
-        Debug.Log("Simulation running "+t+" "+ localFiftyStepsTime+" "+ fiftyStepsPhase);
-        if(fiftyStepsPhase)
+        Debug.Log("Simulation running " + t + " " + localFiftyStepsTime + " " + fiftyStepsPhase);
+        if (fiftyStepsPhase)
         {
-            ExecuteFiftyStepsPhase();
+            ExecutePaperFiftyStepsPhase();
         }
 
-        if(!fiftyStepsPhase)
+        if (!fiftyStepsPhase)
         {
             Debug.Log("Other stuff applied");
 
-            
-            if(Ns.Count == 0) //All N connected?
+
+            if (Ns.Count == 0) //All N connected?
             {
                 Debug.Log("No N left, stopping the simulation.");
                 simulationRunning = false;
@@ -639,7 +650,7 @@ public class SimulationManager : MonoBehaviour
                 }
             }
 
-            if(t <= 5000)
+            if (t <= 5000)
             {
                 if (t == 5000)
                 {
@@ -666,27 +677,29 @@ public class SimulationManager : MonoBehaviour
                     Ns.Remove(GetSecondToLastCoveredNS());
                     Ss.Add(GetSecondToLastCoveredNS());
                 }
-                
-                ResetFiftyStepsPhase();
-                ExecuteFiftyStepsPhase();
-            } else if(t < 10000)
+
+                ResetPaperFiftyStepsPhase();
+                ExecutePaperFiftyStepsPhase();
+            }
+            else if (t < 10000)
             {
-                ResetFiftyStepsPhase();
-                ExecuteFiftyStepsPhase();
-            } else
+                ResetPaperFiftyStepsPhase();
+                ExecutePaperFiftyStepsPhase();
+            }
+            else
             {
                 simulationRunning = false;
-            } 
+            }
         }
 
         t++;
     }
 
-    void ExecuteFiftyStepsPhase()
+    void ExecutePaperFiftyStepsPhase()
     {
         if (localFiftyStepsTime < 50)
         {
-            ApplyDiffusionEquations();
+            ApplyPaperDiffusionEquations();
             localFiftyStepsTime++;
         }
         else
@@ -701,26 +714,27 @@ public class SimulationManager : MonoBehaviour
         Debug.Log("Tube connected: " + i + " " + j + " " + mapCells[i, j].CHA + " " + mapCells[i, j].direction + " " + mapCells[i, j].type);
 
         mapCells[i, j].TE = true;
-        
+
         if (mapCells[i, j].type != CellType.S)
         {
             int x;
             int y;
 
-            if(simulationMode==1)
-                GetNeighbourBasedOnDirection(i, j, out x, out y);
+            if (simulationMode == 0)
+                GetHighestNeighbourPM(i, j, out x, out y); 
             else
-                GetHighestNeighbourPM(i, j, out x, out y);
+                GetNeighbourBasedOnDirection(i, j, out x, out y);
 
             if (antiCrashCounter < 500)
             {
-                Debug.Log("Connecting, highest near PM: "+ x+" "+y);
-                antiCrashCounter++; 
+                Debug.Log("Connecting, highest near PM: " + x + " " + y);
+                antiCrashCounter++;
                 ConnectNToNearestS(x, y);
-            } else
+            }
+            else
             {
-                Debug.Log("Infinite Loop encountered: "+ antiCrashCounter);
-                
+                Debug.Log("Infinite Loop encountered: " + antiCrashCounter);
+
                 // Restart?
                 Initialization();
             }
@@ -734,7 +748,7 @@ public class SimulationManager : MonoBehaviour
 
         Dir dir = mapCells[i, j].direction;
 
-        if(dir == Dir.SW)
+        if (dir == Dir.SW)
         {
             x = i - 1;
             y = j - 1;
@@ -820,14 +834,14 @@ public class SimulationManager : MonoBehaviour
         lastEncapsulatedNS = cellPos;
     }
 
-    private void ResetFiftyStepsPhase()
+    private void ResetPaperFiftyStepsPhase()
     {
         fiftyStepsPhase = true;
         localFiftyStepsTime = 0;
     }
 
-    /** Equazioni di diffusione. */
-    void ApplyDiffusionEquations()
+    /** Equazioni di diffusione del paper. */
+    void ApplyPaperDiffusionEquations()
     {
         Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
 
@@ -942,21 +956,6 @@ public class SimulationManager : MonoBehaviour
         UpdateMapWithNewDiffusionValues(newMap);
     }
 
-    /*private float DistFromNearestS(int i, int j)
-    {
-        float res = float.MaxValue;
-        foreach(Vector2Int s in Ss)
-        {
-            float dist = Vector2.Distance(s, new Vector2Int(i, j));
-            if(dist < res)
-            {
-                res = dist;
-            }
-        }
-
-        return res;
-    }*/
-
     private void UpdateMapWithNewDiffusionValues(Cell[,] newMap)
     {
         smallestCHAvalue = float.MaxValue;
@@ -1051,19 +1050,6 @@ public class SimulationManager : MonoBehaviour
             return mapCells[i, j].age;
     }
 
-    /*float CalculatePA(float cha1, float oppositeCHA, float[] values, int i , int j) {
-        if (i < 0 || i >= mapSizeX || j < 0 || j >= mapSizeY || mapCells[i, j].type == CellType.U)
-            return 0;
-
-        float max_value = GetMax(values, false);
-        if (cha1 == max_value)
-            return PAP;
-        else if (oppositeCHA == max_value)
-            return -PAP;
-        else
-            return 0;
-    }*/
-
     private float GetMax(float[] values)
     {
         float res = float.MinValue;
@@ -1079,7 +1065,7 @@ public class SimulationManager : MonoBehaviour
     }
 
     /** Inizializza le tiles grafiche nella TileMap di Unity per visualizzare le varie Celle. */
-    void DrawTiles()
+    void CreateTiles()
     {
         Tilemap tilemap = this.GetComponent<Tilemap>();
 
@@ -1087,7 +1073,6 @@ public class SimulationManager : MonoBehaviour
         {
             for (int j = 0; j < mapSizeY; j++)
             {
-                CellType type = mapCells[i, j].type; 
                 Color col = tex.GetPixel(i, j);
                 tilemap.SetTile(new Vector3Int(i, j, 0), tile);
                 SetTileColour(col, new Vector3Int(i, j, 0));
@@ -1098,7 +1083,6 @@ public class SimulationManager : MonoBehaviour
     /** Aggiorna le tile della TileMap con i colori corretti. */
     void UpdateTiles()
     {
-        //Debug.Log("PMs "+ smallestPMvalue+" "+ biggestPMvalue+" || "+ posIbiggestPMValue+" "+ posJbiggestPMValue);
         Tilemap tilemap = this.GetComponent<Tilemap>();
         for (int i = 0; i < mapSizeX; i++)
         {
@@ -1182,40 +1166,6 @@ public class SimulationManager : MonoBehaviour
                             SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
                         }
                     }
-
-                    //DEBUG DIRECTION MAP
-                    /*if (mapCells[i, j].direction == Dir.N)
-                    {
-                        SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.NW)
-                    {
-                        SetTileColour(new Color(1, 0, 0, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.NE)
-                    {
-                        SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.W)
-                    {
-                        SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.E)
-                    {
-                        SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.S)
-                    {
-                        SetTileColour(new Color(1, 0, 1, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.SW)
-                    {
-                        SetTileColour(new Color(0, 1, 1, 1), new Vector3Int(i, j, 0));
-                    }
-                    else if (mapCells[i, j].direction == Dir.SE)
-                    {
-                        SetTileColour(new Color(0.5f, 0.5f, 0.5f, 1), new Vector3Int(i, j, 0));
-                    }*/
                 }
             }
         } 
