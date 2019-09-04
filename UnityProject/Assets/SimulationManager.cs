@@ -166,6 +166,9 @@ public class SimulationManager : MonoBehaviour
     public void Initialization()
     {
         this.GetComponent<Tilemap>().ClearAllTiles();
+        
+        localFiftyStepsTime = 0;
+        fiftyStepsPhase = false;
 
         if (simulationMode == 0)
         {
@@ -203,12 +206,12 @@ public class SimulationManager : MonoBehaviour
         lastEncapsulatedNS = new Vector2Int();
         secondToLastEncapsulatedNS = new Vector2Int();
 
-        float biggestCHAvalue = 0;
-        float smallestCHAvalue = 0;
-        float biggestPMvalue = 0;
-        float smallestPMvalue = 0;
-        int posIbiggestPMValue = 0;
-        int posJbiggestPMValue = 0;
+        biggestCHAvalue = 0;
+        smallestCHAvalue = 0;
+        biggestPMvalue = 0;
+        smallestPMvalue = 0;
+        posIbiggestPMValue = 0;
+        posJbiggestPMValue = 0;
 
         LoadTextureMapAndSetCameraCorrectly();
         InitCellMap();
