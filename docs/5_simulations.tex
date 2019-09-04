@@ -1,17 +1,45 @@
-The most thoroughly studied laboratory experiment that the plasmodium of Physarum is subjected to, is the imitation and optimization of human-made transport networks.
+Physarum presents the intelligence of finding effective solutions to demanding engineering problems such as shortest path problems, various graph problems, evaluation of transport networks or even robotic control.
+The most well-known laboratory experiments that the plasmodium of slime mould is subjected to are the imitation and optimization of human-made transport networks and the finding of the shortest path in a maze.
+Part of our project is to verify the effective functioning of each model and compare the results obtained simulating the slime mould in predefinite maps.
 
-Adamatzky proposed another approach of the same problem. The main difference can be found in the
-initial conditions. Adamatzky placed the plasmodium in
-one place of the maze and, simultaneously, placed one FS
-in another place of the maze, before the plasmodium
-covers all the maze. The biological experiments show that
-the plasmodium spreads its pseudopodia trying to reach
-the food. Simultaneously, the food, releases the
-chemo-attractants to any direction in the maze. When the
-plasmodium finds those chemo-attractants, it follows
-them to the source food forming the minimum distance
-path between its initial site and the food site. So the
-plasmodium solves the maze in one pass because it is
-assisted by a gradient of chemo-attractants propagating
-from the target food. This approach, is modeled in this
-paper.
+\par
+Our simulations are based on the work of the same research group \cite{dourvas2016gpgpu}, \cite{tsompanas2015cellular} that have reproposed the diffusion equations of the original model \cite{Tsompanas2016} and then have applied those in different contexts.
+
+\par
+The model of Tsompanas et al. \cite{Tsompanas2016} has some important alternation from the others cited. In particular, the same diffusion equations are incorporated in an algorithm composed by the following steps:
+
+\begin{enumerate}
+	\item Initialize the model: the parameters of the diffusion equations are set and the topology of the SP and the NSs is also introduced
+	\item Apply the diffusion equations for 50 time steps
+	\item Check if any of the NSs is covered with a predefined percentage of PM (ThPM). If there is at least one NS covered continue, else go to (2).
+	\item All NSs covered with the predefined percentage of PM (ThPM), are encapsulated by the plasmodium and therefore connected to a SP.
+	\item The NSs mentioned in (4) change into SPs, meaning their PM is set to 100. If no more than 5,000 time steps have passed (t <5,000) go to (2), else continue.
+	\item Redefine all the cells of “interest” (NSs and SP) as NSs, except from the second to last NS encapsulated for the previous 5,000 time steps which is redefined as a SP. Execute for a second time (2)–(5) for 5,000 time steps.
+\end{enumerate}
+
+Note that some procedures are identical for each work previously analyzed \cite{dourvas2016gpgpu}, \cite{tsompanas2015cellular}. We firstly initialize the parameters, set one SP in the map as the beginning mass value of the plasmodium with a $PM$ value equals to 100 and then in one or more cell we set the NS which has a $CHA$ value equals to 100. Then, an iterative execution of the diffusion equations gives the values of $PM$ and $CHA$ for all the cells in the CA grid.
+
+\par
+From here on there are substancial differences in the approaches used. In \cite{dourvas2016gpgpu} and \cite{tsompanas2015cellular} the procedure stops and the algorithm designs the minimum tubular network based on the values of the $PM$ variable. When a cell’s $TE$ = \texttt{true} then the algorithm searches which of its neighbors has the greater value of $PM$. When it finds it, the $TE$ value of neighbor changes from \texttt{false} to \texttt{true}. This procedure is repeated until the final, minimum tube is created between the cell that the plasmodium was first introduced to the cell with the $NS$. 
+
+\par
+In \cite{Tsompanas2016}, in addition, there's the last step of the algorithm explained above that is tricky. It redefine all the NSs and SP as NSs, except from the second to last NS encapsulated for the previous 5000 time steps which is redefined as a SP. This happen because as the CA model is designed without the use of probabilistic equations, it uses a second starting point to regenerate and explore the available area once more. That point will be a point of interest (NS), which is empirically chosen to be away from the initial SP. The second to last NS to be encapsulated was chosen, based on the fact that it is far enough from the initial SP and it is less likely to be a point of interest surrounded by unavailable area that would cause difficulties for the growth of the plasmodium. Then this model requests a second time execution of the algorithm steps from 2 to 5 for further 5000 time steps.
+
+\par
+This last part of seems to be forcing considering, as we will see in the next sections related to the simulations, that a certain point the computation arrives at a steady state in which the $PM$ covers the map completely with the same value, leading then to a steady state.
+
+\par
+As mentioned in \cite{dourvas2016gpgpu} usually about a 1700 time steps are required for the CA-modeled plasmodium to explore a $75 \times 75$ map.
+
+\section{Network formation}
+
+\subsection{Physarum model}
+
+\subsection{Experimental model}
+
+\section{Maze solving}
+
+\subsection{Physarum model}
+
+\subsection{Experimental model}
+
