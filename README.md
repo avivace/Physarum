@@ -35,11 +35,14 @@ Each attached component and selected asset for a component loses its link due to
 
 Double click on "SampleScene" then you can run the project (Play).
 
+#### WEBGL build
+You need a webgl build to deploy and plug into the VueJS application.
+
+The Unity (webGL) build produces two folders: "Build" and "TemplateData", copy these two folders in "webapp/public" so they will be served statically. Beware to not replace the index.html in "webapp/public".
+
 ### Web UI application
 
 A simple VueJS application, using Vuetify as CSS framework. 
-The Unity webgl build must be placed in `assets/`
-
 
 ```
 npm run serve
@@ -47,7 +50,7 @@ npm run serve
 
 Due to GitHub limitations for github pages, we use the `master` branch to deploy builds, and the `develop` as an actual branch.
 
-#### Deploy
+### Deploy
 
 ```
 npm run deploy
