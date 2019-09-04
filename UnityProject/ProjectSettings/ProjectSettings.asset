@@ -587,10 +587,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: 4006c2b0-c9f5-469c-ab00-c943c52ffb1a
+  cloudProjectId: 
   framebufferDepthMemorylessMode: 0
-  projectName: TileMap test (1)
-  organizationId: avivace
+  projectName: 
+  organizationId: 
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
