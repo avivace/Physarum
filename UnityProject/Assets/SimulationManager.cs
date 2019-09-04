@@ -53,7 +53,7 @@ public class SimulationManager : MonoBehaviour
     int t = 0;
 
     /** False if the simulation has finished. */
-    bool simulationRunning;
+    bool simulationRunning = false;
 
     /** True if we are doing the 50 steps where we apply the diffusion equations in paper's simulation. */
     bool fiftyStepsPhase;
@@ -226,7 +226,7 @@ public class SimulationManager : MonoBehaviour
         }
 
         // Autostart or wait for the UI to start the simulation?
-        simulationRunning = true;
+        //simulationRunning = true;
         CreateTiles();
     }
 

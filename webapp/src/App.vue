@@ -66,13 +66,14 @@
             <br />
 
             <br />
-
+            
             <v-radio-group
               v-model="selectedModel"
-              :disabled="status != 'stopped'"
+              :disabled="unityStatus == 0 || status != 'stopped'"
+              @change="changeModel"
             >
-              <v-radio label="Paper Model" value="1"></v-radio>
-              <v-radio label="Experimental Model" value="2"></v-radio>
+              <v-radio label="Paper Model" :value="0"></v-radio>
+              <v-radio label="Experimental Model" :value="1"></v-radio>
             </v-radio-group>
 
             <v-slider
@@ -249,7 +250,7 @@ export default {
       // Map items
       mapItems: [],
       items: ["Map 1", "Map 2", "Test"],
-      selectedModel: "1",
+      selectedModel: 1,
       snackbar: null,
       snackbarText: "Simulation reset",
       selectedMap: {},
@@ -272,6 +273,10 @@ export default {
   },
   mounted() {},
   methods: {
+    changeModel(){
+      gameInstance.SendMessage("GameObject", "selectSimulationMode", this.selectedModel)
+      console.log("GameObject", "selectSimulationMode", this.selectedModel)
+    },
     handleStartBtn() {
       gameInstance.SendMessage("GameObject", "startpause")
       if (this.status == "running") {
@@ -304,6 +309,7 @@ export default {
     },
     greet(text) {
       this.unityStatus = 1;
+      this.changeModel();
     },
     unityUpdate(a, t, S, N, PM){
       if (a == 0){
