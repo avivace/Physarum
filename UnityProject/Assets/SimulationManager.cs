@@ -176,7 +176,8 @@ public class SimulationManager : MonoBehaviour
 
 		localFiftyStepsTime = 0;
 		fiftyStepsPhase = false;
-
+		antiCrashCounter = 0;
+		
 		if (simulationMode == 0)
 		{
 			defaultPMForS = 100;
