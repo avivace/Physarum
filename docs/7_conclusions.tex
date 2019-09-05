@@ -1,0 +1,31 @@
+In this project we presented Physarum polycephalum from a biological point of view and explained complex patterns observed in this puzzling organism. For our purposes of modeling we introduced and defined the Cellular Automata mathematical model  which can perfectly describe slime mould's distributed control because of its properties.
+
+\par
+After reviewed the literature on several models, we have decided to use the CA based model of Tsompanas et al. \cite{Tsompanas2016} that mimics the foraging strategy and tubular network formation. In particular, the model is based on the representation of diffusion of chemical attractants by NSs and the attraction of the plasmodium, which initiates its exploration from the starting point (SP), by these chemicals. 
+
+\par
+However this model seemed not to follow the true behavior of slime mould and for this reason we have proposed our experimental model - based on this well-known work - which objective was to fix the issues that emerged from the many executions of the original model.
+
+\par
+In particular, their algorithm reached the results for the different types of simulation neglecting important realistic constraints. We found their CA's behaviour an excessive approximation of the real mould dynamics, therefore we worked on improving their original algorithm to the point of changing most of the steps.
+
+%TODO
+Aggiungere nelle conclusioni la parte dei capitoli 4, 5, 6
+
+%TODO:
+Altri sviluppi futuri: REVERSE DRY OUT per renderla più simile al comportamento reale della muffa?
+\section{Future developments}
+
+Unlike the models we shown that are based on single Physarum and which addressed only attraction force of Physarum towards a food resource, a plausible future development concerns the possibility of considering a Physarum competitive behaviour where a group of Physarum with different masses and motivation - hunger and satiety - each having autonomous behaviours react to each other and their own local environment. 
+
+\par
+This type of model has already been proposed \cite{hex_phy} and it considered other forces acting on Physarum based on metaheuristics inspired from Physarum behaviour in a competition. They assume that competing Physarum will exert repulsion forces on each other which will affect the evolution of the whole system and so they created a new formula to compute two forces acting on Physarum: 
+
+\begin{itemize}
+	\item the chemo attraction force based on the combination of chemical mass and chemical quality
+	\item the repulsion negative forces that competing Physarum exert on each other
+\end{itemize}
+
+Chemo attraction forces exerted on Physarum will be a function of food resource (with different mass and quality) and Physarum hunger motivation. If Physarum is satisfied, it would appreciate the quality of chemical rather than the mass, and if it is hungry, vice versa.
+
+
