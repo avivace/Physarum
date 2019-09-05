@@ -33,7 +33,7 @@ public class SimulationManager : MonoBehaviour
 	/*** Parameters for simulation ***/
 
 	// 0 for the paper simulation, 1 for the experimental one
-	public int simulationMode = 0;
+	public int simulationMode = 0; 
 
 	public float defaultPMForS;
 	public float defaultCHAForN;
@@ -75,9 +75,12 @@ public class SimulationManager : MonoBehaviour
 	//Total mass of the mould during the simulation, automatically calculated
 	float totalPM = 0;
 
-	/*** UI handler  methods ***/
+    //Counter for avoiding infinite loops when trying to create tubes
+    int antiCrashCounter = 0;
 
-	void startpause()
+    /*** UI handler  methods ***/
+
+    void startpause()
 	{
 		simulationRunning = !simulationRunning;
 	}
@@ -156,7 +159,7 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		// Default map to load
-		imageAsset = maps[3];
+		imageAsset = maps[6];
 
 		// Disable V-Sync
 		QualitySettings.vSyncCount = 0;
@@ -242,7 +245,7 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		// Autostart or wait for the UI to start the simulation?
-		//simulationRunning = true;
+		simulationRunning = true;
 		CreateTiles();
 	}
 
@@ -332,7 +335,8 @@ public class SimulationManager : MonoBehaviour
 				cell.CHA = 0;
 				Ns.RemoveAt(k);
 				Ss.Add(v);
-			}
+                antiCrashCounter = 0;
+            }
 		}
 
 		t++;
@@ -657,13 +661,14 @@ public class SimulationManager : MonoBehaviour
 					cell.CHA = 0;
 					Ns.RemoveAt(k);
 					Ss.Add(v);
+                    antiCrashCounter = 0;
 
-					/* DEBUG Passo 5000 se i nodi sono stati tutti raggiunti. Loop a 5050
+                    /* DEBUG Passo 5000 se i nodi sono stati tutti raggiunti. Loop a 5050
 					SetLatestEncapsulatedNS(v);
 					if (Ns.Count == 0)
 						t = 5000;
 					*/
-				}
+                }
 			}
 
 			if (t <= 5000)
@@ -734,7 +739,6 @@ public class SimulationManager : MonoBehaviour
 		}
 	}
 
-	int antiCrashCounter = 0;
 	private void ConnectNToNearestS(int i, int j)
 	{
 		Debug.Log("Tube connected: " + i + " " + j + " " + mapCells[i, j].CHA + " " + mapCells[i, j].direction + " " + mapCells[i, j].type);
