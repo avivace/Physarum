@@ -1121,6 +1121,15 @@ public class SimulationManager : MonoBehaviour
 		}
 	}
 
+	float ConvertRange(
+    int originalStart, int originalEnd, // original range
+    int newStart, int newEnd, // desired range
+    int value) // value to convert
+	{
+    	float scale = (float)(newEnd - newStart) / (originalEnd - originalStart);
+    	return (float)(newStart + ((value - originalStart) * scale));
+	}
+
 	/** Aggiorna le tile della TileMap con i colori corretti. */
 	void UpdateTiles()
 	{
@@ -1158,6 +1167,20 @@ public class SimulationManager : MonoBehaviour
 
 					if (simulationMode == 1)
 					{
+						float q1 = mapCells[i, j].PM;
+						if (q1 >= 100){
+							q1 = 100;
+						}
+						
+						if (q1 == 0){
+							SetTileColour(new Color(1, 1, 1, 1), new Vector3Int(i, j, 0));
+						} else {
+							float q2 = q1/10;
+							SetTileColour(new Color(1-q2, q2, 1, 1), new Vector3Int(i, j, 0));
+						}
+
+
+						/*
 						//COLORED FOR CONSERVATION MAP
 						if (mapCells[i, j].PM == 0)
 						{
@@ -1165,24 +1188,29 @@ public class SimulationManager : MonoBehaviour
 						}
 						else if (mapCells[i, j].PM < 12)
 						{
-							SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
+							float scaled = q1 / 12;
+							SetTileColour(new Color(0, scaled, 1, 1), new Vector3Int(i, j, 0));
 						}
 						else if (mapCells[i, j].PM < 50)
 						{
+							float scaled = (q1 - 12) / (50-12)
 							SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
 						}
 						else if (mapCells[i, j].PM < 75)
 						{
+							float scaled = (q1 - 75) / (75-25)
 							SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
 						}
 						else if (mapCells[i, j].PM < 100)
 						{
+							float scaled = (q1-100) / (100-75)
 							SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
 						}
 						else if (mapCells[i, j].PM >= 100)
 						{
 							SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
 						}
+						*/
 					}
 					else
 					{
