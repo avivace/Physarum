@@ -159,7 +159,7 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		// Default map to load
-		imageAsset = maps[6];
+		imageAsset = maps[5];
 
 		// Disable V-Sync
 		QualitySettings.vSyncCount = 0;
@@ -1139,15 +1139,15 @@ public class SimulationManager : MonoBehaviour
 				{
 					SetTileColour(new Color(1, 0, 0, 1), new Vector3Int(i, j, 0));
 				}
-				/*else if(type == CellType.S)
+				else if(type == CellType.S)
 				{
 					SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
-				}*/
+				}
 				else if (type == CellType.N)
 				{
-					SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
+                    SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
 				}
-				else if (mapCells[i, j].TE && simulationMode == 0)
+				else if (mapCells[i, j].TE/* && simulationMode == 0*/)
 				{
 					//SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
 					SetTileColour(new Color(1, 0, 1, 1), new Vector3Int(i, j, 0));
