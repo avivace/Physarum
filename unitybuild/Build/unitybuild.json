@@ -1,9 +1,9 @@
 {
 "companyName": "DefaultCompany",
 "productName": "TileMap test",
-"dataUrl": "build.data.unityweb",
-"wasmCodeUrl": "build.wasm.code.unityweb",
-"wasmFrameworkUrl": "build.wasm.framework.unityweb",
+"dataUrl": "unitybuild.data.unityweb",
+"wasmCodeUrl": "unitybuild.wasm.code.unityweb",
+"wasmFrameworkUrl": "unitybuild.wasm.framework.unityweb",
 "TOTAL_MEMORY": 268435456,
 "graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
 "webglContextAttributes": {"preserveDrawingBuffer": false},
