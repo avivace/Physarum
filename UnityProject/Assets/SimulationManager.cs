@@ -78,6 +78,8 @@ public class SimulationManager : MonoBehaviour
     //Counter for avoiding infinite loops when trying to create tubes
     int antiCrashCounter = 0;
 
+    int defaultMap = 0;
+
     /*** UI handler  methods ***/
 
     void startpause()
@@ -157,8 +159,8 @@ public class SimulationManager : MonoBehaviour
 			maps[i] = Resources.Load<TextAsset>(mapsFileNames[i]);
 		}
 
-		// Default map to load
-		imageAsset = maps[0];
+		// Load the default map
+		imageAsset = maps[defaultMap];
 
 		// Disable V-Sync
 		QualitySettings.vSyncCount = 0;
@@ -166,16 +168,19 @@ public class SimulationManager : MonoBehaviour
 		// To get a stable 60 fps, 56-57 is enough
 		Application.targetFrameRate = 55;
 
-		// Load the map and draw the tiles (frame 0)
+		// Load the map
 		Initialization();
+
+		// Prepare for frame 0
+		UpdateTiles();
 
 		// Let the UI know we're alive and ready
 		Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
-		// Update the UI with every map available
-		Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",", mapsFileNames), 3);
+		// Update the UI with every map available and specify the one we're starting with
+		Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",", mapsFileNames), defaultMap);
 	}
 
-	/** Call this every time you want to restart the simulation. */
+	// Gets ready to (re)start a simulation
 	public void Initialization()
 	{
 		this.GetComponent<Tilemap>().ClearAllTiles();
