@@ -1174,9 +1174,14 @@ public class SimulationManager : MonoBehaviour
 						
 						if (q1 == 0){
 							SetTileColour(new Color(1, 1, 1, 1), new Vector3Int(i, j, 0));
+						}
+						else if (q1 < 5){	
+							float q2 = q1/20;
+							SetTileColour(new Color(0.5f-q2, q2-0.5f, 1, 1), new Vector3Int(i, j, 0));
+						
 						} else {
 							float q2 = q1/10;
-							SetTileColour(new Color(1-q2, q2, 1, 1), new Vector3Int(i, j, 0));
+							SetTileColour(new Color(0.5f-q2, q2-0.10f, 1, 1), new Vector3Int(i, j, 0));
 						}
 
 
@@ -1214,6 +1219,20 @@ public class SimulationManager : MonoBehaviour
 					}
 					else
 					{
+						float q1 = mapCells[i, j].PM;
+						if (q1 >= 1000){
+							q1 = 1000;
+						}
+						
+						if (q1 < 15){	
+							float q2 = q1/40;
+							SetTileColour(new Color(1-q2, 1-q2, 1, 1), new Vector3Int(i, j, 0));
+						}	
+						else {
+							float q2 = q1/50;
+							SetTileColour(new Color(1-q2, q2-0.05f, 1, 1), new Vector3Int(i, j, 0));
+						}
+						/*
 						//COLORED FOR NO CONSERVATION MAP
 						if(mapCells[i, j].PM == 0)
 						{
@@ -1239,6 +1258,7 @@ public class SimulationManager : MonoBehaviour
 						{
 							SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
 						}
+						*/
 					}
 				}
 			}
