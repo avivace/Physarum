@@ -167,6 +167,11 @@ public class SimulationManager : MonoBehaviour
 			maps[i] = Resources.Load<TextAsset>(mapsFileNames[i]);
 		}
 
+		#if !UNITY_EDITOR && UNITY_WEBGL
+		        UnityEngine.WebGLInput.captureAllKeyboardInput = false; // or true
+		#endif
+
+
 		// Load the default map
 		imageAsset = maps[defaultMap];
 
