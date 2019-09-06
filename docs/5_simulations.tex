@@ -26,56 +26,104 @@ From here on there are substancial differences in the approaches used. In \cite{
 In \cite{Tsompanas2016}, in addition, there's the last step of the algorithm explained above that is tricky. It redefine all the NSs and SP as NSs, except from the second to last NS encapsulated for the previous 5000 time steps which is redefined as a SP. This happen because as the CA model is designed without the use of probabilistic equations, it uses a second starting point to regenerate and explore the available area once more. That point will be a point of interest (NS), which is empirically chosen to be away from the initial SP. The second to last NS to be encapsulated was chosen, based on the fact that it is far enough from the initial SP and it is less likely to be a point of interest surrounded by unavailable area that would cause difficulties for the growth of the plasmodium. Then this model requests a second time execution of the algorithm steps from 2 to 5 for further 5000 time steps.
 
 \par
-This last part of seems to be forcing considering, as we will see in the next sections related to the simulations, that a certain point the computation arrives at a steady state in which the $PM$ covers the map completely with the same value, leading then to a steady state.
-
-\par
-As mentioned in \cite{dourvas2016gpgpu} usually about a 1700 time steps are required for the CA-modeled plasmodium to explore a $75 \times 75$ map.
+This last part of seems to be forcing considering, as we will see in the next sections related to the simulations, that a certain point the computation arrives at a steady state in which the $PM$ covers the map completely with the same value, leading then to a steady state. As mentioned in \cite{dourvas2016gpgpu} usually about a 1700 time steps are required for the CA-modeled plasmodium to explore a $75 \times 75$ map.
 
 \section{Network formation}
-size map: $75 \times 75$
+In order to evaluate the efficiency of the networks of the bioinspired CA based model, randomly deployed distributions of 20, 40 and 60 nodes are evaluated. 
+%TODO
+METTERE LE TRE MAPPE
+
+These maps are very similar to those proposed in \cite{tsompanas2015cellular} in which the plasmodium of Physarum polycephalum is the inspiration of a CA based model for constructing data trees in a WSN that connect all nodes with a sink node, that is located in the east border of the WSN for each of the three distributions.
+
+\par
+The black dot illustrates the location of the sink node and the yellow dots illustrate the locations of the sensing nodes. The topologies of the nodes are used as input for the model, with the sink node represented as the SP and all the other nodes represented as NSs. Furthermore, the initial parameters set for the model are illustrated in the next subsections.
 
 \subsection{Physarum model}
-$PM$: 100
-$CHA$: 100
-$CON$: 0.95
-$PAP$: 0.7
-$PMP1$: 0.08
-$PMP2$: 0.01
-$CAP1$: 0.05
-$CAP2$: 0.01
-$ThPM$: 0.2
+
+\begin{center}
+ \begin{tabular}{||c c||} 
+ \hline
+ Parameter & Value \\ [0.5ex] 
+ \hline\hline
+ GridSize & $75 \times 75$ \\ 
+ \hline
+ PM & 100 \\ 
+ \hline
+ CHA & 100 \\ 
+ \hline
+ CON & 0.95 \\ 
+ \hline
+ PAP & 0.8 \\ 
+ \hline
+ PMP1 & 0.08 \\ 
+ \hline
+ PMP2 & 0.01 \\ 
+ \hline
+ CAP1 & 0.05 \\ 
+ \hline
+ CAP2 & 0.01 \\ 
+ \hline
+ ThPM & 0.2 \\ [1ex] 
+ \hline
+ \end{tabular}
+\end{center}
 
 \subsection{Experimental model}
 
-$PM$: 10000
-$CHA$: 100
-$CON$: 0.95
-$PAP$: 0
-$PMP1$: 0
-$PMP2$: 0
-$CAP1$: 0.05
-$CAP2$: 0.01
-$ThPM$: 20
-$MinAgeDryOut$: 1000
+\begin{center}
+ \begin{tabular}{||c c||} 
+ \hline
+ Parameter & Value \\ [0.5ex] 
+ \hline\hline
+ GridSize & $75 \times 75$ \\ 
+ \hline
+ PM & 10000 \\ 
+ \hline
+ CHA & 100 \\ 
+ \hline
+ CON & 0.95 \\ 
+ \hline
+ CAP1 & 0.05 \\ 
+ \hline
+ CAP2 & 0.01 \\ 
+ \hline
+ MinAgeDryOut & 1000 \\
+ \hline
+ ThPM & 20 \\ [1ex] 
+ \hline
+ \end{tabular}
+\end{center}
 
 \section{Maze solving}
-size map: $50 \times 50$
 
 \subsection{Physarum model}
 $PM$: 30000
 $CHA$: 30000
-
-\par
-NON FUNZIONA
+%TODO
+e il resto se non funziona?
 
 \subsection{Experimental model}
-$PM$: 10000
-$CHA$: 100
-$CON$: 0.95
-$PAP$: 0
-$PMP1$: 0
-$PMP2$: 0
-$CAP1$: 0.05
-$CAP2$: 0.01
-$ThPM$: 20
-$MinAgeDryOut$: 1000
+
+\begin{center}
+ \begin{tabular}{||c c||} 
+ \hline
+ Parameter & Value \\ [0.5ex] 
+ \hline\hline
+ GridSize & $50 \times 50$ \\ 
+ \hline
+ PM & 10000 \\ 
+ \hline
+ CHA & 100 \\ 
+ \hline
+ CON & 0.95 \\ 
+ \hline
+ CAP1 & 0.05 \\ 
+ \hline
+ CAP2 & 0.01 \\ 
+ \hline
+ MinAgeDryOut & 1000 \\
+ \hline
+ ThPM & 20 \\ [1ex] 
+ \hline
+ \end{tabular}
+\end{center}
