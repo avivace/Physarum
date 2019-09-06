@@ -36,9 +36,10 @@ Each attached component and selected asset for a component loses its link due to
 Double click on "SampleScene" then you can run the project (Play).
 
 #### WEBGL build
-You need a webgl build to deploy and plug into the VueJS application.
 
-The Unity (webGL) build produces two folders: "Build" and "TemplateData", copy these two folders in "webapp/public" so they will be served statically. Beware to not replace the index.html in "webapp/public".
+You need a webgl build to deploy and plug the application into the VueJS UI.
+
+Launch the Unity webgl build and select `Physarum/webapp/public/unitybuild` as destination folder. Refresh the web application because the webpack/vue hot reloads breaks UnityLoader.
 
 ### Web UI application
 

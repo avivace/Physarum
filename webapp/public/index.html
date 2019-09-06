@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-        <script src="TemplateData/UnityProgress.js"></script>
-    <script src="Build/UnityLoader.js"></script>
+        <script src="unitybuild/TemplateData/UnityProgress.js"></script>
+    <script src="unitybuild/Build/UnityLoader.js"></script>
         <script>
-      var gameInstance = UnityLoader.instantiate("gameContainer", "Build/build.json", {onProgress: UnityProgress});
+      var gameInstance = UnityLoader.instantiate("gameContainer", "unitybuild/Build/unitybuild.json", {onProgress: UnityProgress});
     </script>
 <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
     <title>Physarum</title>
