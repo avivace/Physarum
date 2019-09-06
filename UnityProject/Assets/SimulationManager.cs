@@ -93,6 +93,7 @@ public class SimulationManager : MonoBehaviour
 	{
 		simulationRunning = false;
 		Initialization();
+		Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
 	}
 
 	void payloadHandler(string jsonString)
@@ -109,7 +110,7 @@ public class SimulationManager : MonoBehaviour
 
 	void selectMap(int mapIndex)
 	{
-		// Should be called on simulation stoped anyway
+		// Should be called on simulation stopped anyway
 		simulationRunning = false;
 		imageAsset = maps[mapIndex];
 		Initialization();
@@ -168,7 +169,7 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		#if !UNITY_EDITOR && UNITY_WEBGL
-		        UnityEngine.WebGLInput.captureAllKeyboardInput = false; // or true
+				UnityEngine.WebGLInput.captureAllKeyboardInput = false;
 		#endif
 
 
@@ -194,7 +195,7 @@ public class SimulationManager : MonoBehaviour
 	public void Initialization()
 	{
 		this.GetComponent<Tilemap>().ClearAllTiles();
-
+		totalPM = 0;
 		localFiftyStepsTime = 0;
 		fiftyStepsPhase = false;
 		antiCrashCounter = 0;
@@ -258,8 +259,12 @@ public class SimulationManager : MonoBehaviour
 			}
 		}
 
-		// Autostart or wait for the UI to start the simulation?
-		//simulationRunning = true;
+
+		// When on editor, autostart the simulation
+		#if UNITY_EDITOR
+			simulationRunning = true;
+		#endif
+
 		CreateTiles();
 
 		// Prepare for frame 0
