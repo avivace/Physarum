@@ -78,13 +78,15 @@ public class SimulationManager : MonoBehaviour
     //Counter for avoiding infinite loops when trying to create tubes
     int antiCrashCounter = 0;
 
-    int defaultMap = 0;
+    int defaultMap = 1;
 
     /*** UI handler  methods ***/
 
     void startpause()
 	{
 		simulationRunning = !simulationRunning;
+		// Force reupdate (gets data up to date if we pause before the update tick)
+		Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
 	}
 
 	void stop()
@@ -134,8 +136,13 @@ public class SimulationManager : MonoBehaviour
 			ExperimentalSimulation();
 		}
 		UpdateTiles();
-		// Update the UI with the current status of the simulation
-		Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
+		// Update the stats every 20 time steps only, avoiding to spam Vue
+		// OR when we're paused and manually stepping
+		if (!simulationRunning || t%20==0){
+			// Update the UI with the current status of the simulation
+			Application.ExternalCall("vm.$children[0].unityUpdate", 0, t, Ss.Count, Ns.Count, totalPM, simulationMode);
+		}
+
 	}
 
 	/*** Main lifecycle methods ***/
@@ -147,6 +154,7 @@ public class SimulationManager : MonoBehaviour
 		{
 			"map_test7.png",
 			"map_test8.png",
+			"maze.png",
 			"central_point_without_n.png",
 			"wsn_network_20.png",
 			"wsn_network_40.png",
@@ -170,9 +178,6 @@ public class SimulationManager : MonoBehaviour
 
 		// Load the map
 		Initialization();
-
-		// Prepare for frame 0
-		UpdateTiles();
 
 		// Let the UI know we're alive and ready
 		Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
@@ -251,6 +256,9 @@ public class SimulationManager : MonoBehaviour
 		// Autostart or wait for the UI to start the simulation?
 		//simulationRunning = true;
 		CreateTiles();
+
+		// Prepare for frame 0
+		UpdateTiles();
 	}
 
 	/** Load the map as texture so we can access each pixel */
@@ -1163,7 +1171,7 @@ public class SimulationManager : MonoBehaviour
 				else if (mapCells[i, j].TE)
 				{	
 					if (simulationMode == 1){
-							SetTileColour(new Color(35f/255f, 74f/255f, 136f/255f, 1), new Vector3Int(i, j, 0));
+							SetTileColour(new Color(16f/255f, 52f/255f, 166f/255f, 1), new Vector3Int(i, j, 0));
 						}else {
 							SetTileColour(new Color(6f/255f, 103f/255f, 255f/255f, 1), new Vector3Int(i, j, 0));
 						}
