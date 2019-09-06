@@ -146,7 +146,6 @@ public class SimulationManager : MonoBehaviour
 			"map_test7.png",
 			"map_test8.png",
 			"central_point_without_n.png",
-			"maze.png",
 			"wsn_network_20.png",
 			"wsn_network_40.png",
 			"wsn_network_60.png",
@@ -245,7 +244,7 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		// Autostart or wait for the UI to start the simulation?
-		simulationRunning = true;
+		//simulationRunning = true;
 		CreateTiles();
 	}
 
