@@ -159,7 +159,7 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		// Default map to load
-		imageAsset = maps[5];
+		imageAsset = maps[0];
 
 		// Disable V-Sync
 		QualitySettings.vSyncCount = 0;
@@ -1146,24 +1146,26 @@ public class SimulationManager : MonoBehaviour
 
 				if (type == CellType.U)
 				{
-					SetTileColour(new Color(1, 0, 0, 1), new Vector3Int(i, j, 0));
+					SetTileColour(new Color(130f/255f, 153f/255f, 170f/255f, 1), new Vector3Int(i, j, 0));
 				}
 				else if(type == CellType.S)
 				{
-					SetTileColour(new Color(0, 0, 0, 1), new Vector3Int(i, j, 0));
+					SetTileColour(new Color(204f/255f, 0f/255f, 204f/255f, 1), new Vector3Int(i, j, 0));
 				}
 				else if (type == CellType.N)
 				{
-                    SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
+                    SetTileColour(new Color(255f/255f, 99f/255f, 71f/255f, 1), new Vector3Int(i, j, 0));
 				}
-				else if (mapCells[i, j].TE/* && simulationMode == 0*/)
-				{
-					//SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
-					SetTileColour(new Color(1, 0, 1, 1), new Vector3Int(i, j, 0));
+				else if (mapCells[i, j].TE)
+				{	
+					if (simulationMode == 1){
+							SetTileColour(new Color(35f/255f, 74f/255f, 136f/255f, 1), new Vector3Int(i, j, 0));
+						}else {
+							SetTileColour(new Color(6f/255f, 103f/255f, 255f/255f, 1), new Vector3Int(i, j, 0));
+						}
 				}
 				else
 				{
-					//SetTileColour(new Color(Mathf.Lerp(0.53f, 1, PMInRange01), Mathf.Lerp(0.8f, 0.27f, PMInRange01), Mathf.Lerp(0.98f, 0, PMInRange01), 1), new Vector3Int(i, j, 0));
 
 					if (simulationMode == 1)
 					{
@@ -1174,48 +1176,10 @@ public class SimulationManager : MonoBehaviour
 						
 						if (q1 == 0){
 							SetTileColour(new Color(1, 1, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (q1 < 5){	
-							float q2 = q1/20;
-							SetTileColour(new Color(0.5f-q2, q2-0.5f, 1, 1), new Vector3Int(i, j, 0));
-						
 						} else {
 							float q2 = q1/10;
-							SetTileColour(new Color(0.5f-q2, q2-0.10f, 1, 1), new Vector3Int(i, j, 0));
+							SetTileColour(new Color((0.8f-q2)*1.25f , (q2-0.20f)*1.25f, 1, 1), new Vector3Int(i, j, 0));
 						}
-
-
-						/*
-						//COLORED FOR CONSERVATION MAP
-						if (mapCells[i, j].PM == 0)
-						{
-							SetTileColour(new Color(1, 1, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 12)
-						{
-							float scaled = q1 / 12;
-							SetTileColour(new Color(0, scaled, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 50)
-						{
-							float scaled = (q1 - 12) / (50-12)
-							SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 75)
-						{
-							float scaled = (q1 - 75) / (75-25)
-							SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 100)
-						{
-							float scaled = (q1-100) / (100-75)
-							SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM >= 100)
-						{
-							SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
-						}
-						*/
 					}
 					else
 					{
@@ -1230,35 +1194,8 @@ public class SimulationManager : MonoBehaviour
 						}	
 						else {
 							float q2 = q1/50;
-							SetTileColour(new Color(1-q2, q2-0.05f, 1, 1), new Vector3Int(i, j, 0));
+							SetTileColour(new Color(1-q2, q2, 1, 1), new Vector3Int(i, j, 0));
 						}
-						/*
-						//COLORED FOR NO CONSERVATION MAP
-						if(mapCells[i, j].PM == 0)
-						{
-							SetTileColour(new Color(1, 1, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 0.1)
-						{
-							SetTileColour(new Color(0, 0, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 1)
-						{
-							SetTileColour(new Color(0, 0.75f, 1, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 10)
-						{
-							SetTileColour(new Color(0, 1, 0, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM < 100)
-						{
-							SetTileColour(new Color(1, 1, 0, 1), new Vector3Int(i, j, 0));
-						}
-						else if (mapCells[i, j].PM >= 100)
-						{
-							SetTileColour(new Color(1, 0.27f, 0, 1), new Vector3Int(i, j, 0));
-						}
-						*/
 					}
 				}
 			}
