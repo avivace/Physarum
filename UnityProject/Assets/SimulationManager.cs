@@ -897,7 +897,8 @@ public class SimulationManager : MonoBehaviour
 	/** Equazioni di diffusione del paper. */
 	void ApplyPaperDiffusionEquations()
 	{
-		Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
+        totalPM = 0;
+        Cell[,] newMap = CreateNewCellMap(mapSizeX, mapSizeY);
 
 		for (int i = 0; i < mapSizeX; i++)
 		{
@@ -985,9 +986,10 @@ public class SimulationManager : MonoBehaviour
 				{
 					newMap[i, j].PM = mapCells[i, j].PM;
 				}
+                totalPM += newMap[i, j].PM;
 
-				//Calcolo CHA
-				if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U)
+                //Calcolo CHA
+                if (mapCells[i, j].type != CellType.N && mapCells[i, j].type != CellType.U)
 				{
 					float CHAvNN = ((GetCHA(i - 1, j)) - (GetAA(i - 1, j) ? 1 : 0) * GetCHA(i, j))
 								   + ((GetCHA(i, j - 1)) - (GetAA(i, j - 1) ? 1 : 0) * GetCHA(i, j))
