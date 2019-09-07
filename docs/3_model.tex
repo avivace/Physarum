@@ -204,36 +204,88 @@ To correctly simulate this behaviour in our model, every cell that contains some
 \par
 The simulations correctly end with all the reachable NS as part of the mold network, connecting tubes visible, no mass in useless cells and a constant total amount of mass.
 
-%% Experimental model rules
-
 \begin{align*} &
-\text{Direction of Stretch}=
+\text{Direction of Stretch}^{t+1}_{(i, j)}=
 \begin{cases} 
-None, & mapCells[i, j].PM = 0 \\ 
+None, & PM^t_{(i, j)}= 0 \\ 
 MaxPMNeighbourRelativePosition, & \mbox{else}
 \end{cases}
 \end{align*}
 
-dove  MaxPMNeighbourRelativePosition = North se vicino a Nord è quello con PM massimo, etc.
+where MaxPMNeighbourRelativePosition = North if north's neighbour has the maximum $PM$ and so on.
 
-\begin{align*} &
-PM=
+\begin{align*}
+PM^{t+1}_{(i, j)}=
 \begin{cases} 
-PM + PMVonNeumannUniformContribution + PMMooreUniformContribution,& GetCHA(x, y) == 0 and GetCHA(i, j) == 0 \\ 
-PM+PMVonNeumannGradientContribution+PMMooreGradientContribution , & \mbox{else}
+PM^t_{(i, j)} + PMvnuc^t_{(i, j)} + PMmuc^t_{(i, j)},& CHA^t_{(x, y)}==0 and CHA^t_{(i, j)}==0 \\ 
+PM^t_{(i, j)}  +PMvngc^t_{(i, j)} + PMmgc^t_{(i, j)}, & \mbox{else}
 \end{cases}
 \end{align*}
 
-Dove:
+where:
 
-%TODO:
+PMVonNeumannUniformContribution:
 
-PMVonNeumannUniformContribution = sommatoria(2* (von neumann.PM > currentcell.PM and von neumann.PM >= minPM)) - sommatoria(2*(von neumann.PM < currentcell.PM and currentcell.PM >= minPM))
+\begin{equation}
+\begin{split}
+PMvnuc^{t+1}_{(i, j)} = 
+(2* (PM^t_{(i-1, j)} > PM^t_{(i, j)} and PMt_{(i-1, j)} >= minPM)) +
+\\(2* (PM^t_{(i+1, j)} > PM^t_{(i, j)} and PM^t_{(i+1, j)} >= minPM)) +
+\\(2* (PM^t_{(i, j-1)} > PM^t_{(i, j)} and PM[i, j-1] >= minPM)) +
+\\(2* (PM^t_{(i, j+1)} > PM^t_{(i, j)} and PM[i, j+1] >= minPM)) -
+\\(2*(PM^t_{(i-1, j)} < PM^t_{(i, j)} and PM^t_{(i, j)}>= minPM)) -
+\\(2*(PM^t_{(i+1, j)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(2*(PM^t_{(i, j-1)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(2*(PM^t_{(i, j+1)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM))
+\end{split}
+\end{equation}
 
-PMMooreUniformContribution = sommatoria(moore.PM > currentcell.PM and moore.PM >= minPM) – sommatoria(moore.PM < currentcell.PM and currentcell.PM >= minPM)
+PMMooreUniformContribution
 
-PMVonNeumannGradientContribution = sommatoria(2*(von neumann.CHA < currentcell.CHA and von neumann.PM > minPM)) - sommatoria(2*(von neumann.CHA > currentcell.CHA and currentcell.PM >= minPM))
+\begin{equation}
+\begin{split}
+PMmuc^{t+1}_{(i, j)} = 
+(1* (PM^t_{(i-1, j-1)} > PM^t_{(i, j)} and PM^t_{(i+1, j+1)} >= minPM)) +
+\\(1* (PM^t_{(i+1, j-1)} > PM^t_{(i, j)} and PM^t_{(i+1, j-1)} >= minPM)) +
+\\(1* (PM^t_{(i-1, j+1)} > PM^t_{(i, j)} and PM^t_{(i-1, j+1)}>= minPM)) +
+\\(1* (PM^t_{(i+1, j+1)} > PM^t_{(i, j)} and PM^t_{(i+1, j+1)} >= minPM)) -
+\\(1*(PM^t_{(i-1, j-1)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(1*(PM^t_{(i+1, j-1)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(1*(PM^t_{(i-1, j+1)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(1*(PM^t_{(i+1, j+1)} < PM^t_{(i, j)} and PM^t_{(i, j)} >= minPM))
+\end{split}
+\end{equation}
 
-PMMooreGradientContribution = sommatoria(moore.CHA < currentcell.CHA and moore.PM >= minPM) – sommatoria(moore.CHA > currentcell.CHA and currentcell.PM >= minPM)
+PMVonNeumannGradientContribution
 
-minPM = 12
+\begin{equation}
+\begin{split}
+PMvngc^{t+1}_{(i, j)} = 
+(2* (CHA^t_{(i-1, j)} < CHA^t_{(i, j)} and PM^t_{(i-1, j)} >= minPM)) +
+\\(2* (CHA^t_{(i+1, j)} < CHA^t_{(i, j)} and PM^t_{(i+1, j)} >= minPM)) + 
+\\(2* (CHA^t_{(i, j-1)} < CHA^t_{(i, j)} and PM^t_{(i, j-1)} >= minPM)) +
+\\(2* (CHA^t_{(i, j+1)} < CHA^t_{(i, j)} and PM^t_{(i, j+1)} >= minPM)) -
+\\(2*(CHA^t_{(i-1, j)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(2*(CHA^t_{(i+1, j)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(2*(CHA^t_{(i, j-1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(2*(CHA^t_{(i, j+1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM))
+\end{split}
+\end{equation}
+
+PMMooreGradientContribution
+
+\begin{equation}
+\begin{split}
+PMmgc^{t+1}_{(i, j)}= 
+(1* (CHA^t_{(i-1, j-1)} < CHA^t_{(i, j)} and PM^t_{(i-1, j-1)}>= minPM)) +
+\\(1* (CHA^t_{(i+1, j-1)} < CHA^t_{(i, j)} and PM^t_{(i+1, j-1)} >= minPM)) + 
+\\(1* (CHA^t_{(i-1, j+1)} < CHA^t_{(i, j)} and PM^t_{(i-1, j+1)} >= minPM)) +
+\\(1* (CHA^t_{(i+1, j+1)}  < CHA^t_{(i, j)} and PM^t_{(i+1, j+1)} >= minPM)) - 
+\\(1*(CHA^t_{(i-1, j-1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(1*(CHA^t_{(i+1, j-1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(1*(CHA^t_{(i-1, j+1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM)) -
+\\(1*(CHA^t_{(i+1, j+1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM))
+\end{split}
+\end{equation}
+
+where $minPM$ = 12
