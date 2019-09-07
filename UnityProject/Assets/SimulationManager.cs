@@ -119,6 +119,42 @@ public class SimulationManager : MonoBehaviour
 		Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",", mapsFileNames), mapIndex);
 		setDefaultParameters(mapIndex);
 		currentMapIndex = mapIndex;
+		updateParameters();
+	}
+
+	// Set parameters from UI
+	void setParameters(float UIdefaultPMForS,
+			float UIdefaultCHAForN,
+			float UICON,
+			float UICAP1,
+			float UICAP2,
+			float UIThPM,
+			int UIminAgeToDryOut,
+			float UIPMP1,
+			float UIPMP2){
+			defaultPMForS=UIdefaultPMForS;
+			defaultCHAForN=UIdefaultCHAForN;
+			CON=UICON;
+			CAP1=UICAP1;
+			CAP2=UICAP2;
+			ThPM=UIThPM;
+			minAgeToDryOut=UIminAgeToDryOut;
+			PMP1=UIPMP1;
+			PMP2=UIPMP2;
+	}
+
+	// Send updated parameters to UI
+	void updateParameters(){
+		Application.ExternalCall("vm.$children[0].unityParamUpdate",
+			defaultPMForS,
+			defaultCHAForN,
+			CON,
+			CAP1,
+			CAP2,
+			ThPM,
+			minAgeToDryOut,
+			PMP1,
+			PMP2);
 	}
 
 	void setDefaultParameters(int mapIndex){
@@ -233,6 +269,7 @@ public class SimulationManager : MonoBehaviour
 					break;
 			}
 		}
+		updateParameters();
 	}
 
 	// Allow changing the simulation mode
@@ -304,6 +341,7 @@ public class SimulationManager : MonoBehaviour
 		Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
 		// Update the UI with every map available and specify the one we're starting with
 		Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",", mapsFileNames), defaultMap);
+		updateParameters();
 	}
 
 	// Gets ready to (re)start a simulation
