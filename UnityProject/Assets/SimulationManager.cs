@@ -156,7 +156,16 @@ public class SimulationManager : MonoBehaviour
 		if (simulationMode==1){
 			// Default parameters for the Experimental model
 			switch(mapName){
-				case "maze.png":
+				case "central_sp.png":
+					defaultPMForS = 10000;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 20;
+					minAgeToDryOut = 1000;
+					break;
+				case "generic_maze.png":
 					defaultPMForS = 10000;
 					defaultCHAForN = 100;
 					CON = 0.95f;
@@ -205,7 +214,18 @@ public class SimulationManager : MonoBehaviour
 		} else {
 			// Default parameters for the Paper model
 			switch(mapName){
-				case "maze.png":
+				case "central_sp.png":
+					defaultPMForS = 100;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					PAP = 0.8f;
+					PMP1 = 0.08f;
+					PMP2 = 0.01f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 0.2f;
+					break;
+				case "generic_maze.png":
 					defaultPMForS = 30000;
 					defaultCHAForN = 30000;
 					CON = 0.95f;
@@ -302,14 +322,12 @@ public class SimulationManager : MonoBehaviour
 	{
 		mapsFileNames = new string[]
 		{
-			"map_test7.png",
-			"map_test8.png",
-			"maze.png",
-			"central_point_without_n.png",
+			"central_sp.png",
+			"generic_maze.png",
+			"maze_gpgpu.png"
 			"wsn_network_20.png",
 			"wsn_network_40.png",
-			"wsn_network_60.png",
-			"maze_gpgpu.png"
+			"wsn_network_60.png"
 		};
 		maps = new TextAsset[mapsFileNames.Length];
 		for (int i = 0; i < mapsFileNames.Length; i++)
