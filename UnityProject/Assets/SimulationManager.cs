@@ -48,6 +48,8 @@ public class SimulationManager : MonoBehaviour
 
 	public int minAgeToDryOut;
 
+	int currentMapIndex;
+
 	/*** Internal simulation variables ***/
 	//Time
 	int t = 0;
@@ -115,6 +117,122 @@ public class SimulationManager : MonoBehaviour
 		imageAsset = maps[mapIndex];
 		Initialization();
 		Application.ExternalCall("vm.$children[0].updateMaps", String.Join(",", mapsFileNames), mapIndex);
+		setDefaultParameters(mapIndex);
+		currentMapIndex = mapIndex;
+	}
+
+	void setDefaultParameters(int mapIndex){
+		// Default parameters per map
+		string mapName = mapsFileNames[mapIndex];
+		if (simulationMode==1){
+			// Default parameters for the Experimental model
+			switch(mapName){
+				case "maze.png":
+					defaultPMForS = 10000;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 20;
+					minAgeToDryOut = 1000;
+					break;
+				case "maze_gpgpu.png":
+					defaultPMForS = 10000;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 20;
+					minAgeToDryOut = 2000;
+					break;
+				case "wsn_network_20.png":
+					defaultPMForS = 10000;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 20;
+					minAgeToDryOut = 1000;
+					break;
+				case "wsn_network_40.png":
+					defaultPMForS = 10000;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 20;
+					minAgeToDryOut = 1000;
+					break;
+				case "wsn_network_60.png":
+					defaultPMForS = 10000;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 20;
+					minAgeToDryOut = 1000;
+					break;
+			}
+		} else {
+			// Default parameters for the Paper model
+			switch(mapName){
+				case "maze.png":
+					defaultPMForS = 30000;
+					defaultCHAForN = 30000;
+					CON = 0.95f;
+					PAP = 0.8f;
+					PMP1 = 0.08f;
+					PMP2 = 0.01f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 0.2f;
+					break;
+				case "maze_gpgpu.png":
+					defaultPMForS = 30000;
+					defaultCHAForN = 30000;
+					CON = 0.95f;
+					PAP = 0.8f;
+					PMP1 = 0.08f;
+					PMP2 = 0.01f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 0.2f;
+					break;
+				case "wsn_network_20.png":
+					defaultPMForS = 100;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					PAP = 0.8f;
+					PMP1 = 0.08f;
+					PMP2 = 0.01f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 0.2f;
+					break;
+				case "wsn_network_40.png":
+					defaultPMForS = 100;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					PAP = 0.8f;
+					PMP1 = 0.08f;
+					PMP2 = 0.01f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 0.2f;
+					break;
+				case "wsn_network_60.png":
+					defaultPMForS = 100;
+					defaultCHAForN = 100;
+					CON = 0.95f;
+					PAP = 0.8f;
+					PMP1 = 0.08f;
+					PMP2 = 0.01f;
+					CAP1 = 0.05f;
+					CAP2 = 0.01f;
+					ThPM = 0.2f;
+					break;
+			}
+		}
 	}
 
 	// Allow changing the simulation mode
@@ -123,6 +241,7 @@ public class SimulationManager : MonoBehaviour
 		simulationMode = mode;
 		simulationRunning = false;
 		Initialization();
+		setDefaultParameters(currentMapIndex); // To force update parameters when changing the simulation mode
 	}
 
 	// Called by either UI (single step) or by Update when the simulation is running
@@ -169,12 +288,8 @@ public class SimulationManager : MonoBehaviour
 		}
 
 		#if !UNITY_EDITOR && UNITY_WEBGL
-				UnityEngine.WebGLInput.captureAllKeyboardInput = false;
+			UnityEngine.WebGLInput.captureAllKeyboardInput = false;
 		#endif
-
-
-		// Load the default map
-		imageAsset = maps[defaultMap];
 
 		// Disable V-Sync
 		QualitySettings.vSyncCount = 0;
@@ -183,7 +298,7 @@ public class SimulationManager : MonoBehaviour
 		Application.targetFrameRate = 55;
 
 		// Load the map
-		Initialization();
+		selectMap(defaultMap);
 
 		// Let the UI know we're alive and ready
 		Application.ExternalCall("vm.$children[0].greet", "Hello from Unity!");
