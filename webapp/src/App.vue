@@ -83,31 +83,39 @@
 								<v-select class="numberinput" v-model="selectedMap" :disabled="unityStatus == 0 || (status == 'running')" :items="mapItems" item-text="fileName" item-value="mapIndex" label="Map" outlined @change="changeMap"></v-select>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultcha" type="number" label="Default CHA for N"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultCHAForN" type="number" label="Default CHA for N"></v-text-field>
 							</v-flex>
 						</v-layout>
 						<v-layout>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="thpm" type="number" label="thpm"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="ThPM" @change="updateParameters" type="number" label="thpm"></v-text-field>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultpm" type="number" label="Default PM"></v-text-field>
-							</v-flex>
-						</v-layout>
-						<v-layout>
-							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="minagedryout" type="number" label="minAge to dryout"></v-text-field>
-							</v-flex>
-							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="cap1" type="number" label="CAP1"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultPMForS" @change="updateParameters" type="number" label="Default PM for S"></v-text-field>
 							</v-flex>
 						</v-layout>
 						<v-layout>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="cap2" type="number" label="CAP2"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="minAgeToDryOut" @change="updateParameters" type="number" label="minAge to dryout"></v-text-field>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultpms" type="number" label="Default PM for S"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="CAP1" @change="updateParameters" type="number" label="CAP1"></v-text-field>
+							</v-flex>
+						</v-layout>
+						<v-layout>
+							<v-flex xs6>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="CAP2" @change="updateParameters" type="number" label="CAP2"></v-text-field>
+							</v-flex>
+							<v-flex xs6>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="PMP1" @change="updateParameters" type="number" label="PMP1"></v-text-field>
+							</v-flex>
+						</v-layout>
+												<v-layout>
+							<v-flex xs6>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="CON" @change="updateParameters" type="number" label="CON"></v-text-field>
+							</v-flex>
+							<v-flex xs6>
+								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="PMP2" @change="updateParameters" type="number" label="PMP2"></v-text-field>
 							</v-flex>
 						</v-layout>
 					</v-flex>
@@ -156,13 +164,6 @@ export default {
 			snackbar: null,
 			snackbarText: "Simulation reset",
 			selectedMap: {},
-			defaultcha: 0,
-			thpm: 0,
-			defaultpm: 0,
-			minagedryout: 0,
-			cap1: 0,
-			cap2: 0,
-			defaultpms: 0,
 			x: 0,
 			y: 0,
 			timeout: 1000,
@@ -170,7 +171,16 @@ export default {
 			S: "NAN",
 			N: "NAN",
 			totalPM: "NAN",
-			fps: 60
+			fps: 60,
+			defaultPMForS:-1,
+			defaultCHAForN: -1,
+			CON: -1,
+			CAP1: -1,
+			CAP2: -1,
+			ThPM: -1,
+			minAgeToDryOut: -1,
+			PMP1: -1,
+			PMP2: -1,
 		};
 	},
 	mounted() {},
@@ -202,6 +212,39 @@ export default {
 			this.snackbar = true;
 			gameInstance.SendMessage("GameObject", "stop")
 
+		},
+		updateParameters(){
+			// VUE -> UNITY
+			let values = [this.defaultPMForS,
+				this.defaultCHAForN,
+				this.CON,
+				this.CAP1,
+				this.CAP2,
+				this.ThPM,
+				this.minAgeToDryOut,
+				this.PMP1,
+				this.PMP2];
+			gameInstance.SendMessage("GameObject", "setParameters", values.join(','))
+		},
+		unityParamUpdate(defaultPMForS,
+			defaultCHAForN,
+			CON,
+			CAP1,
+			CAP2,
+			ThPM,
+			minAgeToDryOut,
+			PMP1,
+			PMP2){
+			this.defaultPMForS = defaultPMForS;
+			this.defaultCHAForN = defaultCHAForN;
+			this.CON = CON;
+			this.CAP1 = CAP1;
+			this.CAP2 = CAP2;
+			this.ThPM = ThPM;
+			this.minAgeToDryOut = minAgeToDryOut;
+			this.PMP1 = PMP1;
+			this.PMP2 = PMP2;
+			// VUE <- UNITY
 		},
 		changeSpeed() {
 			gameInstance.SendMessage("GameObject", "changeFrameRate", this.fps)
