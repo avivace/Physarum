@@ -123,24 +123,17 @@ public class SimulationManager : MonoBehaviour
 	}
 
 	// Set parameters from UI
-	void setParameters(float UIdefaultPMForS,
-			float UIdefaultCHAForN,
-			float UICON,
-			float UICAP1,
-			float UICAP2,
-			float UIThPM,
-			int UIminAgeToDryOut,
-			float UIPMP1,
-			float UIPMP2){
-			defaultPMForS=UIdefaultPMForS;
-			defaultCHAForN=UIdefaultCHAForN;
-			CON=UICON;
-			CAP1=UICAP1;
-			CAP2=UICAP2;
-			ThPM=UIThPM;
-			minAgeToDryOut=UIminAgeToDryOut;
-			PMP1=UIPMP1;
-			PMP2=UIPMP2;
+	void setParameters(string values){
+		string[] values2 = values.Split(';');
+		defaultPMForS=float.Parse(values2[0]);
+		defaultCHAForN=float.Parse(values2[1]);
+		CON=float.Parse(values2[2]);
+		CAP1=float.Parse(values2[3]);
+		CAP2=float.Parse(values2[4]);
+		ThPM=float.Parse(values2[5]);
+		minAgeToDryOut=int.Parse(values2[6]);
+		PMP1=float.Parse(values2[7]);
+		PMP2=float.Parse(values2[8]);
 	}
 
 	// Send updated parameters to UI

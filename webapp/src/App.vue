@@ -224,7 +224,8 @@ export default {
 				this.minAgeToDryOut,
 				this.PMP1,
 				this.PMP2];
-			gameInstance.SendMessage("GameObject", "setParameters", values.join(','))
+			gameInstance.SendMessage("GameObject", "setParameters", values.join(';'))
+			console.log("GameObject", "setParameters", values.join(';'))
 		},
 		unityParamUpdate(defaultPMForS,
 			defaultCHAForN,
