@@ -29,16 +29,52 @@ In \cite{Tsompanas2016}, in addition, there's the last step of the algorithm exp
 This last part of seems to be forcing considering, as we will see in the next sections related to the simulations, that a certain point the computation arrives at a steady state in which the $PM$ covers the map completely with the same value, leading then to a steady state. As mentioned in \cite{dourvas2016gpgpu} usually about a 1700 time steps are required for the CA-modeled plasmodium to explore a $75 \times 75$ map.
 
 \section{Network formation}
-In order to evaluate the efficiency of the networks of the bioinspired CA based model, randomly deployed distributions of 20, 40 and 60 nodes are evaluated. 
-%TODO
-METTERE LE TRE MAPPE
+In order to evaluate the efficiency of the networks of the bioinspired CA based model, randomly deployed distributions of 20, 40 and 60 nodes are evaluated. The maps are proposed below:
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{wsn_20_exp/1_wsn_20}%
+    
+  \caption{Wsn network with 20 nodes}
+  \label{fig:wsn_20_exp/1_wsn_20}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{wsn_40_exp/1_wsn_40}%
+    
+  \caption{Wsn network with 40 nodes}
+  \label{fig:wsn_40_exp/1_wsn_40}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{wsn_60_exp/1_wsn_60}%
+    
+  \caption{Wsn network with 60 nodes}
+  \label{fig:wsn_60_exp/1_wsn_60}
+\end{figure*}
+
 
 These maps are very similar to those proposed in \cite{tsompanas2015cellular} in which the plasmodium of Physarum polycephalum is the inspiration of a CA based model for constructing data trees in a WSN that connect all nodes with a sink node, that is located in the east border of the WSN for each of the three distributions.
 
 \par
 The black dot illustrates the location of the sink node and the yellow dots illustrate the locations of the sensing nodes. The topologies of the nodes are used as input for the model, with the sink node represented as the SP and all the other nodes represented as NSs. Furthermore, the initial parameters set for the model are illustrated in the next subsections.
 
+\par
+In addition to the previous maps we have also considered as an experiment a network with SP in a centered position, as can be seen in the following figure:
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{central_sp_exp/1_central_sp}%
+    
+  \caption{Network with SP in a centered position}
+  \label{fig:central_sp_exp/1_central_sp}
+\end{figure*}
+
 \subsection{Paper model}
+
+In this case the parameters are the same for each of the four networks simulated.
 
 \begin{center}
  \begin{tabular}{||c c||} 
@@ -68,7 +104,50 @@ The black dot illustrates the location of the sink node and the yellow dots illu
  \end{tabular}
 \end{center}
 
+Below are shown the simulation for each network. 
+
+\paragraph{Wsn network with 20 NSs}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{wsn_20_pap/2_wsn_20}} 
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{wsn_20_pap/3_wsn_20}} 
+    \caption{(a) Expansion process (b) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Wsn network with 40 NSs}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{wsn_40_pap/2_wsn_40}} 
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{wsn_40_pap/3_wsn_40}} 
+    \caption{(a) Expansion process (b) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Wsn network with 60 NSs}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{wsn_60_pap/2_wsn_60}} 
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{wsn_60_pap/3_wsn_60}} 
+    \caption{(a) Expansion process (b) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Network with SP in a centered position}
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{central_sp_pap/2_central_sp}} 
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{central_sp_pap/3_central_sp}} 
+    \caption{(a) Expansion process (b) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
 \subsection{Experimental model}
+
+Also in this case the parameters are the same for each of the four maps simulated.
 
 \begin{center}
  \begin{tabular}{||c c||} 
@@ -94,15 +173,171 @@ The black dot illustrates the location of the sink node and the yellow dots illu
  \end{tabular}
 \end{center}
 
+Below are shown the simulation for each map. 
+
+\paragraph{Wsn network with 20 NSs}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_20_exp/2_wsn_20}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_20_exp/3_wsn_20}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_20_exp/4_wsn_20}}
+    \caption{(a) Expansion process (b) Shrinking process (c) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Wsn network with 40 NSs}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_40_exp/2_wsn_40}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_40_exp/3_wsn_40}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_40_exp/4_wsn_40}}
+    \caption{(a) Expansion process (b) Shrinking process (c) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Wsn network with 60 NSs}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_60_exp/2_wsn_60}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_60_exp/3_wsn_60}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{wsn_60_exp/4_wsn_60}}
+    \caption{(a) Expansion process (b) Shrinking process (c) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Network with SP in a centered position}
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{central_sp_exp/2_central_sp}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{central_sp_exp/3_central_sp}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{central_sp_exp/4_central_sp}}
+    \caption{(a) Expansion process (b) Shrinking process (c) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
 \section{Maze solving}
 
+For the maze solving problem using a Physarum as biological organism two different maps were used: the first maze was faithfully copied from \cite{dourvas2016gpgpu}, while for the second maze we were inspired by one of the most famous experiments \cite{nakagaki2000intelligence} that observed mould behaving like a intelligent organism able to find the minimum-length solution between two points in a maze. The maps in the initial state are proposed below:
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{maze_gpgpu_exp/1_maze_gpgpu}%
+    
+  \caption{First maze}
+  \label{fig:maze_gpgpu_exp/1_maze_gpgpu}
+\end{figure*}
+
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{generic_maze_exp/1_generic_maze}%
+    
+  \caption{Second maze}
+  \label{fig:generic_maze_exp/1_generic_maze}
+\end{figure*}
+
+Both maps are presented with an SP and an NS, respectively in the lower left corner and in the lower right corner and then at opposite sides of the maze.
+
 \subsection{Paper model}
-$PM$: 30000
-$CHA$: 30000
-%TODO
-e il resto se non funziona?
+
+For these maps the parameters are different from those applied in the maps representing a network, in particular as regards $PM$ and $CHA$ which are set to 30000 in \cite{dourvas2016gpgpu}.
+
+\begin{center}
+ \begin{tabular}{||c c||} 
+ \hline
+ Parameter & Value \\ [0.5ex] 
+ \hline\hline
+ GridSize & $50 \times 50$ \\ 
+ \hline
+ PM & 30000 \\ 
+ \hline
+ CHA & 30000 \\ 
+ \hline
+ CON & 0.95 \\ 
+ \hline
+ CAP1 & 0.05 \\ 
+ \hline
+ CAP2 & 0.01 \\ 
+ \hline
+ MinAgeDryOut & 1000 \\
+ \hline
+ ThPM & 20 \\ [1ex] 
+ \hline
+ \end{tabular}
+\end{center}
+
+\paragraph{First maze}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{maze_gpgpu_pap/2_maze_gpgpu}} 
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{maze_gpgpu_pap/3_maze_gpgpu}} 
+    \caption{(a) Expansion process (b) Last steps}
+    \label{fig:foobar}
+\end{figure}
+
+In this case the mould stops and begins to regress, failing to complete the maze. The simulation was also made by considerably increasing the initial mass, again achieving poor results.
+
+\paragraph{Second maze}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{generic_maze_pap/2_generic_maze}} 
+    \subfigure[]{\includegraphics[width=0.40\textwidth]{generic_maze_pap/3_generic_maze}} 
+    \caption{(a) Max expansion (b) Regression}
+    \label{fig:foobar}
+\end{figure}
+
+In this another case the mould after 5050 steps has not yet reached the first NS. There is only one SP but we cannot change it into a NS.
 
 \subsection{Experimental model}
+
+In our model the mould manages to finish the mazes very well in both cases, but with a minimal difference in the MinAgeDryOut variable. Since the distance to be traveled is greater in the first maze, a greater value is needed which has been doubled bringing the value from 1000 of the second maze to 2000. The other values are equivalent for the success of the execution.
+
+\paragraph{First maze}
+
+\subparagraph{Parameters}
+
+\begin{center}
+ \begin{tabular}{||c c||} 
+ \hline
+ Parameter & Value \\ [0.5ex] 
+ \hline\hline
+ GridSize & $50 \times 50$ \\ 
+ \hline
+ PM & 10000 \\ 
+ \hline
+ CHA & 100 \\ 
+ \hline
+ CON & 0.95 \\ 
+ \hline
+ CAP1 & 0.05 \\ 
+ \hline
+ CAP2 & 0.01 \\ 
+ \hline
+ MinAgeDryOut & 2000 \\
+ \hline
+ ThPM & 20 \\ [1ex] 
+ \hline
+ \end{tabular}
+\end{center}
+
+\subparagraph{Simulation}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{maze_gpgpu_exp/2_maze_gpgpu}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{maze_gpgpu_exp/3_maze_gpgpu}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{maze_gpgpu_exp/4_maze_gpgpu}}
+    \caption{(a) Expansion process (b) Tubes creation (c) Simulation end}
+    \label{fig:foobar}
+\end{figure}
+
+\paragraph{Second maze}
+
+\subparagraph{Parameters}
 
 \begin{center}
  \begin{tabular}{||c c||} 
@@ -127,3 +362,14 @@ e il resto se non funziona?
  \hline
  \end{tabular}
 \end{center}
+
+\subparagraph{Simulation}
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{generic_maze_exp/2_generic_maze}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{generic_maze_exp/3_generic_maze}} 
+    \subfigure[]{\includegraphics[width=0.32\textwidth]{generic_maze_exp/4_generic_maze}}
+    \caption{(a) Expansion process (b) Tubes creation and shrinking process (c) Simulation end}
+    \label{fig:foobar}
+\end{figure}
