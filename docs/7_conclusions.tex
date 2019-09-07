@@ -9,11 +9,12 @@ However this model seemed not to follow the true behavior of slime mould and for
 \par
 In particular, their algorithm reached the results for the different types of simulation neglecting important realistic constraints. We found their CA's behaviour an excessive approximation of the real mould dynamics, therefore we worked on improving their original algorithm to the point of changing most of the steps.
 
-%TODO
-Aggiungere nelle conclusioni la parte dei capitoli 4, 5, 6
+\par
+The several limitations of \cite{Tsompanas2016} model showed that more technical information should be provided by the authors to completely reproduce the results they claim to have obtained.
+In any case our experimental model showed a much more realistic behaviour, loyally following the internal dynamics of the mould system. This created a more solid algorithm that can succed in all the different testing enviroments. The results of the Minimum Spanning Tree and Maze Solving are suboptimal but with a negligible error from the mathematical solution.
 
-%TODO:
-Altri sviluppi futuri: REVERSE DRY OUT per renderla più simile al comportamento reale della muffa?
+\par
+Our framework provided an easy way to compile and deploy the simulations, allowing an easy tuning of the parameters for observation purposes.
 
 \section{Future developments}
 We have drawn a map with two SPs to see the behavior. However, the model is based on a single Physarum at the initial state and therefore uses a single gradient for the creation of the tubes. Therefore it is normal that with two SPs the computation is not successful in these circumstances.
@@ -33,5 +34,8 @@ This type of model has already been proposed \cite{hex_phy} and it considered ot
 \end{itemize}
 
 Chemo attraction forces exerted on Physarum will be a function of food resource (with different mass and quality) and Physarum hunger motivation. If Physarum is satisfied, it would appreciate the quality of chemical rather than the mass, and if it is hungry, vice versa.
+
+\par
+Another important improvement that could be made in our experimental model is reversing the current shrinking phase of the mould: our current local rules of the Cellular Automata move the disperesed mass of the Physarum towards the tubes in a unrealistic order as the furthest cells are considered only after the others. This creates temporary unrealistic holes in the mould body. We are confident that better local rules can be made for the shrinking process following the change of the gradient of the real Physarum.
 
 
