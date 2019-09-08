@@ -145,10 +145,14 @@ The Unity application must be built using the WebGL target. The build artifacts 
 
 GitHub, our git hosting of choice, allows to serve static webpages. We exploited this functionality to obtain an easy and fast way to continuosly deploy our application: a simple script (\texttt{npm deploy}) build the Vue.JS application for production (with the Unity webGL build artifacts as static assets), then deploys it on the "master" branch of the repository. GitHub then serves the contents of this branch with its free service GitHub Pages.
 
-\section{Simulation lifecycle}
 
-
-\paragraph{}
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.8\textwidth]{events}%
+    
+  \caption{Main events in the execution workflow, highlighting how they are triggered by the counterpart}
+  \label{fig:events}
+\end{figure*}
 
 \subsection{Color shading}
 
