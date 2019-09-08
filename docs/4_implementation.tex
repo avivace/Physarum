@@ -1,7 +1,7 @@
 We wanted a cross platform solution, running on every recent device with no installation steps.
 We also wanted a full client-side application, so we hadn't any backend or additional components serving the application. Additionaly, we wanted the simulation to run smoothly (50-60 FPS) on maps of thousands particles (100x100 cells).
 
-The answer to this requisites was simple: a web application.
+The answer to these requisites was simple: a web application.
 
 \section{Software stack and design choices}
 
@@ -38,7 +38,7 @@ We've chosen Vue.js for the User Interface: a progressive and reactive javascrip
   \label{fig:swstack1}
 \end{figure*}
 \subsection{Vue and Unity bidirectional communication}
-After some initial experimentation, Unity emerged as suitable for the described requisites, it run fast, and defining local rules for the evolving values of the parameters for each cells was easy and immediate.
+After some initial experimentation, Unity emerged as suitable for the described requisites: it runs fast enough and defining local rules for the evolving values of the parameters for each cells was easy and immediate making use of a "TileMap component".
 
 Adding Vuetify, a CSS framework providing ready UI components, to Vue.js allowed us to design a good looking and functional user interface, exposing execution control buttons, inputs and select forms to monitor and control each aspect of the simulation.
 
@@ -148,8 +148,7 @@ GitHub, our git hosting of choice, allows to serve static webpages. We exploited
 \section{Simulation lifecycle}
 
 
-EVENTS 
-
+\paragraph{}
 
 \subsection{Color shading}
 
