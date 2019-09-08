@@ -34,7 +34,7 @@ We've chosen Vue.js for the User Interface: a progressive and reactive javascrip
   \centering
     \includegraphics[width=1\textwidth]{sw_arch}%
     
-  \caption{Overview of the implemented VueJS - Unity bidirectional comunication}
+  \caption{Overview of the VueJS - Unity bidirectional comunication with the Payload class}
   \label{fig:swstack1}
 \end{figure*}
 \subsection{Vue and Unity bidirectional communication}
@@ -84,7 +84,7 @@ void updateParameters(){
 }
 \end{verbatim}
 
-On Vue, this function simply acts as settern, updating its internal values with the one provided. It's defined as follows:
+On Vue, this function simply acts as setter, updating its internal values with the ones provided. It's defined as follows:
 
 \begin{verbatim}
 unityParamUpdate(defaultPMForS,
