@@ -52,11 +52,11 @@
 						</span>
 						<br />
 						<br />
-						<v-radio-group v-model="selectedModel" :disabled="unityStatus == 0 || status != 'stopped'" @change="changeModel">
-							<v-radio label="Paper Model" :value="0"></v-radio>
-							<v-radio label="Experimental Model" :value="1"></v-radio>
+						<v-radio-group v-model="selectedModel" :disabled="unityStatus == 0 || status != 'stopped'" @change="changeModel"label="Simulation Model:" >
+							<v-radio label="Paper" :value="0"></v-radio>
+							<v-radio label="Experimental" :value="1"></v-radio>
 						</v-radio-group>
-						<v-slider v-model="fps" label="Simulation Speed " style="width: 500px" min="1" max="60" @change="changeSpeed"><template v-slot:append>
+						<v-slider v-model="fps" label="Target simulation t/s" style="width: 500px" min="1" max="60" @change="changeSpeed"><template v-slot:append>
 								<v-text-field v-model="fps" class="mt-0 pt-0" hide-details single-line type="number" style="width: 40px"></v-text-field>
 							</template></v-slider>
 						<v-btn class="abtn" :disabled="unityStatus == 0" @click="handleStartBtn"><template v-if="status == 'stopped'">
@@ -190,6 +190,9 @@ export default {
 			console.log("GameObject", "selectSimulationMode", this.selectedModel)
 		},
 		handleStartBtn() {
+			if (this.status == "stopped") {
+				this.updateParameters();
+			}
 			gameInstance.SendMessage("GameObject", "startpause")
 			if (this.status == "running") {
 				this.status = "paused";
@@ -199,6 +202,7 @@ export default {
 		},
 		handleStopBtn(reset) {
 			this.time = "NAN"
+			this.updateParameters();
 			gameInstance.SendMessage("GameObject", "stop")
 			if (reset) {
 				this.timeout = 2000;
@@ -226,6 +230,7 @@ export default {
 				this.PMP2];
 			gameInstance.SendMessage("GameObject", "setParameters", values.join(';'))
 			console.log("GameObject", "setParameters", values.join(';'))
+			
 		},
 		unityParamUpdate(defaultPMForS,
 			defaultCHAForN,
