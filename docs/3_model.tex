@@ -160,7 +160,7 @@ If more NSs are covered with the ThPM, each is connected to the nearest SP and t
 
 The model introduced in the previous section considers only slime mould foraging behaviour and also - with the only information in the paper - seems not to follow the true behavior of slime mould. For this reason we have proposed our new experimental model based on that of Tsompanas et al. \cite{Tsompanas2016}, which objective was to fix the issues that emerged from the many executions of the original model, in particular regarding the calculation of $PM$ and other related aspects.
 
-\par
+\subsection{Improvements}
 Their algorithm reaches the results for the different types of simulation neglecting important realistic constraints such as mass conservation, resulting in topologies that sometimes slightly differed from the Physarum's. We found their CA's behaviour an excessive approximation of the real mould dynamics, therefore we worked on improving their original algorithm to the point of changing most of the steps.
 
 \par
@@ -204,15 +204,23 @@ To correctly simulate this behaviour in our model, every cell that contains some
 \par
 The simulations correctly end with all the reachable NS as part of the mold network, connecting tubes visible, no mass in useless cells and a constant total amount of mass.
 
+\subsection{Formulas}
+
+The $DirectionOfStretch$ is a value indicating the direction of the mould fibers inside the cell. When the cell has no mass the variable has no value. When the cell gets some mass for the very first time, the value becomes the direction to the neighbour cell with the highest $PM$ value.
+
 \begin{align*} &
-\text{Direction of Stretch}^{t+1}_{(i, j)}=
+DirectionOfStretch^{t+1}_{(i, j)}=
 \begin{cases} 
 None, & PM^t_{(i, j)}= 0 \\ 
 MaxPMNeighbourRelativePosition, & \mbox{else}
 \end{cases}
 \end{align*}
 
-where MaxPMNeighbourRelativePosition = North if north's neighbour has the maximum $PM$ and so on.
+
+where $MaxPMNeighbourRelativePosition$ = North if north's neighbour has the maximum $PM$ and so on.
+
+\par
+The $PM$ value of a cell is calculated differently if there's $CHA$ nearby or not. If none $CHA$ is found the mould should expand uniformly to discover the area.
 
 \begin{align*}
 PM^{t+1}_{(i, j)}=
@@ -224,7 +232,15 @@ PM^t_{(i, j)}  +PMvngc^t_{(i, j)} + PMmgc^t_{(i, j)}, & \mbox{else}
 
 where:
 
-PMVonNeumannUniformContribution:
+$PMvnuc$ (abbr. of PM Von Neumann Uniform Contribution) is the contribution to the cell's mass from the Von Neumann neighbours when the mould is uniformly expanding. Every one of these neighbour cells adds +2 to the mass if it has more mass than the current cell and it is higher than the threshold value $minPM$, otherwise reduces the mass of a factor of -2.
+
+$PMmuc$ (abbr. of PM Moore Uniform Contribution) is the same as $PMvnuc$ but for the Moore neighbours.
+
+$PMvngc$ (abbr. of PM Von Neumann Gradient Contribution) is the contribution to the cell's mass from the Von Neumann neighbours when the mould is following a $CHA$ gradient towards the food sources. Every neighbour cell add +2 to the mass if it has less $CHA$ than the current cell and its $PM$ is higher of the threshold value $minPM$, otherwise reduces the mass of a factor of -2.
+
+$PMmgc$ (abbr. of PM Moore Gradient Contribution) is the same as $PMvngc$ but for the Moore neighbours.
+
+The variable $minPM$ has value 12, because in the worst case a cell has to give away all its mass to its neighbours loosing 8 unit from Von Neumanns and 4 from Moores.
 
 \begin{equation}
 \begin{split}
@@ -240,8 +256,6 @@ PMvnuc^{t+1}_{(i, j)} =
 \end{split}
 \end{equation}
 
-PMMooreUniformContribution
-
 \begin{equation}
 \begin{split}
 PMmuc^{t+1}_{(i, j)} = 
@@ -256,8 +270,6 @@ PMmuc^{t+1}_{(i, j)} =
 \end{split}
 \end{equation}
 
-PMVonNeumannGradientContribution
-
 \begin{equation}
 \begin{split}
 PMvngc^{t+1}_{(i, j)} = 
@@ -271,8 +283,6 @@ PMvngc^{t+1}_{(i, j)} =
 \\(2*(CHA^t_{(i, j+1)} > CHA^t_{(i, j)} and PM^t_{(i, j)} >= minPM))
 \end{split}
 \end{equation}
-
-PMMooreGradientContribution
 
 \begin{equation}
 \begin{split}
