@@ -63,26 +63,26 @@ The contribution to the diffusion of the Physarum Mass of the von Neumann neighb
 \begin{equation}
 \begin{split}
 PMvNN^t_{(i, j)} = 
-(1 + PA^t_{(i, j),(i-1, j}) \times PM^t_{(i-1, j)} - AA_{(i-1, j)} \times PM^t_{(i, j)} +
-\\(1 + PA^t_{(i, j),(i, j-1}) \times PM^t_{(i, j-1)} - AA_{(i, j-1)} \times PM^t_{(i, j)} +
-\\(1 + PA^t_{(i, j),(i+1, j}) \times PM^t_{(i+1, j)} - AA_{(i+1, j)} \times PM^t_{(i, j)}  +
-\\(1 + PA^t_{(i, j),(i, j+1}) \times PM^t_{(i, j+1)} - AA_{(i, j+1)} \times PM^t_{(i, j)}
+(1 + PA^t_{(i, j),(i-1, j)}) \times PM^t_{(i-1, j)} - AA_{(i-1, j)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i, j-1)}) \times PM^t_{(i, j-1)} - AA_{(i, j-1)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i+1, j)}) \times PM^t_{(i+1, j)} - AA_{(i+1, j)} \times PM^t_{(i, j)}  +
+\\(1 + PA^t_{(i, j),(i, j+1)}) \times PM^t_{(i, j+1)} - AA_{(i, j+1)} \times PM^t_{(i, j)}
 \end{split}
 \end{equation}
 Moreover, the contribution to the diffusion of the Physarum Mass of the exclusively Moore neighbours ($PMeMN$) of the $c_{(i,j)}$ cell is defined as:
 \begin{equation}
 \begin{split}
 PMeMN^t_{(i, j)} = 
-(1 + PA^t_{(i, j),(i-1, j-1}) \times PM^t_{(i-1, j-1)} - AA_{(i-1, j-1)} \times PM^t_{(i, j)} +
-\\(1 + PA^t_{(i, j),(i+1, j-1}) \times PM^t_{(i+1, j-1)} - AA_{(i+1, j-1)} \times PM^t_{(i, j)} +
-\\(1 + PA^t_{(i, j),(i-1, j+1}) \times PM^t_{(i-1, j+1)} - AA_{(i-1, j+1)} \times PM^t_{(i, j)}  +
-\\(1 + PA^t_{(i, j),(i+1, j+1}) \times PM^t_{(i+1, j+1)} - AA_{(i+1, j+1)} \times PM^t_{(i, j)}
+(1 + PA^t_{(i, j),(i-1, j-1)}) \times PM^t_{(i-1, j-1)} - AA_{(i-1, j-1)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i+1, j-1)}) \times PM^t_{(i+1, j-1)} - AA_{(i+1, j-1)} \times PM^t_{(i, j)} +
+\\(1 + PA^t_{(i, j),(i-1, j+1)}) \times PM^t_{(i-1, j+1)} - AA_{(i-1, j+1)} \times PM^t_{(i, j)}  +
+\\(1 + PA^t_{(i, j),(i+1, j+1)}) \times PM^t_{(i+1, j+1)} - AA_{(i+1, j+1)} \times PM^t_{(i, j)}
 \end{split}
 \end{equation}
 
 The total $PM$ for a cell $c_{(i,j)}$ for time t + 1 is a sum of the contributions of its neighbours with appropriate weights and is defined as:
 \begin{equation}
-PM^{t+1}_{(i, j)} = PM^t_{(i, j)} + PMP1 \times [PMvNN^t_{(i, j)} + PMP2 \times PMeMN^t_{(i, j)}]
+PM^{t+1}_{(i, j)} = PM^t_{(i, j)} + PMP1 \times (PMvNN^t_{(i, j)} + PMP2 \times PMeMN^t_{(i, j)})
 \end{equation}
 The equation represents the exploration of the available space by the plasmodium which is affected by chemoattractants. The values PMP1 and PMP2 depict that the von Neumann and the exclusively Moore neighbours have different contributions on the diffusion of these parameters. If a neighbouring cell is representing unavailable area, there is no contribution to the diffusion.
  
@@ -108,7 +108,7 @@ CHAvNN^t_{(i, j)} =
 (CHA^t_{(i-1, j)}) - AA_{(i-1, j)} \times CHA^t_{(i, j)} +
 \\(CHA^t_{(i, j-1)}) - AA_{(i, j-1)} \times CHA^t_{(i, j)} +
 \\(CHA^t_{(i+1, j)}) - AA_{(i+1, j)} \times CHA^t_{(i, j)}  +
-\\(CHA^t_{(i, j+1)} - AA_{(i, j+1)} \times CHA^t_{(i, j)}
+\\(CHA^t_{(i, j+1)}) - AA_{(i, j+1)} \times CHA^t_{(i, j)}
 \end{split}
 \end{equation}
 
@@ -126,7 +126,7 @@ CHAeMN^t_{(i, j)} =
 
 As a result, the total $CHA$ for a $c_{(i,j)}$ cell for time t + 1 is defined as:
 \begin{equation}
-CHA^{t+1}_{(i, j)} = CON \times {CHA^t_{(i, j)} + CAP1 \times (CHAvNN^t_{(i, j)} + CAP \times CHAeMN^t_{(i, j)})}
+CHA^{t+1}_{(i, j)} = CON \times {CHA^t_{(i, j)} + CAP1 \times (CHAvNN^t_{(i, j)} + CAP2 \times CHAeMN^t_{(i, j)})}
 \end{equation}
 The equation represents the diffusion of chemoattractants from the NSs in the available space. The values CAP1 and CAP2 depict that the von Neumann and the exclusively Moore neighbours have different contributions on the diffusion of these parameters. The multiplication with the parameter CON provides the imitation of the consumption of the chemoattractant substances by the plasmodium. Also in this case as in the diffusion of $PM$, if a neighbouring cell is representing unavailable area there is no contribution to the diffusion.
 
