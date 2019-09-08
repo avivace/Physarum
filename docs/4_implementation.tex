@@ -11,11 +11,11 @@ Unity is a cross-platform game engine supporting over 20 compilation target, inc
 
 Unity can compile the application to web browsers, building the entire application using WebGL, a JavaScript API for rendering interactive 2D and 3D graphics within any compatible web browser without the use of plug-ins.
 
-We've chosen Vue.js for the User Interface: a progressive and reactive javascript framework, similar to React.js, to easily build interactive web pages. The main advantage of using Vue is the possibility to easily binding the application logic to the actual UI. We can template web components, using variables and defining events and then modify those values and handle events from the application logic. The entire page updates when some (bound) data changes, conditionally re-rerendering single parts of the pages, without refreshing. Additionaly, when we make any modifications on the forms, editing the simulation parameters, Vue launches \texttt{onChange} events for us. We handle them in the applicaiton logic, launching methods to make the modification reach the WebGL instance of the Unity applicaiton embed in the page.
+We've chosen Vue.js for the User Interface: a progressive and reactive javascript framework, similar to React.js, to easily build interactive web pages. The main advantage of using Vue is the possibility to easily binding the application logic to the actual UI. We can template web components, using variables and defining events and then modify those values and handle events from the application logic. The page updates when some (bound) data changes, conditionally re-rerendering single parts of the DOM, without refreshing the entire page. Additionaly, when we make any modifications on the forms, editing the simulation parameters, Vue launches \texttt{onChange} events for us. We handle them in the applicaiton logic, launching methods to make the modification reach the WebGL instance of the Unity application embed in the page.
 
 \begin{figure*}
   \centering
-    \includegraphics[width=1\textwidth]{UI1}%
+    \includegraphics[width=0.8\textwidth]{UI1}%
     
   \caption{Final application view}
   \label{fig:swstack1}
@@ -23,7 +23,7 @@ We've chosen Vue.js for the User Interface: a progressive and reactive javascrip
 
 \begin{figure*}
   \centering
-    \includegraphics[width=0.5\textwidth]{UI2}%
+    \includegraphics[width=0.4\textwidth]{UI2}%
     
   \caption{User Interface view}
   \label{fig:swstack1}
@@ -42,13 +42,114 @@ After some initial experimentation, Unity emerged as suitable for the described 
 
 Adding Vuetify, a CSS framework providing ready UI components, to Vue.js allowed us to design a good looking and functional user interface, exposing execution control buttons, inputs and select forms to monitor and control each aspect of the simulation.
 
-However, we needed a fast and realiable way to make those two commponents comunicate constantly and in both directions:
+However, we needed a fast and realiable way to make those two components comunicate constantly and in both directions:
 
+\paragraph{Vue to Unity}
+
+When Unity is loaded, it exposes a \texttt{gameInstance} object. We can use the \texttt{SendMessage} method offered by this object to launch a public method defined inside the Unity scripts directly from the webpage embedding that Unity application. This is simple and allows passing integers and string arguments.
+
+E.g. the following line is called by Vue whenever the \texttt{onChange} even is triggered by the FPS slider:
+
+\begin{verbatim}
+gameInstance.SendMessage("GameObject", "changeFrameRate", this.fps)
+\end{verbatim}
+
+We call the \texttt{changeFrameRate} Unity method passing the new desired framerate:
+
+\begin{verbatim}
+void changeFrameRate(int targetFps){
+    Application.targetFrameRate = targetFps;
+}
+\end{verbatim}
+
+\paragraph{Unity to Vue}
+
+When the browser finishes the loading of the Vue framework, the instance becomes available as \texttt{vm.\$children[0]} and we can call any of the function exposed as "method" inside the Vue definition with this object.
+In Unity, we have a \texttt{Application.ExternalCall} function which calls functionName in the web page containing the WebGL player, passing the given arguments to it. Supported argument types are the primitive types (string, int, float, string) and arrays of such types.
+
+E.g. this is the Unity function that sends to the UI the current values of the simulation:
+
+\begin{verbatim}
+void updateParameters(){
+    Application.ExternalCall("vm.$children[0].unityParamUpdate",
+        defaultPMForS,
+        defaultCHAForN,
+        CON,
+        CAP1,
+        CAP2,
+        ThPM,
+        minAgeToDryOut,
+        PMP1,
+        PMP2);
+}
+\end{verbatim}
+
+On Vue, this function simply acts as settern, updating its internal values with the one provided. It's defined as follows:
+
+\begin{verbatim}
+unityParamUpdate(defaultPMForS,
+    defaultCHAForN,
+    CON,
+    CAP1,
+    CAP2,
+    ThPM,
+    minAgeToDryOut,
+    PMP1,
+    PMP2){
+        this.defaultPMForS = defaultPMForS;
+        this.defaultCHAForN = defaultCHAForN;
+        this.CON = CON;
+        this.CAP1 = CAP1;
+        this.CAP2 = CAP2;
+        this.ThPM = ThPM;
+        this.minAgeToDryOut = minAgeToDryOut;
+        this.PMP1 = PMP1;
+        this.PMP2 = PMP2;
+},
+\end{verbatim}
+
+
+Exploiting these two simple patterns, we can communicate and synchronize the two application logics. From the UI we can:
+
+\begin{itemize}
+\item Start, Stop and pause the simulation;
+\item Stop and reset the simulation with the default values;
+\item Run just one step at the time of the simulation;
+\item Change the application target time steps/seconds;
+\item Change map;
+\item Change the simulation model;
+\item Change the simulation parameters.
+\end{itemize}
+
+While from Unity we
+
+\begin{itemize}
+    \item Show the simulation tilemap;
+    \item Send updated values about the simulation at each frame;
+    \item Send the updated parameters values.
+\end{itemize}
+
+\subsection{More complex payloads}
+
+An additional JSON serializer/deserializer class was developed even if it eventually resulted easier and clearer to just pass every parameter in a stringified array instead of building an ad-hoc Payload class with each needed property every time. 
+
+However, this approach is much more scalable and will definitely be useful in bigger applications, e.g. when the Payload between the two components will need to carry complex and heavier (maybe binary) data such as entire custom maps.
 
 \subsection{Developoment and deployment}
-TODO
 
-\section{Unity software}
+The development of the application was done on UNIX systems, using git as version control system.
+
+Webpack is a module builder for recent web technologies, a template configuration is provided with Vue: it provides hot reload and a development server to see the application live in the browser and automatically rebuilt on each change on the Vue side.
+
+The Unity application must be built using the WebGL target. The build artifacts must be served statically by the web application, so we can embed the UnityPlayer and the actual application alongside the VueJS instance.
+
+GitHub, our git hosting of choice, allows to serve static webpages. We exploited this functionality to obtain an easy and fast way to continuosly deploy our application: a simple script (\texttt{npm deploy}) build the Vue.JS application for production (with the Unity webGL build artifacts as static assets), then deploys it on the "master" branch of the repository. GitHub then serves the contents of this branch with its free service GitHub Pages.
+
+\section{Simulation lifecycle}
+
+
+EVENTS 
+
 
 \subsection{Color shading}
 
@@ -100,18 +201,18 @@ Following the ideas of the linear interpolation, our color shading algorithms wo
 PaperModel:
 
 \begin{itemize}
-	\item Empty cells are white. C= $(1,1,1)$
-	\item Cell mass is scaled with a factor of 50 (40 on low-mass cells). $PM = PM/50$
-	\item On low-mass cells ($PM < 15$): C= $(1-PM,1-PM,1)$
-	\item C= $(1-PM,PM,3)$
+    \item Empty cells are white. C= $(1,1,1)$
+    \item Cell mass is scaled with a factor of 50 (40 on low-mass cells). $PM = PM/50$
+    \item On low-mass cells ($PM < 15$): C= $(1-PM,1-PM,1)$
+    \item C= $(1-PM,PM,3)$
 \end{itemize}
 
 Experimental Model:
 
 \begin{itemize}
-	\item Empty cells are white.
-	\item Cell mass is scaled with a factor of 10. $PM = PM/10$
-	\item C= $((0.8-PM)*1.25,(PM-0.20)*1.25,1)$
+    \item Empty cells are white.
+    \item Cell mass is scaled with a factor of 10. $PM = PM/10$
+    \item C= $((0.8-PM)*1.25,(PM-0.20)*1.25,1)$
 \end{itemize}
 
 The result is shade of light blue to blue-purple where the lighter values represent more action, more mass and general more mass movement activity, while the darker are the expansion front of the slime mould. The color range is also confined in a precise range (light blue to purple) with offsets on the Red and Green component of the color.
@@ -121,7 +222,3 @@ The result is shade of light blue to blue-purple where the lighter values repres
 Since the paper simulation is expading extremely fast with a very low amount of mass, each run launched with our color shading algorithm was immediatly flooding the entire map, making the color shading pretty much useless until the mass started to grow near the S points.
 
 So, for the lower values, we chosen to represent the initial expansion with another color shading formula, giving a very subtle (and almost transparent) shade of blue around the front of expansion of the slime mould.
-
-\section{UI - VUEJS}
-
-TODO
