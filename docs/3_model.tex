@@ -95,7 +95,7 @@ The $PA$ parameter for cell $c_{(i,j)}$ towards its north neighbour $c_{(i-1,j)}
 PA^t_{(i, j),(k,l)}=
 \begin{cases} 
 PAP, & if CHA_{(i-1, j)} = MAX(CHA_{(k, l)} \forall k, l: i - 1 \leq k \leq i + 1 \\and j - 1 \leq l \leq j+1) \\ 
-- PAP, & if CHA_{(i-1, j)} = MAX(CHA_{(k, l)} \forall k, l: i - 1 \leq k \leq i + 1 \\and j - 1 \leq l \leq j+1) \\ 
+- PAP, & if CHA_{(i+1, j)} = MAX(CHA_{(k, l)} \forall k, l: i - 1 \leq k \leq i + 1 \\and j - 1 \leq l \leq j+1) \\ 
 0, & \mbox{else}
 \end{cases}
 \end{equation}
@@ -120,7 +120,7 @@ CHAeMN^t_{(i, j)} =
 (CHA^t_{(i-1, j-1)}) - AA_{(i-1, j-1)} \times CHA^t_{(i, j)} +
 \\(CHA^t_{(i+1, j-1)}) - AA_{(i+1, j-1)} \times CHA^t_{(i, j)} +
 \\(CHA^t_{(i-1, j+1)}) - AA_{(i-1, j+1)} \times CHA^t_{(i, j)}  +
-\\(CHA^t_{(i+1, j+1)}) - AA_{(i+1, j+1)} \times PM^t_{(i, j)}
+\\(CHA^t_{(i+1, j+1)}) - AA_{(i+1, j+1)} \times CHA^t_{(i, j)}
 \end{split}
 \end{equation}
 
