@@ -176,10 +176,10 @@ If no external stymolus is given to the virtual mould, it expands uniformly in a
 As soon as the mould finds one of these cells, it stops the uniform expansions and starts moving the whole mass to follow the gradient. This can happen in more than a location at the same time moving the available mass in many directions depending on the number of near NS, exactly how the real Physarum behaves.
 
 \par
-During the uniform expansion each neighbour cell that has a lower amount of mass (PM) receives some, moving the mass from a nearby cell thus conserving the total amount of mass. If a cell has PM lower than a threshold value, it can't distribute its mass to its neighbours. This local rule generates the typical circular explorative behaviour of the mold.
+During the uniform expansion each neighbour cell that has a lower amount of mass ($PM$) receives some, moving the mass from a nearby cell thus conserving the total amount of mass. If a cell has PM lower than a threshold value, it can't distribute its mass to its neighbours. This local rule generates the typical circular explorative behaviour of the mold.
 
 \par 
-When there is a chemoattractant gradient, the mass is moved to the cells that have a higher CHA, except if the cell mass is lower than the same previous threshold. This rule causes the elongation of the mould towards the NSs.
+When there is a chemoattractant gradient, the mass is moved to the cells that have a higher $CHA$, except if the cell mass is lower than the same previous threshold. This rule causes the elongation of the mould towards the NSs.
 
 \par
 Once an NS is reached, more and more mass is accumulated on that cell until it reaches a threshold value as in Tsompanas et al. \cite{Tsompanas2016}. At this point the tube formation process begins.
@@ -194,7 +194,7 @@ Tsompanas et al. \cite{Tsompanas2016} creates the tubes out of nothing as if the
 When the nearest NS is reached with enough mass the gradient is followed backward to enstablish the shape of the tube, then the NS is changed into a new SP with a new amount of available mass and its CHA value is set to zero as the nutrient has been correctly digested.
 
 \par
-At this step the best path has been enstablished but the tubes are not yet visible because the mould mass is still distribuited in all the cells with high CHA gradient.
+At this step the best path has been enstablished but the tubes are not yet visible because the mould mass is still distribuited in all the cells with high $CHA$ gradient.
 As Tsompanas et al. \cite{Tsompanas2016} create the tubes on the fly, they don't pay attention to and haven't coded this typical Physarum step: the shrinking process.
 
 \par
@@ -206,10 +206,21 @@ The simulations correctly end with all the reachable NS as part of the mold netw
 
 \subsection{Formulas}
 
-The $DirectionOfStretch$ is a value indicating the direction of the mould fibers inside the cell. When the cell has no mass the variable has no value. When the cell gets some mass for the very first time, the value becomes the direction to the neighbour cell with the highest $PM$ value.
+The neighbourhood type used for the model is Moore neighbourhood and the state of the $c_{(i, j)}$ cell at time step t ($ ST^t_{(i, j)}$) is defined as:
+\begin{align}
+ST^t_{(i, j)} = [AA_{(i, j)}, PM^t_{(i, j)}, CHA^t_{(i, j)}, TE^t_{(i, j)}, Dir^t_{(i, j)}, Age^t_{(i, j)}]
+\end{align}
+where in addition to those already seen above we have:
+
+\begin{itemize}
+	\item $Dir$, that is a value indicating the direction of the mould fibers inside the cell.
+	\item $Age$, which represents the number of ticks that have passed since the first time the mass reached the cell.
+\end{itemize}
+
+The $Dir$ has no value when the cell has no mass. When the cell gets some mass for the very first time, the value becomes the direction to the neighbour cell with the highest $PM$ value.
 
 \begin{align*} &
-DirectionOfStretch^{t+1}_{(i, j)}=
+Dir^{t+1}_{(i, j)}=
 \begin{cases} 
 None, & PM^t_{(i, j)}= 0 \\ 
 MaxPMNeighbourRelativePosition, & \mbox{else}
