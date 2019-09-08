@@ -80,42 +80,42 @@
 						<br /><br />
 						<v-layout>
 							<v-flex xs6>
-								<v-select class="numberinput" v-model="selectedMap" :disabled="unityStatus == 0 || (status == 'running')" :items="mapItems" item-text="fileName" item-value="mapIndex" label="Map" outlined @change="changeMap"></v-select>
+								<v-select class="numberinput" v-model="selectedMap" :disabled="unityStatus == 0 || status != 'stopped'" :items="mapItems" item-text="fileName" item-value="mapIndex" label="Map" outlined @change="changeMap"></v-select>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultCHAForN" type="number" label="Default CHA for N"></v-text-field>
-							</v-flex>
-						</v-layout>
-						<v-layout>
-							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="ThPM" @change="updateParameters" type="number" label="thpm"></v-text-field>
-							</v-flex>
-							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="defaultPMForS" @change="updateParameters" type="number" label="Default PM for S"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="defaultCHAForN" type="number" label="Default CHA for N"></v-text-field>
 							</v-flex>
 						</v-layout>
 						<v-layout>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="minAgeToDryOut" @change="updateParameters" type="number" label="minAge to dryout"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="ThPM" @change="updateParameters" type="number" label="thpm"></v-text-field>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="CAP1" @change="updateParameters" type="number" label="CAP1"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="defaultPMForS" @change="updateParameters" type="number" label="Default PM for S"></v-text-field>
 							</v-flex>
 						</v-layout>
 						<v-layout>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="CAP2" @change="updateParameters" type="number" label="CAP2"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="minAgeToDryOut" @change="updateParameters" type="number" label="minAge to dryout"></v-text-field>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="PMP1" @change="updateParameters" type="number" label="PMP1"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="CAP1" @change="updateParameters" type="number" label="CAP1"></v-text-field>
+							</v-flex>
+						</v-layout>
+						<v-layout>
+							<v-flex xs6>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="CAP2" @change="updateParameters" type="number" label="CAP2"></v-text-field>
+							</v-flex>
+							<v-flex xs6>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="PMP1" @change="updateParameters" type="number" label="PMP1"></v-text-field>
 							</v-flex>
 						</v-layout>
 												<v-layout>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="CON" @change="updateParameters" type="number" label="CON"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="CON" @change="updateParameters" type="number" label="CON"></v-text-field>
 							</v-flex>
 							<v-flex xs6>
-								<v-text-field :disabled="unityStatus == 0 || (status == 'running')" class="numberinput" v-model="PMP2" @change="updateParameters" type="number" label="PMP2"></v-text-field>
+								<v-text-field :disabled="unityStatus == 0 || status != 'stopped'" class="numberinput" v-model="PMP2" @change="updateParameters" type="number" label="PMP2"></v-text-field>
 							</v-flex>
 						</v-layout>
 					</v-flex>
@@ -199,10 +199,11 @@ export default {
 		},
 		handleStopBtn(reset) {
 			this.time = "NAN"
+			gameInstance.SendMessage("GameObject", "stop")
 			if (reset) {
 				this.timeout = 2000;
 				this.snackbarText = 'Simulation stopped and parameters set to default';
-				// TODO: reset parameters
+				gameInstance.SendMessage("GameObject", "selectMap", this.selectedMap)
 			} else {
 				this.timeout = 1000;
 				this.snackbarText = 'Simulation stopped';
@@ -210,7 +211,6 @@ export default {
 
 			this.status = "stopped";
 			this.snackbar = true;
-			gameInstance.SendMessage("GameObject", "stop")
 
 		},
 		updateParameters(){

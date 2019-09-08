@@ -124,6 +124,7 @@ public class SimulationManager : MonoBehaviour
 
 	// Set parameters from UI
 	void setParameters(string values){
+		Initialization();
 		string[] values2 = values.Split(';');
 		defaultPMForS=float.Parse(values2[0]);
 		defaultCHAForN=float.Parse(values2[1]);
@@ -134,6 +135,7 @@ public class SimulationManager : MonoBehaviour
 		minAgeToDryOut=int.Parse(values2[6]);
 		PMP1=float.Parse(values2[7]);
 		PMP2=float.Parse(values2[8]);
+		updateParameters();
 	}
 
 	// Send updated parameters to UI
@@ -292,6 +294,7 @@ public class SimulationManager : MonoBehaviour
 		simulationRunning = false;
 		Initialization();
 		setDefaultParameters(currentMapIndex); // To force update parameters when changing the simulation mode
+		updateParameters();
 	}
 
 	// Called by either UI (single step) or by Update when the simulation is running
@@ -324,7 +327,7 @@ public class SimulationManager : MonoBehaviour
 		{
 			"central_sp.png",
 			"generic_maze.png",
-			"maze_gpgpu.png"
+			"maze_gpgpu.png",
 			"wsn_network_20.png",
 			"wsn_network_40.png",
 			"wsn_network_60.png"
@@ -356,6 +359,7 @@ public class SimulationManager : MonoBehaviour
 	}
 
 	// Gets ready to (re)start a simulation
+	// Resets every param
 	public void Initialization()
 	{
 		this.GetComponent<Tilemap>().ClearAllTiles();
@@ -364,6 +368,7 @@ public class SimulationManager : MonoBehaviour
 		fiftyStepsPhase = false;
 		antiCrashCounter = 0;
 		
+		/*
 		if (simulationMode == 0)
 		{
 			defaultPMForS = 100;
@@ -394,7 +399,7 @@ public class SimulationManager : MonoBehaviour
 
 			minAgeToDryOut = 1000;
 		}
-
+		*/
 		Ss = new List<Vector2Int>();
 		Ns = new List<Vector2Int>();
 		lastEncapsulatedNS = new Vector2Int();
@@ -493,6 +498,8 @@ public class SimulationManager : MonoBehaviour
 		if (simulationRunning)
 		{
 			simulationStep();
+		} else {
+			updateParameters();
 		}
 	}
 
