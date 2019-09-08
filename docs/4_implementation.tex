@@ -5,14 +5,6 @@ The answer to this requisites was simple: a web application.
 
 \section{Software stack and design choices}
 
-\begin{figure*}
-  \centering
-    \includegraphics[width=1\textwidth]{sw_arch}%
-    
-  \caption{Overview of the implemented VueJS - Unity bidirectional comunication}
-  \label{fig:swstack1}
-\end{figure*}
-
 A custom software solution has been developed, making use of two different technologies and developing an ad hoc framework to make these two communicate in real time.
 
 Unity is a cross-platform game engine supporting over 20 compilation target, including Windows, OS X, game consoles and web. The engine can be used to create three-dimensional, two-dimensional, virtual reality, and augmented reality games, as well as simulations and other experiences.
@@ -21,11 +13,37 @@ Unity can compile the application to web browsers, building the entire applicati
 
 We've chosen Vue.js for the User Interface: a progressive and reactive javascript framework, similar to React.js, to easily build interactive web pages. The main advantage of using Vue is the possibility to easily binding the application logic to the actual UI. We can template web components, using variables and defining events and then modify those values and handle events from the application logic. The entire page updates when some (bound) data changes, conditionally re-rerendering single parts of the pages, without refreshing. Additionaly, when we make any modifications on the forms, editing the simulation parameters, Vue launches \texttt{onChange} events for us. We handle them in the applicaiton logic, launching methods to make the modification reach the WebGL instance of the Unity applicaiton embed in the page.
 
-\section{Simulation framework}
+\begin{figure*}
+  \centering
+    \includegraphics[width=1\textwidth]{UI1}%
+    
+  \caption{Final application view}
+  \label{fig:swstack1}
+\end{figure*}
 
+\begin{figure*}
+  \centering
+    \includegraphics[width=0.5\textwidth]{UI2}%
+    
+  \caption{User Interface view}
+  \label{fig:swstack1}
+\end{figure*}
+
+\section{Simulation framework}
+\begin{figure*}
+  \centering
+    \includegraphics[width=1\textwidth]{sw_arch}%
+    
+  \caption{Overview of the implemented VueJS - Unity bidirectional comunication}
+  \label{fig:swstack1}
+\end{figure*}
 \subsection{Vue and Unity bidirectional communication}
-Unity was perfect for the simulation,
-Given the two tools were perfectly suited for their scope
+After some initial experimentation, Unity emerged as suitable for the described requisites, it run fast, and defining local rules for the evolving values of the parameters for each cells was easy and immediate.
+
+Adding Vuetify, a CSS framework providing ready UI components, to Vue.js allowed us to design a good looking and functional user interface, exposing execution control buttons, inputs and select forms to monitor and control each aspect of the simulation.
+
+However, we needed a fast and realiable way to make those two commponents comunicate constantly and in both directions:
+
 
 \subsection{Developoment and deployment}
 TODO
