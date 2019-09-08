@@ -1,3 +1,8 @@
+We wanted a cross platform solution, running on every recent device with no installation steps.
+We also wanted a full client-side application, so we hadn't any backend or additional components serving the application. Additionaly, we wanted the simulation to run smoothly (50-60 FPS) on maps of thousands particles (100x100 cells).
+
+The answer to this requisites was simple: a web application.
+
 \section{Software stack and design choices}
 
 \begin{figure*}
@@ -8,9 +13,24 @@
   \label{fig:swstack1}
 \end{figure*}
 
+A custom software solution has been developed, making use of two different technologies and developing an ad hoc framework to make these two communicate in real time.
+
+Unity is a cross-platform game engine supporting over 20 compilation target, including Windows, OS X, game consoles and web. The engine can be used to create three-dimensional, two-dimensional, virtual reality, and augmented reality games, as well as simulations and other experiences.
+
+Unity can compile the application to web browsers, building the entire application using WebGL, a JavaScript API for rendering interactive 2D and 3D graphics within any compatible web browser without the use of plug-ins.
+
+We've chosen Vue.js for the User Interface: a progressive and reactive javascript framework, similar to React.js, to easily build interactive web pages. The main advantage of using Vue is the possibility to easily binding the application logic to the actual UI. We can template web components, using variables and defining events and then modify those values and handle events from the application logic. The entire page updates when some (bound) data changes, conditionally re-rerendering single parts of the pages, without refreshing. Additionaly, when we make any modifications on the forms, editing the simulation parameters, Vue launches \texttt{onChange} events for us. We handle them in the applicaiton logic, launching methods to make the modification reach the WebGL instance of the Unity applicaiton embed in the page.
 
 \section{Simulation framework}
 
+\subsection{Vue and Unity bidirectional communication}
+Unity was perfect for the simulation,
+Given the two tools were perfectly suited for their scope
+
+\subsection{Developoment and deployment}
+TODO
+
+\section{Unity software}
 
 \subsection{Color shading}
 
@@ -84,4 +104,6 @@ Since the paper simulation is expading extremely fast with a very low amount of 
 
 So, for the lower values, we chosen to represent the initial expansion with another color shading formula, giving a very subtle (and almost transparent) shade of blue around the front of expansion of the slime mould.
 
-\section{User Interface}
+\section{UI - VUEJS}
+
+TODO
