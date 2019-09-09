@@ -10,6 +10,8 @@ By [Matteo Coppola](https://github.com/matteocoppola), [Luca Palazzi](https://gi
 
 ### [Documentation](docs/report.pdf)
 
+### [Slides](Slides.pdf)
+
 
 
 ## Develop
