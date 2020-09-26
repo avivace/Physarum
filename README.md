@@ -2,7 +2,7 @@
 
 <img src="docs/Physarum_CNRS_2880x1500_BN.jpg"/>
 
-Complex Systems exam final project: *Physarum polycephalum slime mould computing simulations.*
+Final project for my Complex Systems course, from my [MSc in Computer Science](https://github.com/avivace): *Physarum polycephalum slime mould computing simulations.*
 
 By [Matteo Coppola](https://github.com/matteocoppola), [Luca Palazzi](https://github.com/lucapalazzi), [Antonio Vivace](https://github.com/avivace).
 
